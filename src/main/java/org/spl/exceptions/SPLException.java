@@ -9,6 +9,8 @@ public class SPLException extends Exception {
 	public static String buildErrorMessage(
 			String filename,
 			int lineNo,
+			int columnNo,
+			int len,
 			String code,
 			String errorMessage) {
 		return "File, " +
@@ -16,8 +18,10 @@ public class SPLException extends Exception {
 				", line " +
 				lineNo +
 				'\n' +
-				code +
+				code + " ".repeat(columnNo) +
+				"^".repeat(len) + '\n' +
 				"SyntaxError: " +
 				errorMessage;
 	}
+
 }

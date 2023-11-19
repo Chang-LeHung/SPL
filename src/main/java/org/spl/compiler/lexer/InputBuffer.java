@@ -106,4 +106,8 @@ public class InputBuffer {
 	public String getBuffer() {
 		return buffer.toString();
 	}
+
+	public int getOff() {
+		return off;
+	}
 }

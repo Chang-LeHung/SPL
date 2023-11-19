@@ -116,6 +116,8 @@ public class Lexer {
 							String msg = SPLException.buildErrorMessage(
 									stream.getFileName(),
 									lineNo,
+									columnNo,
+									stream.getOff() - columnNo,
 									stream.getBuffer(),
 									"Illegal float literal, two or more dots are not allowed in float literal"
 							);
@@ -150,6 +152,8 @@ public class Lexer {
 						String msg = SPLException.buildErrorMessage(
 								stream.getFileName(),
 								lineNo,
+								columnNo,
+								stream.getOff() - columnNo,
 								stream.getBuffer(),
 								"Illegal string literal, string literal must be enclosed in double quotes"
 						);
