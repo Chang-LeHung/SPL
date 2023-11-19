@@ -77,6 +77,10 @@ public class Lexer {
 						state = CHAR_TYPE.RPAREN;
 					} else if (c == '^') {
 						state = CHAR_TYPE.POWER;
+					} else if (c == '{') {
+						state = CHAR_TYPE.LBRACE;
+					} else if (c == '}') {
+						state = CHAR_TYPE.RBRACE;
 					} else {
 						// white space characters
 						columnNo = stream.getColumnNo();
@@ -391,6 +395,16 @@ public class Lexer {
 					updateLineAndColumn();
 					state = CHAR_TYPE.INIT;
 				}
+				case LBRACE -> {
+					Token token = new Token(TOKEN_TYPE.LBRACE, "{");
+					tokens.add(token);
+					c = stream.nextChar();
+				}
+				case RBRACE -> {
+					Token token = new Token(TOKEN_TYPE.RBRACE, "}");
+					tokens.add(token);
+					c = stream.nextChar();
+				}
 			}
 		}
 
@@ -474,6 +488,16 @@ public class Lexer {
 		ELSE,
 		DO,
 		WHILE,
+		FOR,
+		BREAK,
+		CONTINUE,
+		RETURN,
+		DOT,
+		LBRACE,
+		RBRACE,
+		IN,
+		CLASS,
+		DEF
 	}
 
 	public static class Token {
@@ -491,6 +515,34 @@ public class Lexer {
 		public Token(TOKEN_TYPE token, Object value) {
 			this.token = token;
 			this.value = value;
+			// fix token type
+			if (token == TOKEN_TYPE.IDENTIFIER) {
+				assert value != null;
+				String val = (String) value;
+				switch (val) {
+					case "for" ->{
+						this.token = TOKEN_TYPE.FOR;
+					}
+					case "while" -> {
+						this.token = TOKEN_TYPE.WHILE;
+					}
+					case "continue" -> {
+						this.token = TOKEN_TYPE.CONTINUE;
+					}
+					case "do" -> {
+						this.token = TOKEN_TYPE.DO;
+					}
+					case "in" -> {
+						this.token = TOKEN_TYPE.IN;
+					}
+					case "class" -> {
+						this.token = TOKEN_TYPE.CLASS;
+					}
+					case "def" -> {
+						this.token = TOKEN_TYPE.DEF;
+					}
+				}
+			}
 		}
 
 		public int getLineNo() {
