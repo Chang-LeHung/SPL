@@ -28,14 +28,20 @@ public class Lexer {
 	private void injectTokensAndClearBuilder(Token token, StringBuilder builder) {
 		token.setColumnNo(columnNo);
 		token.setLineNo(lineNo);
-		token.setLength(builder.length());
 		builder.delete(0, builder.length());
+	}
+
+	private char nextChar(StringBuilder builder) {
+		char c = stream.nextChar();
+		builder.append(c);
+		return c;
 	}
 
 	public void doParse() throws SPLSyntaxError {
 		CHAR_TYPE state = CHAR_TYPE.INIT;
 		StringBuilder builder = new StringBuilder();
-		char c = stream.nextChar();
+		char c = nextChar(builder);
+		builder.delete(0, builder.length());
 		// below code represents a state machine
 		while (c != 0) {
 			switch (state) {
@@ -84,15 +90,16 @@ public class Lexer {
 					} else {
 						// white space characters
 						columnNo = stream.getColumnNo();
-						c = stream.nextChar();
+						c = nextChar(builder);
 					}
 				}
 				// identifier branch
 				case IDENTIFIER -> {
+					builder.append(c);
 					while (Character.isAlphabetic(c) || Character.isDigit(c) || c == '_') {
-						builder.append(c);
-						c = stream.nextChar();
+						c = nextChar(builder);
 					}
+					builder.delete(builder.length() - 1, builder.length());
 					Token token = new Token(TOKEN_TYPE.IDENTIFIER, builder.toString());
 					injectTokensAndClearBuilder(token, builder);
 					tokens.add(token);
@@ -101,17 +108,16 @@ public class Lexer {
 				}
 				case NUMBER -> {
 					// number branch
+					builder.append(c);
 					while (Character.isDigit(c)) {
-						builder.append(c);
-						c = stream.nextChar();
+						c = nextChar(builder);
 					}
 					if (c == '.') {
-						builder.append(c);
-						c = stream.nextChar();
+						c = nextChar(builder);
 						while (Character.isDigit(c)) {
-							builder.append(c);
-							c = stream.nextChar();
+							c = nextChar(builder);
 						}
+						builder.delete(builder.length() - 1, builder.length());
 						if (c == '.') {
 							String msg = SPLException.buildErrorMessage(
 									stream.getFileName(),
@@ -128,6 +134,7 @@ public class Lexer {
 						updateLineAndColumn();
 						tokens.add(token);
 					} else {
+						builder.delete(builder.length() - 1, builder.length());
 						Token token = new Token(TOKEN_TYPE.INT, Integer.parseInt(builder.toString()));
 						injectTokensAndClearBuilder(token, builder);
 						updateLineAndColumn();
@@ -137,12 +144,12 @@ public class Lexer {
 				}
 				case QUOTATION -> {
 					// string branch
-					c = stream.nextChar();
+					c = nextChar(builder);
 					while (c != '"') {
 						if (c == 0 || Character.isWhitespace(c)) break;
-						builder.append(c);
-						c = stream.nextChar();
+						c = nextChar(builder);
 					}
+					builder.delete(builder.length() - 1, builder.length());
 					if (c == '"') {
 						Token token = new Token(TOKEN_TYPE.STRING, builder.toString());
 						injectTokensAndClearBuilder(token, builder);
@@ -163,11 +170,11 @@ public class Lexer {
 					state = CHAR_TYPE.INIT;
 				}
 				case PLUS -> {
-					c = stream.nextChar();
+					c = nextChar(builder);
 					Token token;
 					if (c == '=') {
 						token = new Token(TOKEN_TYPE.ASSIGN_ADD, "+=");
-						c = stream.nextChar();
+						c = nextChar(builder);
 					} else {
 						token = new Token(TOKEN_TYPE.PLUS, "+");
 					}
@@ -178,11 +185,11 @@ public class Lexer {
 					state = CHAR_TYPE.INIT;
 				}
 				case MINUS -> {
-					c = stream.nextChar();
+					c = nextChar(builder);
 					Token token;
 					if (c == '=') {
 						token = new Token(TOKEN_TYPE.ASSIGN_SUB, "-=");
-						c = stream.nextChar();
+						c = nextChar(builder);
 					} else {
 						token = new Token(TOKEN_TYPE.MINUS, "-");
 					}
@@ -192,10 +199,10 @@ public class Lexer {
 					state = CHAR_TYPE.INIT;
 				}
 				case MUL -> {
-					c = stream.nextChar();
+					c = nextChar(builder);
 					Token token;
 					if (c == '=') {
-						c = stream.nextChar();
+						c = nextChar(builder);
 						token = new Token(TOKEN_TYPE.ASSIGN_MUL, "*=");
 					} else {
 						token = new Token(TOKEN_TYPE.MUL, "*");
@@ -206,11 +213,11 @@ public class Lexer {
 					state = CHAR_TYPE.INIT;
 				}
 				case DIV -> {
-					c = stream.nextChar();
+					c = nextChar(builder);
 					Token token;
 					if (c == '=') {
 						token = new Token(TOKEN_TYPE.ASSIGN_DIV, "/=");
-						c = stream.nextChar();
+						c = nextChar(builder);
 					} else {
 						token = new Token(TOKEN_TYPE.DIV, "/");
 					}
@@ -220,11 +227,11 @@ public class Lexer {
 					state = CHAR_TYPE.INIT;
 				}
 				case MOD -> {
-					c = stream.nextChar();
+					c = nextChar(builder);
 					Token token;
 					if (c == '=') {
 						token = new Token(TOKEN_TYPE.ASSIGN_MOD, "%=");
-						c = stream.nextChar();
+						c = nextChar(builder);
 					} else {
 						token = new Token(TOKEN_TYPE.MOD, "%");
 					}
@@ -234,11 +241,11 @@ public class Lexer {
 					state = CHAR_TYPE.INIT;
 				}
 				case ASSIGN -> {
-					c = stream.nextChar();
+					c = nextChar(builder);
 					Token token;
 					if (c == '=') {
 						token = new Token(TOKEN_TYPE.EQ, "==");
-						c = stream.nextChar();
+						c = nextChar(builder);
 					} else {
 						token = new Token(TOKEN_TYPE.ASSIGN, "=");
 					}
@@ -248,18 +255,18 @@ public class Lexer {
 					state = CHAR_TYPE.INIT;
 				}
 				case GT -> {
-					c = stream.nextChar();
+					c = nextChar(builder);
 					Token token;
 					if (c == '=') {
 						token = new Token(TOKEN_TYPE.GE, ">=");
-						c = stream.nextChar();
+						c = nextChar(builder);
 					} else if (c == '>') {
 						if (stream.lookAhead() == '=') {
 							token = new Token(TOKEN_TYPE.ASSIGN_RSHIFT, ">>=");
 						} else {
 							token = new Token(TOKEN_TYPE.RSHIFT, ">>");
 						}
-						c = stream.nextChar();
+						c = nextChar(builder);
 					} else {
 						token = new Token(TOKEN_TYPE.GT, ">");
 					}
@@ -269,27 +276,27 @@ public class Lexer {
 					state = CHAR_TYPE.INIT;
 				}
 				case LT -> {
-					c = stream.nextChar();
+					c = nextChar(builder);
 					Token token;
 					if (c == '=') {
 						// <=
 						token = new Token(TOKEN_TYPE.LE, "<=");
-						c = stream.nextChar();
+						c = nextChar(builder);
 					} else if (c == '<') {
 						// <<
-						c = stream.nextChar();
+						c = nextChar(builder);
 						if (c == '=') {
 							// <<=
 							token = new Token(TOKEN_TYPE.ASSIGN_LSHIFT, "<<=");
-							c = stream.nextChar();
+							c = nextChar(builder);
 						} else {
 							// <<?
 							if (c == '<') {
-								c = stream.nextChar();
+								c = nextChar(builder);
 								if (c == '=') {
 									// <<<=
 									token = new Token(TOKEN_TYPE.ASSIGN_U_LSHIFT, "<<<=");
-									c = stream.nextChar();
+									c = nextChar(builder);
 								} else {
 									// <<<
 									token = new Token(TOKEN_TYPE.U_LSHIFT, "<<<");
@@ -308,16 +315,16 @@ public class Lexer {
 					state = CHAR_TYPE.INIT;
 				}
 				case AND -> {
-					c = stream.nextChar();
+					c = nextChar(builder);
 					Token token;
 					if (c == '=') {
 						// &=
 						token = new Token(TOKEN_TYPE.ASSIGN_AND, "&=");
-						c = stream.nextChar();
+						c = nextChar(builder);
 					} else if (c == '&') {
 						// &&
 						token = new Token(TOKEN_TYPE.CONDITIONAL_AND, "&&");
-						c = stream.nextChar();
+						c = nextChar(builder);
 					} else {
 						// &
 						token = new Token(TOKEN_TYPE.AND, "&");
@@ -328,16 +335,16 @@ public class Lexer {
 					state = CHAR_TYPE.INIT;
 				}
 				case OR -> {
-					c = stream.nextChar();
+					c = nextChar(builder);
 					Token token;
 					if (c == '=') {
 						// |=
 						token = new Token(TOKEN_TYPE.ASSIGN_OR, "|=");
-						c = stream.nextChar();
+						c = nextChar(builder);
 					} else if (c == '|') {
 						// ||
 						token = new Token(TOKEN_TYPE.CONDITIONAL_OR, "||");
-						c = stream.nextChar();
+						c = nextChar(builder);
 					} else {
 						// |
 						token = new Token(TOKEN_TYPE.OR, "|");
@@ -348,11 +355,11 @@ public class Lexer {
 					state = CHAR_TYPE.INIT;
 				}
 				case NOT -> {
-					c = stream.nextChar();
+					c = nextChar(builder);
 					Token token;
 					if (c == '=') {
 						token = new Token(TOKEN_TYPE.NE, "!=");
-						c = stream.nextChar();
+						c = nextChar(builder);
 					} else {
 						token = new Token(TOKEN_TYPE.CONDITIONAL_NOT, "!");
 					}
@@ -363,7 +370,7 @@ public class Lexer {
 				}
 				case INVERT -> {
 					Token token = new Token(TOKEN_TYPE.NOT, "!");
-					c = stream.nextChar();
+					c = nextChar(builder);
 					injectTokensAndClearBuilder(token, builder);
 					tokens.add(token);
 					updateLineAndColumn();
@@ -371,7 +378,7 @@ public class Lexer {
 				}
 				case LPAREN -> {
 					Token token = new Token(TOKEN_TYPE.LEFT_PARENTHESES, "(");
-					c = stream.nextChar();
+					c = nextChar(builder);
 					injectTokensAndClearBuilder(token, builder);
 					tokens.add(token);
 					updateLineAndColumn();
@@ -379,18 +386,18 @@ public class Lexer {
 				}
 				case RPAREN -> {
 					Token token = new Token(TOKEN_TYPE.RIGHT_PARENTHESES, ")");
-					c = stream.nextChar();
+					c = nextChar(builder);
 					injectTokensAndClearBuilder(token, builder);
 					tokens.add(token);
 					updateLineAndColumn();
 					state = CHAR_TYPE.INIT;
 				}
 				case POWER -> {
-					c = stream.nextChar();
+					c = nextChar(builder);
 					Token token;
 					if (c == '=') {
-						token = new Token(TOKEN_TYPE.ASSIGN_XOR);
-						c = stream.nextChar();
+						token = new Token(TOKEN_TYPE.ASSIGN_XOR, "^=");
+						c = nextChar(builder);
 					} else {
 						token = new Token(TOKEN_TYPE.XOR, "^");
 					}
@@ -402,12 +409,12 @@ public class Lexer {
 				case LBRACE -> {
 					Token token = new Token(TOKEN_TYPE.LBRACE, "{");
 					tokens.add(token);
-					c = stream.nextChar();
+					c = nextChar(builder);
 				}
 				case RBRACE -> {
 					Token token = new Token(TOKEN_TYPE.RBRACE, "}");
 					tokens.add(token);
-					c = stream.nextChar();
+					c = nextChar(builder);
 				}
 			}
 		}
@@ -513,19 +520,17 @@ public class Lexer {
 
 		private int length;
 
-		public Token(TOKEN_TYPE token) {
-			this.token = token;
-		}
-
 		public Token(TOKEN_TYPE token, Object value) {
 			this.token = token;
 			this.value = value;
-			// fix token type
+			this.length = String.valueOf(value).length();
+			// Correcting token type
 			if (token == TOKEN_TYPE.IDENTIFIER) {
 				assert value != null;
 				String val = (String) value;
+				this.length = val.length();
 				switch (val) {
-					case "for" ->{
+					case "for" -> {
 						this.token = TOKEN_TYPE.FOR;
 					}
 					case "while" -> {
