@@ -32,34 +32,6 @@ public class Lexer {
 		builder.delete(0, builder.length());
 	}
 
-	private enum CHAR_TYPE {
-		INIT,
-		IDENTIFIER,
-		NUMBER,
-		QUOTATION,
-		PLUS,
-		MINUS,
-		MUL,
-		DIV,
-		MOD,
-		ASSIGN,
-		LT,
-		GT,
-		NE,
-		AND,
-		OR,
-		XOR,
-		NOT,
-		POWER,
-		INVERT,
-		LPAREN,
-		RPAREN,
-		LBRACKET,
-		RBRACKET,
-		LBRACE,
-		RBRACE
-	}
-
 	public void doParse() throws SPLSyntaxError {
 		CHAR_TYPE state = CHAR_TYPE.INIT;
 		StringBuilder builder = new StringBuilder();
@@ -426,6 +398,34 @@ public class Lexer {
 
 	public List<Token> getTokens() {
 		return tokens;
+	}
+
+	private enum CHAR_TYPE {
+		INIT,
+		IDENTIFIER,
+		NUMBER,
+		QUOTATION,
+		PLUS,
+		MINUS,
+		MUL,
+		DIV,
+		MOD,
+		ASSIGN,
+		LT,
+		GT,
+		NE,
+		AND,
+		OR,
+		XOR,
+		NOT,
+		POWER,
+		INVERT,
+		LPAREN,
+		RPAREN,
+		LBRACKET,
+		RBRACKET,
+		LBRACE,
+		RBRACE
 	}
 
 	public enum TOKEN_TYPE {

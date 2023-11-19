@@ -54,8 +54,7 @@ public class InputBuffer {
 			if (ret == '\n') {
 				lineNo++;
 				columnNo = 0;
-			}
-			else columnNo++;
+			} else columnNo++;
 			return ret;
 		} else {
 			return 0;
@@ -65,6 +64,7 @@ public class InputBuffer {
 	public char lookAhead() {
 		return lookAhead(1);
 	}
+
 	public char lookAhead(int n) {
 		if (EOF) return 0;
 		while ((n + off - 1) >= buffer.length()) {
