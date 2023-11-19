@@ -95,7 +95,6 @@ public class Lexer {
 				}
 				// identifier branch
 				case IDENTIFIER -> {
-					builder.append(c);
 					while (Character.isAlphabetic(c) || Character.isDigit(c) || c == '_') {
 						c = nextChar(builder);
 					}
