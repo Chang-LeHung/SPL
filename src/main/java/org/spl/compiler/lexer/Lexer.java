@@ -497,7 +497,8 @@ public class Lexer {
 		RBRACE,
 		IN,
 		CLASS,
-		DEF
+		DEF,
+		GLOBAL
 	}
 
 	public static class Token {
@@ -540,6 +541,9 @@ public class Lexer {
 					}
 					case "def" -> {
 						this.token = TOKEN_TYPE.DEF;
+					}
+					case "global" -> {
+						this.token = TOKEN_TYPE.GLOBAL;
 					}
 				}
 			}
