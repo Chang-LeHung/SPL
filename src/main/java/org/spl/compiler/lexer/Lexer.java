@@ -36,7 +36,7 @@ public class Lexer {
 		CHAR_TYPE state = CHAR_TYPE.INIT;
 		StringBuilder builder = new StringBuilder();
 		char c = stream.nextChar();
-		// below is a state machine
+		// below code represents a state machine
 		while (c != 0) {
 			switch (state) {
 				// starting branch
