@@ -456,6 +456,8 @@ public class Lexer {
 	public enum TOKEN_TYPE {
 		STARTER, // used only in the function doParse()
 		IDENTIFIER,
+		TRUE,
+		FALSE,
 		INT,
 		FLOAT,
 		STRING,
@@ -553,6 +555,12 @@ public class Lexer {
 					}
 					case "global" -> {
 						this.token = TOKEN_TYPE.GLOBAL;
+					}
+					case "true" -> {
+						this.token = TOKEN_TYPE.TRUE;
+					}
+					case "false" -> {
+						this.token = TOKEN_TYPE.FALSE;
 					}
 				}
 			}
