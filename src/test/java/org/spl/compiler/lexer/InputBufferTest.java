@@ -55,4 +55,16 @@ public class InputBufferTest {
 		lexer.doParse();
 		System.out.println(lexer.getTokens());
 	}
+
+	@Test
+	public void testSyntaxError() throws IOException {
+		String resource = getResource("arithmetic/errorfloat.spl");
+		Lexer lexer = new Lexer(resource);
+		try {
+			lexer.doParse();
+		} catch (SPLSyntaxError error) {
+			System.err.println(error.getMessage());
+		}
+		System.out.println(lexer.getTokens());
+	}
 }
