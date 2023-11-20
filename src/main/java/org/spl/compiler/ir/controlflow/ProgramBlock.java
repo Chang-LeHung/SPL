@@ -15,6 +15,7 @@ public class ProgramBlock implements IRNode<Instruction> {
   public ProgramBlock(List<IRNode<Instruction>> statements) {
     this.statements = statements;
   }
+
   public ProgramBlock() {
     statements = new ArrayList<>();
   }
@@ -22,6 +23,7 @@ public class ProgramBlock implements IRNode<Instruction> {
   public void addIRNode(IRNode<Instruction> node) {
     statements.add(node);
   }
+
   @Override
   public void codeGen(ASTContext<Instruction> context) {
     statements.forEach(node -> node.codeGen(context));
