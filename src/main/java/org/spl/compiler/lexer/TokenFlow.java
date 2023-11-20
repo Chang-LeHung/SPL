@@ -90,7 +90,7 @@ public class TokenFlow<T> implements Flow<T>, List<T> {
 
 	@Override
 	public boolean retainAll(Collection<?> c) {
-		return retainAll(c);
+		return tokens.retainAll(c);
 	}
 
 	@Override
