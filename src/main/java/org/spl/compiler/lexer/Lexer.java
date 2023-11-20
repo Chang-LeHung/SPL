@@ -92,7 +92,11 @@ public class Lexer {
           }
           else {
             // white space characters
-            columnNo = stream.getColumnNo();
+            if (c == '\n') {
+              Token token = new Token(TOKEN_TYPE.NEWLINE, "\n");
+              injectTokensAndClearBuilder(token, builder);
+            }
+            updateLineAndColumn();
             c = nextChar(builder);
             builder.delete(0, builder.length());
           }
@@ -480,6 +484,7 @@ public class Lexer {
   }
 
   public enum TOKEN_TYPE {
+    NEWLINE,
     STARTER, // used only in the function doParse()
     IDENTIFIER,
     TRUE,
