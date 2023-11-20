@@ -407,13 +407,19 @@ public class Lexer {
 				}
 				case LBRACE -> {
 					Token token = new Token(TOKEN_TYPE.LBRACE, "{");
+					injectTokensAndClearBuilder(token, builder);
+					updateLineAndColumn();
 					tokens.add(token);
 					c = nextChar(builder);
+					state = CHAR_TYPE.INIT;
 				}
 				case RBRACE -> {
 					Token token = new Token(TOKEN_TYPE.RBRACE, "}");
+					injectTokensAndClearBuilder(token, builder);
+					updateLineAndColumn();
 					tokens.add(token);
 					c = nextChar(builder);
+					state = CHAR_TYPE.INIT;
 				}
 			}
 		}
