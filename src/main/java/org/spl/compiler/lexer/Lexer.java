@@ -91,10 +91,12 @@ public class Lexer {
             // white space characters
             columnNo = stream.getColumnNo();
             c = nextChar(builder);
+            builder.delete(0, builder.length());
           }
         }
         // identifier branch
         case IDENTIFIER -> {
+          builder.append(c);
           while (Character.isAlphabetic(c) || Character.isDigit(c) || c == '_') {
             c = nextChar(builder);
           }
@@ -204,7 +206,12 @@ public class Lexer {
             c = nextChar(builder);
             token = new Token(TOKEN_TYPE.ASSIGN_MUL, "*=");
           } else {
-            token = new Token(TOKEN_TYPE.MUL, "*");
+            if (c == '*') {
+              token = new Token(TOKEN_TYPE.POWER, "**");
+              c = nextChar(builder);
+            } else {
+              token = new Token(TOKEN_TYPE.MUL, "*");
+            }
           }
           injectTokensAndClearBuilder(token, builder);
           tokens.add(token);
@@ -260,12 +267,13 @@ public class Lexer {
             token = new Token(TOKEN_TYPE.GE, ">=");
             c = nextChar(builder);
           } else if (c == '>') {
-            if (stream.lookAhead() == '=') {
+            c = nextChar(builder);
+            if (c == '=') {
               token = new Token(TOKEN_TYPE.ASSIGN_RSHIFT, ">>=");
+              c = nextChar(builder);
             } else {
               token = new Token(TOKEN_TYPE.RSHIFT, ">>");
             }
-            c = nextChar(builder);
           } else {
             token = new Token(TOKEN_TYPE.GT, ">");
           }
@@ -488,6 +496,7 @@ public class Lexer {
     CONDITIONAL_AND,
     OR,
     CONDITIONAL_OR,
+    POWER,
     XOR,
     NOT,
     CONDITIONAL_NOT,
