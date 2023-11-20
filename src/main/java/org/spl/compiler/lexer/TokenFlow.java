@@ -54,7 +54,7 @@ public class TokenFlow<T> implements Flow<T>, List<T> {
   }
 
   @Override
-  public <T> T[] toArray(T[] a) {
+  public <E> E[] toArray(E[] a) {
     return tokens.toArray(a);
   }
 
@@ -70,7 +70,7 @@ public class TokenFlow<T> implements Flow<T>, List<T> {
 
   @Override
   public boolean containsAll(Collection<?> c) {
-    return tokens.contains(c);
+    return tokens.containsAll(c);
   }
 
   @Override
