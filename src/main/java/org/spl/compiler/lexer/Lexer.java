@@ -87,7 +87,10 @@ public class Lexer {
             state = CHAR_TYPE.LBRACE;
           } else if (c == '}') {
             state = CHAR_TYPE.RBRACE;
-          } else {
+          } else if (c == ';') {
+            state = CHAR_TYPE.SEMICOLON;
+          }
+          else {
             // white space characters
             columnNo = stream.getColumnNo();
             c = nextChar(builder);
@@ -179,6 +182,15 @@ public class Lexer {
           } else {
             token = new Token(TOKEN_TYPE.PLUS, "+");
           }
+          injectTokensAndClearBuilder(token, builder);
+          tokens.add(token);
+          updateLineAndColumn();
+          builder.delete(0, builder.length());
+          state = CHAR_TYPE.INIT;
+        }
+        case SEMICOLON -> {
+          c = nextChar(builder);
+          Token token = new Token(TOKEN_TYPE.SEMICOLON, ";");
           injectTokensAndClearBuilder(token, builder);
           tokens.add(token);
           updateLineAndColumn();
@@ -463,7 +475,8 @@ public class Lexer {
     LBRACKET,
     RBRACKET,
     LBRACE,
-    RBRACE
+    RBRACE,
+    SEMICOLON
   }
 
   public enum TOKEN_TYPE {
