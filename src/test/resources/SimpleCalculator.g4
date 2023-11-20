@@ -17,15 +17,17 @@ term : term '*' factor
 
 factor : '(' expr ')'
        | factor POWER factor
+       | VARIABLE '(' expr (',' expr)* ')'
        | NUMBER
        | VARIABLE
        ;
+
 
 assignExpr : VARIABLE '=' expr;
 
 // Lexer rules
 NUMBER : [0-9]+;
-VARIABLE : [a-zA-Z]+;
+VARIABLE : [a-zA-Z][a-zA-Z_]*;
 PLUS : '+';
 MINUS : '-';
 MULTIPLY : '*';
