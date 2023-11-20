@@ -1,11 +1,9 @@
 package org.spl.compiler.ir;
 
 
-import java.util.List;
+public interface IRNode<E> {
 
-public interface Node<E> {
-
-  void codeGen(List<E> container);
+  void codeGen(ASTContext<E> context);
 
   default boolean isLiteral() {
     return false;
@@ -32,6 +30,8 @@ public interface Node<E> {
   }
 
 
-  Op getOperator();
+  default Op getOperator() {
+    return null;
+  }
 
 }

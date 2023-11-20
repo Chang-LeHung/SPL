@@ -1,19 +1,20 @@
-package org.spl.compiler.ir;
+package org.spl.compiler.ir.binaryop;
 
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
-
-import java.util.List;
+import org.spl.compiler.ir.ASTContext;
+import org.spl.compiler.ir.IRNode;
+import org.spl.compiler.ir.Op;
 
 public class GreaterOrEqual extends AbstractBinaryExp<Instruction> {
-  public GreaterOrEqual(Node<Instruction> left, Node<Instruction> right) {
+  public GreaterOrEqual(IRNode<Instruction> left, IRNode<Instruction> right) {
     super(left, right, Op.GE);
   }
 
   @Override
-  public void codeGen(List<Instruction> container) {
-    L.codeGen(container);
-    R.codeGen(container);
-    container.add(new Instruction(OpCode.GE));
+  public void codeGen(ASTContext<Instruction> context) {
+    L.codeGen(context);
+    R.codeGen(context);
+    context.add(new Instruction(OpCode.GE));
   }
 }
