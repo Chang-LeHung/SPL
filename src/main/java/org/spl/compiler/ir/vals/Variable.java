@@ -5,16 +5,11 @@ import org.spl.compiler.bytecode.OpCode;
 import org.spl.compiler.ir.ASTContext;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.Op;
+import org.spl.compiler.ir.Scope;
 
 import static org.spl.compiler.ir.Op.NOP;
 
 public record Variable(Scope scope, int oparg, String name) implements IRNode<Instruction> {
-
-  public enum Scope {
-    LOCAL,
-    GLOBAL,
-    OTHERS
-  }
 
   @Override
   public void codeGen(ASTContext<Instruction> context) {

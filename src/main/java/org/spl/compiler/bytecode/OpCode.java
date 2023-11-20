@@ -34,6 +34,7 @@ public enum OpCode {
   LOAD_LOCAL,
   STORE_GLOBAL,
   LOAD_GLOBAL,
+  STORE,
   LOAD,
   CALL,
   LOAD_CONST;

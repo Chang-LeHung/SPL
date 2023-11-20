@@ -24,7 +24,8 @@ public enum Op {
   POWER("**"),
   LSHIFT("<<"),
   RSHIFT(">>"),
-  U_LSHIFT("<<<");
+  U_LSHIFT("<<<"),
+  ASSIGN("=");
 
   private final String op;
 
