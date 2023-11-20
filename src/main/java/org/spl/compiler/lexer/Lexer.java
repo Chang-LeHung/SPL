@@ -95,6 +95,7 @@ public class Lexer {
             if (c == '\n') {
               Token token = new Token(TOKEN_TYPE.NEWLINE, "\n");
               injectTokensAndClearBuilder(token, builder);
+              tokens.add(token);
             }
             updateLineAndColumn();
             c = nextChar(builder);
