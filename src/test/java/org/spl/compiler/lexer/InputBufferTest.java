@@ -7,6 +7,7 @@ import org.spl.exceptions.SPLSyntaxError;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class InputBufferTest {
 
@@ -59,6 +60,8 @@ public class InputBufferTest {
     lexer.doParse();
     System.out.println(lexer.getTokens());
     List<Lexer.Token> tokens = lexer.getTokens();
+    tokens = tokens.stream().filter(x -> x.token != Lexer.TOKEN_TYPE.NEWLINE)
+        .collect(Collectors.toList());
     testAssert(tokens, 0, Lexer.TOKEN_TYPE.IDENTIFIER, "a");
     testAssert(tokens, 1, Lexer.TOKEN_TYPE.ASSIGN, "=");
     testAssert(tokens, 2, Lexer.TOKEN_TYPE.INT, 1);
@@ -91,6 +94,8 @@ public class InputBufferTest {
     lexer.doParse();
     System.out.println(lexer.getTokens());
     List<Lexer.Token> tokens = lexer.getTokens();
+    tokens = tokens.stream().filter(x -> x.token != Lexer.TOKEN_TYPE.NEWLINE)
+        .collect(Collectors.toList());
    testAssert(tokens, 0, Lexer.TOKEN_TYPE.IDENTIFIER, "a");
    testAssert(tokens, 1, Lexer.TOKEN_TYPE.ASSIGN, "=");
    testAssert(tokens, 2, Lexer.TOKEN_TYPE.IDENTIFIER, "True");
