@@ -23,8 +23,21 @@ public enum Op {
   CONDITIONAL_OR("||"),
   POWER("**"),
   LSHIFT("<<"),
+  ASSIGN_POWER("**="),
   RSHIFT(">>"),
   U_LSHIFT("<<<"),
+  CALL("()"),
+  ASSIGN_AND("&="),
+  ASSIGN_OR("|="),
+  ASSIGN_XOR("^="),
+  ASSIGN_LSHIFT("<<="),
+  ASSIGN_RSHIFT(">>="),
+  ASSIGN_U_LSHIFT("<<<="),
+  ASSIGN_SUB("-="),
+  ASSIGN_ADD("+="),
+  ASSIGN_MUL("*="),
+  ASSIGN_DIV("/="),
+  ASSIGN_MOD("%="),
   ASSIGN("=");
 
   private final String op;

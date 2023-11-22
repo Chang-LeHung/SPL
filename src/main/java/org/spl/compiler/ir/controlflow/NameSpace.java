@@ -6,9 +6,9 @@ import java.util.Set;
 
 public class NameSpace<T> {
 
+  private final Set<T> symbols;
   private NameSpace<T> prev;
   private NameSpace<T> next;
-  private final Set<T> symbols;
 
   public NameSpace() {
     symbols = new HashSet<>();
@@ -33,19 +33,28 @@ public class NameSpace<T> {
     return false;
   }
 
-  public void setNext(NameSpace<T> next) {
-    this.next = next;
+  public NameSpace<T> newNameSpaceAndFetch() {
+    NameSpace<T> ns = new NameSpace<>();
+    ns.setPrev(this);
+    setNext(ns);
+    return ns;
+  }
+
+  public NameSpace<T> getPrev() {
+    assert prev != null;
+    return prev;
   }
 
   public void setPrev(NameSpace<T> prev) {
     this.prev = prev;
   }
 
-  public NameSpace<T> getPrev() {
-    return prev;
+  public NameSpace<T> getNext() {
+    assert next != null;
+    return next;
   }
 
-  public NameSpace<T> getNext() {
-    return next;
+  public void setNext(NameSpace<T> next) {
+    this.next = next;
   }
 }

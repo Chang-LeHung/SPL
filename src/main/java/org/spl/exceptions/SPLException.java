@@ -18,7 +18,7 @@ public class SPLException extends Exception {
         ", line " +
         lineNo +
         '\n' +
-        code + " ".repeat(columnNo) +
+        code + '\n' + " ".repeat(columnNo) +
         "^".repeat(len) + '\n' +
         "SyntaxError: " +
         errorMessage;

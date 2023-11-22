@@ -1,6 +1,8 @@
 package org.spl.compiler.ir;
 
 
+import java.util.List;
+
 public interface IRNode<E> {
 
   void codeGen(ASTContext<E> context);
@@ -33,5 +35,30 @@ public interface IRNode<E> {
   default Op getOperator() {
     return null;
   }
+
+  default void preVisiting(ASTContext<E> context) {
+
+  }
+
+  default void postVisiting(ASTContext<E> context) {
+
+  }
+
+
+  default void accept(ASTContext<E> context) {
+    context.visit(this);
+  }
+
+  default void doVisit(ASTContext<E> context) {
+    preVisiting(context);
+    List<IRNode<E>> children = getChildren();
+    for (IRNode<E> child : children) {
+      child.accept(context);
+    }
+    codeGen(context);
+    postVisiting(context);
+  }
+
+  List<IRNode<E>> getChildren();
 
 }

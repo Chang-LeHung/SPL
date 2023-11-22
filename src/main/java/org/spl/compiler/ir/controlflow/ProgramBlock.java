@@ -26,11 +26,24 @@ public class ProgramBlock implements IRNode<Instruction> {
 
   @Override
   public void codeGen(ASTContext<Instruction> context) {
-    statements.forEach(node -> node.codeGen(context));
   }
 
   @Override
   public Op getOperator() {
     return Op.NOP;
+  }
+
+  @Override
+  public List<IRNode<Instruction>> getChildren() {
+    return statements;
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder builder = new StringBuilder();
+    builder.append("{\n");
+    statements.forEach(node -> builder.append(node.toString()).append("\n"));
+    builder.append("}\n");
+    return builder.toString();
   }
 }

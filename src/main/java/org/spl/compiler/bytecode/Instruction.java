@@ -1,6 +1,10 @@
 package org.spl.compiler.bytecode;
 
-public class Instruction {
+
+import org.spl.compiler.tree.InsPickle;
+import org.spl.compiler.tree.Visitor;
+
+public class Instruction implements InsPickle {
 
   private final OpCode code;
   private final byte opArg;
@@ -25,9 +29,11 @@ public class Instruction {
 
   @Override
   public String toString() {
-    return "ByteCode{" +
-        "code=" + code +
-        ", opArg=" + opArg +
-        '}';
+    return String.format("%-11s, %d", code, opArg);
+  }
+
+  @Override
+  public <T extends Visitor> void accept(T t) {
+    t.visit(this);
   }
 }

@@ -12,15 +12,14 @@ public class TokenFlow<T> implements Flow<T>, List<T> {
 
   public TokenFlow(List<T> tokens) {
     this.tokens = tokens;
-    off = 0;
+    off = -1;
   }
 
   @Override
-  public T next() {
-    if (off >= tokens.size())
+  public void next() {
+    if (off > tokens.size())
       throw new IndexOutOfBoundsException();
-
-    return tokens.get(off++);
+    off++;
   }
 
   @Override
@@ -145,7 +144,7 @@ public class TokenFlow<T> implements Flow<T>, List<T> {
 
   @Override
   public T peek() {
-    return tokens.get(off);
+    return current();
   }
 
   @Override
@@ -156,12 +155,25 @@ public class TokenFlow<T> implements Flow<T>, List<T> {
   }
 
   @Override
+  public T current() {
+    if (off < 0)
+      return null;
+    else
+      return tokens.get(off);
+  }
+
+  @Override
   public T lookAhead() {
-    return tokens.get(off + 1);
+    return lookAhead(1);
   }
 
   @Override
   public T lookAhead(int n) {
-    return peek(n);
+    return tokens.get(off + n);
+  }
+
+  @Override
+  public String toString() {
+    return tokens.toString();
   }
 }

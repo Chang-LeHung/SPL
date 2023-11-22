@@ -7,23 +7,39 @@ import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.Op;
 import org.spl.compiler.ir.Scope;
 
+import java.util.List;
+
 import static org.spl.compiler.ir.Op.NOP;
 
-public record Variable(Scope scope, int oparg, String name) implements IRNode<Instruction> {
+public class Variable implements IRNode<Instruction> {
+
+  private final String name;
+  private final Scope scope;
+  private List<IRNode<Instruction>> children;
+
+  public Variable(Scope scope, String name) {
+    this.name = name;
+    this.scope = scope;
+  }
 
   @Override
   public void codeGen(ASTContext<Instruction> context) {
+    byte idx = (byte) context.getConstantIndex(name);
     switch (scope) {
       case LOCAL -> {
-        context.add(new Instruction(OpCode.LOAD_LOCAL, (byte) 0));
+        context.add(new Instruction(OpCode.LOAD_LOCAL, idx));
       }
       case GLOBAL -> {
-        context.add(new Instruction(OpCode.LOAD_GLOBAL, (byte) 0));
+        context.add(new Instruction(OpCode.LOAD_GLOBAL, idx));
       }
       case OTHERS -> {
-        context.add(new Instruction(OpCode.LOAD, (byte) 0));
+        context.add(new Instruction(OpCode.LOAD, idx));
       }
     }
+  }
+
+  public Scope scope() {
+    return scope;
   }
 
   @Override
@@ -32,12 +48,34 @@ public record Variable(Scope scope, int oparg, String name) implements IRNode<In
   }
 
   @Override
+  public List<IRNode<Instruction>> getChildren() {
+    if (children == null) {
+      children = List.of();
+    }
+    return children;
+  }
+
+  @Override
   public String toString() {
-    return name();
+    return name;
   }
 
   @Override
   public boolean isVariable() {
     return true;
+  }
+
+  @Override
+  public int hashCode() {
+    return name.hashCode();
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  @Override
+  public void postVisiting(ASTContext<Instruction> context) {
+    context.increaseStackSize();
   }
 }

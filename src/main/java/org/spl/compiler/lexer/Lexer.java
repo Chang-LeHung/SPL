@@ -13,7 +13,7 @@ public class Lexer {
   private final List<Token> tokens;
   private final InputBuffer stream;
   private int lineNo = 1;
-  private int columnNo = 0;
+  private int columnNo = 1;
 
   public Lexer(String filename) throws IOException {
     tokens = new ArrayList<>();
@@ -89,21 +89,53 @@ public class Lexer {
             state = CHAR_TYPE.RBRACE;
           } else if (c == ';') {
             state = CHAR_TYPE.SEMICOLON;
-          }
-          else {
+          } else if (c == '.') {
+            state = CHAR_TYPE.DOT;
+          } else if (c == '\n') {
+            state = CHAR_TYPE.NEWLINE;
+          } else if (c == ',') {
+            state = CHAR_TYPE.COMMA;
+          } else {
             // white space characters
-            if (c == '\n') {
-              Token token = new Token(TOKEN_TYPE.NEWLINE, "\n");
-              injectTokensAndClearBuilder(token, builder);
-              tokens.add(token);
+            if (c == ' ' || c == '\t' || c == '\r') {
+              updateLineAndColumn();
+              c = nextChar(builder);
+              builder.delete(0, builder.length());
+            } else {
+              throw new SPLSyntaxError("Illegal  character '" + c + "'");
             }
-            updateLineAndColumn();
-            c = nextChar(builder);
-            builder.delete(0, builder.length());
           }
         }
-        // identifier branch
+        case COMMA -> {
+          Token token = new Token(TOKEN_TYPE.COMMA, ",");
+          tokens.add(token);
+          injectTokensAndClearBuilder(token, builder);
+          updateLineAndColumn();
+          state = CHAR_TYPE.INIT;
+          c = nextChar(builder);
+          builder.delete(0, builder.length());
+        }
+        case NEWLINE -> {
+          Token token = new Token(TOKEN_TYPE.NEWLINE, "\n");
+          tokens.add(token);
+          injectTokensAndClearBuilder(token, builder);
+          updateLineAndColumn();
+          state = CHAR_TYPE.INIT;
+          c = nextChar(builder);
+          builder.delete(0, builder.length());
+        }
+        case DOT -> {
+          c = nextChar(builder);
+          Token token = new Token(TOKEN_TYPE.DOT, ".");
+          injectTokensAndClearBuilder(token, builder);
+          tokens.add(token);
+          updateLineAndColumn();
+          state = CHAR_TYPE.INIT;
+          c = nextChar(builder);
+          builder.delete(0, builder.length());
+        }
         case IDENTIFIER -> {
+          // identifier branch
           builder.append(c);
           while (Character.isAlphabetic(c) || Character.isDigit(c) || c == '_') {
             c = nextChar(builder);
@@ -128,14 +160,8 @@ public class Lexer {
             }
             builder.delete(builder.length() - 1, builder.length());
             if (c == '.') {
-              String msg = SPLException.buildErrorMessage(
-                  stream.getFileName(),
-                  lineNo,
-                  columnNo,
-                  stream.getOff() - columnNo,
-                  stream.getBuffer(),
-                  "Illegal float literal, two or more dots are not allowed in float literal"
-              );
+              String buffer = stream.getBuffer();
+              String msg = SPLException.buildErrorMessage(stream.getFileName(), lineNo, columnNo, stream.getOff() - columnNo, buffer.substring(0, buffer.length() - 1), "Illegal float literal, two or more dots are not allowed in float literals");
               throw new SPLSyntaxError(msg);
             }
             Token token = new Token(TOKEN_TYPE.FLOAT, Float.parseFloat(builder.toString()));
@@ -165,14 +191,7 @@ public class Lexer {
             updateLineAndColumn();
             tokens.add(token);
           } else {
-            String msg = SPLException.buildErrorMessage(
-                stream.getFileName(),
-                lineNo,
-                columnNo,
-                stream.getOff() - columnNo,
-                stream.getBuffer(),
-                "Illegal string literal, string literal must be enclosed in double quotes"
-            );
+            String msg = SPLException.buildErrorMessage(stream.getFileName(), lineNo, columnNo, stream.getOff() - columnNo, stream.getBuffer(), "Illegal string literal, string literal must be enclosed in double quotes");
             throw new SPLSyntaxError(msg);
           }
           builder.delete(0, builder.length());
@@ -224,8 +243,13 @@ public class Lexer {
             token = new Token(TOKEN_TYPE.ASSIGN_MUL, "*=");
           } else {
             if (c == '*') {
-              token = new Token(TOKEN_TYPE.POWER, "**");
               c = nextChar(builder);
+              if (c == '=') {
+                c = nextChar(builder);
+                token = new Token(TOKEN_TYPE.ASSIGN_POWER, "**=");
+              } else {
+                token = new Token(TOKEN_TYPE.POWER, "**");
+              }
             } else {
               token = new Token(TOKEN_TYPE.MUL, "*");
             }
@@ -393,8 +417,14 @@ public class Lexer {
           state = CHAR_TYPE.INIT;
         }
         case INVERT -> {
-          Token token = new Token(TOKEN_TYPE.NOT, "!");
+          Token token;
           c = nextChar(builder);
+          if (c == '=') {
+            token = new Token(TOKEN_TYPE.ASSIGN_INVERT, "~=");
+            c = nextChar(builder);
+          } else {
+            token = new Token(TOKEN_TYPE.INVERT, "~");
+          }
           injectTokensAndClearBuilder(token, builder);
           tokens.add(token);
           updateLineAndColumn();
@@ -448,7 +478,9 @@ public class Lexer {
         }
       }
     }
-
+    Token token = new Token(TOKEN_TYPE.EOF, "EOF");
+    token.setLineNo(1);
+    tokens.add(token);
   }
 
   public List<Token> getTokens() {
@@ -456,95 +488,13 @@ public class Lexer {
   }
 
   private enum CHAR_TYPE {
-    INIT,
-    IDENTIFIER,
-    NUMBER,
-    QUOTATION,
-    PLUS,
-    MINUS,
-    MUL,
-    DIV,
-    MOD,
-    ASSIGN,
-    LT,
-    GT,
-    NE,
-    AND,
-    OR,
-    XOR,
-    NOT,
-    POWER,
-    INVERT,
-    LPAREN,
-    RPAREN,
-    LBRACKET,
-    RBRACKET,
-    LBRACE,
-    RBRACE,
-    SEMICOLON
+    INIT, DOT, NEWLINE, COMMA, IDENTIFIER, NUMBER, QUOTATION, PLUS, MINUS, MUL, DIV, MOD, ASSIGN, LT, GT, NE, AND, OR, XOR, NOT, POWER, INVERT, LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE, SEMICOLON
   }
 
   public enum TOKEN_TYPE {
-    NEWLINE,
-    STARTER, // used only in the function doParse()
-    IDENTIFIER,
-    TRUE,
-    FALSE,
-    INT,
-    FLOAT,
-    STRING,
-    SEMICOLON,
-    LEFT_PARENTHESES,
-    RIGHT_PARENTHESES,
-    PLUS,
-    MINUS,
-    MUL,
-    DIV,
-    MOD,
-    LSHIFT,
-    RSHIFT,
-    U_LSHIFT, // unconditional left shift
-    ASSIGN,
-    EQ,
-    LT,
-    GT,
-    GE,
-    LE,
-    NE,
-    AND,
-    CONDITIONAL_AND,
-    OR,
-    CONDITIONAL_OR,
-    POWER,
-    XOR,
-    NOT,
-    CONDITIONAL_NOT,
-    ASSIGN_ADD,
-    ASSIGN_SUB,
-    ASSIGN_MUL,
-    ASSIGN_DIV,
-    ASSIGN_MOD,
-    ASSIGN_LSHIFT,
-    ASSIGN_RSHIFT,
-    ASSIGN_U_LSHIFT,
-    ASSIGN_AND,
-    ASSIGN_OR,
-    ASSIGN_XOR,
-    IF,
-    ELSE,
-    DO,
-    WHILE,
-    FOR,
-    BREAK,
-    CONTINUE,
-    RETURN,
-    DOT,
-    LBRACE,
-    RBRACE,
-    IN,
-    CLASS,
-    DEF,
-    GLOBAL
+    EOF, NEWLINE, STARTER, // used only in the function doParse()
+    COMMA, IDENTIFIER, TRUE, FALSE, IMPORT, INT, FLOAT, STRING, SEMICOLON, LEFT_PARENTHESES, RIGHT_PARENTHESES, PLUS, MINUS, MUL, DIV, MOD, LSHIFT, RSHIFT, U_LSHIFT, // unconditional left shift
+    ASSIGN, EQ, LT, GT, GE, LE, NE, AND, CONDITIONAL_AND, OR, CONDITIONAL_OR, POWER, XOR, NOT, INVERT, CONDITIONAL_NOT, ASSIGN_ADD, ASSIGN_SUB, ASSIGN_MUL, ASSIGN_DIV, ASSIGN_POWER, ASSIGN_MOD, ASSIGN_INVERT, ASSIGN_LSHIFT, ASSIGN_RSHIFT, ASSIGN_U_LSHIFT, ASSIGN_AND, ASSIGN_OR, ASSIGN_XOR, IF, ELSE, DO, WHILE, FOR, BREAK, CONTINUE, RETURN, DOT, LBRACE, RBRACE, IN, CLASS, DEF, GLOBAL
   }
 
   public static class Token {
@@ -595,6 +545,9 @@ public class Lexer {
           case "false" -> {
             this.token = TOKEN_TYPE.FALSE;
           }
+          case "import" -> {
+            this.token = TOKEN_TYPE.IMPORT;
+          }
         }
       }
     }
@@ -631,8 +584,24 @@ public class Lexer {
       return (String) (value);
     }
 
+    public String getValueAsString() {
+      return String.valueOf(value);
+    }
+
     public double getDouble() {
       return (Double) (value);
+    }
+
+    public boolean isDOT() {
+      return token == TOKEN_TYPE.DOT;
+    }
+
+    public boolean isCONDITIONAL_AND() {
+      return token == TOKEN_TYPE.CONDITIONAL_AND;
+    }
+
+    public boolean isCONDITIONAL_OR() {
+      return token == TOKEN_TYPE.CONDITIONAL_OR;
     }
 
     public TOKEN_TYPE getToken() {
@@ -691,12 +660,33 @@ public class Lexer {
       return token == TOKEN_TYPE.RSHIFT;
     }
 
+    public boolean isINVERT() {
+      return token == TOKEN_TYPE.INVERT;
+    }
+
     public boolean isU_LSHIFT() {
       return token == TOKEN_TYPE.U_LSHIFT;
     }
 
     public boolean isASSIGN() {
-      return token == TOKEN_TYPE.ASSIGN;
+      return token == TOKEN_TYPE.ASSIGN ||
+          token == TOKEN_TYPE.ASSIGN_ADD ||
+          token == TOKEN_TYPE.ASSIGN_SUB ||
+          token == TOKEN_TYPE.ASSIGN_MUL ||
+          token == TOKEN_TYPE.ASSIGN_DIV ||
+          token == TOKEN_TYPE.ASSIGN_MOD ||
+          token == TOKEN_TYPE.ASSIGN_LSHIFT ||
+          token == TOKEN_TYPE.ASSIGN_RSHIFT ||
+          token == TOKEN_TYPE.ASSIGN_U_LSHIFT ||
+          token == TOKEN_TYPE.ASSIGN_AND ||
+          token == TOKEN_TYPE.ASSIGN_OR ||
+          token == TOKEN_TYPE.ASSIGN_XOR ||
+          token == TOKEN_TYPE.ASSIGN_POWER ||
+          token == TOKEN_TYPE.ASSIGN_INVERT;
+    }
+
+    public boolean isPower() {
+      return token == TOKEN_TYPE.POWER;
     }
 
     public boolean isSEMICOLON() {
@@ -705,6 +695,14 @@ public class Lexer {
 
     public boolean isLEFT_PARENTHESES() {
       return token == TOKEN_TYPE.LEFT_PARENTHESES;
+    }
+
+    public boolean isLPAREN() {
+      return token == TOKEN_TYPE.LEFT_PARENTHESES;
+    }
+
+    public boolean isRPAREN() {
+      return token == TOKEN_TYPE.RIGHT_PARENTHESES;
     }
 
     public boolean isRIGHT_PARENTHESES() {
@@ -717,6 +715,10 @@ public class Lexer {
 
     public boolean isFLOAT() {
       return token == TOKEN_TYPE.FLOAT;
+    }
+
+    public float getFloat() {
+      return (Float) (value);
     }
 
     public boolean isSTRING() {
@@ -811,11 +813,24 @@ public class Lexer {
       return token == TOKEN_TYPE.NE;
     }
 
+    public boolean isNEWLINE() {
+      return token == TOKEN_TYPE.NEWLINE;
+    }
+
+    public boolean isEOF() {
+      return token == TOKEN_TYPE.EOF;
+    }
+
+    public boolean isTRUE() {
+      return token == TOKEN_TYPE.TRUE;
+    }
+
+    public boolean isFALSE() {
+      return token == TOKEN_TYPE.FALSE;
+    }
+
     public String toString() {
-      return "Token{" +
-          "token:" + token + ";" +
-          "value:" + value +
-          '}';
+      return "Token{" + "token:" + token + ";" + "value:" + value + ";" + "Line:" + lineNo + ";" + "Column:" + columnNo + '}';
     }
   }
 }

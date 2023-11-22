@@ -1,21 +1,14 @@
 package org.spl.compiler.ir.vals;
 
-import org.spl.compiler.bytecode.Instruction;
-import org.spl.compiler.bytecode.OpCode;
-import org.spl.compiler.ir.ASTContext;
-import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.Op;
 
-public record IntLiteral(byte oparg, int val) implements IRNode<Instruction> {
+public class IntLiteral extends Literal {
 
-  @Override
-  public void codeGen(ASTContext<Instruction> context) {
-    context.add(new Instruction(OpCode.LOAD_CONST, oparg));
-  }
+  private final int val;
 
-  @Override
-  public boolean isLiteral() {
-    return true;
+  public IntLiteral(int val, byte oparg) {
+    super(oparg);
+    this.val = val;
   }
 
   @Override

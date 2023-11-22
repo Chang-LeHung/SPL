@@ -1,137 +1,117 @@
 package org.spl.compiler.ir;
 
-import java.util.*;
+import org.spl.compiler.ir.controlflow.NameSpace;
+import org.spl.compiler.tree.Visitor;
 
-public class ASTContext<E> implements List<E> {
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-  List<E> byteCodes;
-  Map<String, Integer> labels;
-  Map<Object, Integer> constantTable;
+public class ASTContext<E> implements Visitor<E> {
+
+  private final List<E> instructions;
+  private final Map<String, Integer> labels;
+  private final Map<Object, Integer> constantTable;
+
+  private final NameSpace<String> nameSpace;
+  private int stackSize;
+  private int topStackSize;
 
   public ASTContext() {
-    byteCodes = new ArrayList<>();
+    stackSize = 0;
+    topStackSize = 0;
+    instructions = new ArrayList<>();
     labels = new HashMap<>();
     constantTable = new HashMap<>();
+    nameSpace = new NameSpace<>();
   }
 
-  public ASTContext(List<E> byteCodes) {
-    this.byteCodes = byteCodes;
+  public ASTContext(List<E> instructions) {
+    this.instructions = instructions;
     labels = new HashMap<>();
     constantTable = new HashMap<>();
+    nameSpace = new NameSpace<>();
+    stackSize = 0;
+    topStackSize = 0;
+  }
+
+  public int getTopStackSize() {
+    return topStackSize;
+  }
+
+  public List<E> getInstructions() {
+    return instructions;
+  }
+
+  public void addInstruction(E instruction) {
+    instructions.add(instruction);
+  }
+
+  public void add(E instruction) {
+    addInstruction(instruction);
+  }
+
+  public E getInstruction(int index) {
+    return instructions.get(index);
+  }
+
+  public int getConstantIndex(Object o) {
+    if (constantTable.containsKey(o)) {
+      return constantTable.get(o);
+    }
+    throw new RuntimeException("Constant not found");
+  }
+
+  public int addConstant(Object o) {
+    if (constantTable.containsKey(o))
+      return constantTable.get(o);
+    constantTable.put(o, constantTable.size());
+    return constantTable.size() - 1;
+  }
+
+  public void addSymbol(String name) {
+    nameSpace.addSymbol(name);
+  }
+
+  public boolean containSymbol(String name) {
+    return nameSpace.contain(name);
+  }
+
+  public int getSymbolIndex(String name) {
+    return constantTable.get(name);
+  }
+
+  public Map<Object, Integer> getConstantTable() {
+    return constantTable;
+  }
+
+  public void increaseStackSize() {
+    increaseStackSize(1);
+  }
+
+  public void increaseStackSize(int size) {
+    stackSize += size;
+    if (stackSize > topStackSize)
+      topStackSize = stackSize;
+  }
+
+  public void decreaseStackSize() {
+    stackSize--;
+  }
+
+  public int getStackSize() {
+    return stackSize;
+  }
+
+  public void decreaseStackSize(int size) {
+    stackSize -= size;
   }
 
 
   @Override
-  public int size() {
-    return byteCodes.size();
-  }
-
-  @Override
-  public boolean isEmpty() {
-    return byteCodes.isEmpty();
-  }
-
-  @Override
-  public boolean contains(Object o) {
-    return byteCodes.contains(o);
-  }
-
-  @Override
-  public Iterator<E> iterator() {
-    return byteCodes.iterator();
-  }
-
-  @Override
-  public Object[] toArray() {
-    return byteCodes.toArray();
-  }
-
-  @Override
-  public <T> T[] toArray(T[] a) {
-    return byteCodes.toArray(a);
-  }
-
-  @Override
-  public boolean add(E t) {
-    return byteCodes.add(t);
-  }
-
-  @Override
-  public boolean remove(Object o) {
-    return byteCodes.remove(o);
-  }
-
-  @Override
-  public boolean containsAll(Collection<?> c) {
-    return byteCodes.containsAll(c);
-  }
-
-  @Override
-  public boolean addAll(Collection<? extends E> c) {
-    return byteCodes.addAll(c);
-  }
-
-  @Override
-  public boolean addAll(int index, Collection<? extends E> c) {
-    return byteCodes.addAll(index, c);
-  }
-
-  @Override
-  public boolean removeAll(Collection<?> c) {
-    return byteCodes.removeAll(c);
-  }
-
-  @Override
-  public boolean retainAll(Collection<?> c) {
-    return byteCodes.retainAll(c);
-  }
-
-  @Override
-  public void clear() {
-    byteCodes.clear();
-  }
-
-  public E get(int index) {
-    return byteCodes.get(index);
-  }
-
-  @Override
-  public E set(int index, E element) {
-    return byteCodes.set(index, element);
-  }
-
-  @Override
-  public void add(int index, E element) {
-    byteCodes.add(index, element);
-  }
-
-  @Override
-  public E remove(int index) {
-    return byteCodes.remove(index);
-  }
-
-  @Override
-  public int indexOf(Object o) {
-    return byteCodes.indexOf(o);
-  }
-
-  @Override
-  public int lastIndexOf(Object o) {
-    return byteCodes.lastIndexOf(o);
-  }
-
-  @Override
-  public ListIterator<E> listIterator() {
-    return byteCodes.listIterator();
-  }
-
-  @Override
-  public ListIterator<E> listIterator(int index) {
-    return byteCodes.listIterator(index);
-  }
-
-  @Override
-  public List<E> subList(int fromIndex, int toIndex) {
-    return byteCodes.subList(fromIndex, toIndex);
+  public void visit(IRNode<E> node) {
+    node.doVisit(this);
   }
 }
+

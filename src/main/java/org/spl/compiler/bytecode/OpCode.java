@@ -19,6 +19,12 @@ public enum OpCode {
   AND_ASSIGN,
   OR_ASSIGN,
   XOR_ASSIGN,
+  ADD_ASSIGN,
+  SUB_ASSIGN,
+  MUL_ASSIGN,
+  DIV_ASSIGN,
+  MOD_ASSIGN,
+  POWER_ASSIGN,
   LT,
   GT,
   EQ,
@@ -27,6 +33,7 @@ public enum OpCode {
   GE,
   AND,
   OR,
+  INVERT,
   CONDITIONAL_AND,
   CONDITIONAL_OR,
   NOT,
@@ -34,10 +41,14 @@ public enum OpCode {
   LOAD_LOCAL,
   STORE_GLOBAL,
   LOAD_GLOBAL,
+  LOAD_NAME,
+  LOAD_METHOD,
+  CALL_METHOD,
   STORE,
   LOAD,
   CALL,
-  LOAD_CONST;
+  LOAD_CONST,
+  POP;
   public final byte val;
 
   OpCode() {

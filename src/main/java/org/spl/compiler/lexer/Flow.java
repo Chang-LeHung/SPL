@@ -2,7 +2,7 @@ package org.spl.compiler.lexer;
 
 public interface Flow<T> {
 
-  T next();
+  void next();
 
   T lookAhead();
 
@@ -13,4 +13,6 @@ public interface Flow<T> {
   T peek();
 
   T peek(int n);
+
+  T current();
 }

@@ -3,36 +3,39 @@ package org.spl.compiler.ir.stmt;
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
 import org.spl.compiler.ir.ASTContext;
+import org.spl.compiler.ir.AbstractIR;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.Op;
-import org.spl.compiler.ir.Scope;
+import org.spl.compiler.ir.vals.Variable;
 
-public class AssignStmt implements IRNode<Instruction> {
+import java.util.List;
 
-  private final IRNode<Instruction> lhs;
+public class AssignStmt extends AbstractIR<Instruction> {
+
+  private final Variable lhs;
   private final IRNode<Instruction> rhs;
-  private final Scope scope;
+  private List<IRNode<Instruction>> children;
 
-  public AssignStmt(IRNode<Instruction> lhs, IRNode<Instruction> rhs,
-                    Scope scope) {
+  public AssignStmt(Variable lhs, IRNode<Instruction> rhs) {
     this.lhs = lhs;
     this.rhs = rhs;
-    this.scope = scope;
   }
 
   @Override
   public void codeGen(ASTContext<Instruction> context) {
-    lhs.codeGen(context);
-    rhs.codeGen(context);
-    switch (scope) {
+    // lhs.codeGen(context); there is no need to emit this instruction
+    // because a STORE instruction will emit after RHS
+    byte idx = (byte) context.getConstantIndex(lhs.getName());
+    switch (lhs.scope()) {
       case LOCAL -> {
-        context.add(new Instruction(OpCode.STORE_LOCAL, (byte) 0));
+        context.add(new Instruction(OpCode.STORE_LOCAL, idx));
       }
       case GLOBAL -> {
-        context.add(new Instruction(OpCode.STORE_GLOBAL, (byte) 0));
+        context.add(new Instruction(OpCode.STORE_GLOBAL, idx));
       }
       case OTHERS -> {
-        context.add(new Instruction(OpCode.STORE, (byte) 0));
+        // fallback to STORE
+        context.add(new Instruction(OpCode.STORE, idx));
       }
     }
   }
@@ -40,5 +43,23 @@ public class AssignStmt implements IRNode<Instruction> {
   @Override
   public Op getOperator() {
     return Op.ASSIGN;
+  }
+
+  @Override
+  public List<IRNode<Instruction>> getChildren() {
+    if (children == null) {
+      children = List.of(rhs);
+    }
+    return children;
+  }
+
+  @Override
+  public void postVisiting(ASTContext<Instruction> context) {
+    context.decreaseStackSize(1);
+  }
+
+  @Override
+  public String toString() {
+    return lhs.toString() + " = " + rhs.toString();
   }
 }
