@@ -2,16 +2,13 @@ package org.spl.compiler.ir.vals;
 
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
-import org.spl.compiler.ir.ASTContext;
-import org.spl.compiler.ir.IRNode;
-import org.spl.compiler.ir.Op;
-import org.spl.compiler.ir.Scope;
+import org.spl.compiler.ir.*;
 
 import java.util.List;
 
 import static org.spl.compiler.ir.Op.NOP;
 
-public class Variable implements IRNode<Instruction> {
+public class Variable extends AbstractIR<Instruction> {
 
   private final String name;
   private final Scope scope;
