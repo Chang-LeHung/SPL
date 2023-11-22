@@ -4,6 +4,7 @@ import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
 import org.spl.compiler.ir.ASTContext;
 import org.spl.compiler.ir.AbstractIR;
+import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.Scope;
 
 import java.util.List;
@@ -12,13 +13,13 @@ public class MethodCall extends AbstractIR<Instruction> {
 
   private final String objName;
   private final String methodName;
-  private final List<AbstractIR<Instruction>> args;
+  private final List<IRNode<Instruction>> args;
   private final Scope scope;
-  private List<AbstractIR<Instruction>> children;
+  private List<IRNode<Instruction>> children;
 
   public MethodCall(String objName,
                     String methodName,
-                    List<AbstractIR<Instruction>> args,
+                    List<IRNode<Instruction>> args,
                     Scope scope) {
     this.objName = objName;
     this.methodName = methodName;
@@ -55,7 +56,7 @@ public class MethodCall extends AbstractIR<Instruction> {
   }
 
   @Override
-  public List<AbstractIR<Instruction>> getChildren() {
+  public List<IRNode<Instruction>> getChildren() {
     if (children == null) {
       children = List.of();
     }

@@ -2,10 +2,7 @@ package org.spl.compiler.ir.vals;
 
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
-import org.spl.compiler.ir.ASTContext;
-import org.spl.compiler.ir.AbstractIR;
-import org.spl.compiler.ir.Op;
-import org.spl.compiler.ir.Scope;
+import org.spl.compiler.ir.*;
 
 import java.util.List;
 
@@ -15,7 +12,7 @@ public class Variable extends AbstractIR<Instruction> {
 
   private final String name;
   private final Scope scope;
-  private List<AbstractIR<Instruction>> children;
+  private List<IRNode<Instruction>> children;
 
   public Variable(Scope scope, String name) {
     this.name = name;
@@ -48,7 +45,7 @@ public class Variable extends AbstractIR<Instruction> {
   }
 
   @Override
-  public List<AbstractIR<Instruction>> getChildren() {
+  public List<IRNode<Instruction>> getChildren() {
     if (children == null) {
       children = List.of();
     }

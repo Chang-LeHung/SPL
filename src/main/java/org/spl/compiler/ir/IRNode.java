@@ -63,7 +63,7 @@ public interface IRNode<E> {
 
   default void doVisit(ASTContext<E> context) {
     preVisiting(context);
-    List<AbstractIR<E>> children = getChildren();
+    List<IRNode<E>> children = getChildren();
     for (IRNode<E> child : children) {
       child.accept(context);
     }
@@ -71,6 +71,6 @@ public interface IRNode<E> {
     postVisiting(context);
   }
 
-  List<AbstractIR<E>> getChildren();
+  List<IRNode<E>> getChildren();
 
 }

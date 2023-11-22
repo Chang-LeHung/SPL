@@ -4,19 +4,20 @@ import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
 import org.spl.compiler.ir.ASTContext;
 import org.spl.compiler.ir.AbstractIR;
+import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.Op;
 
 import java.util.List;
 
 public class AbstractAssignStmt extends AbstractIR<Instruction> {
 
-  private final AbstractIR<Instruction> lhs;
-  private final AbstractIR<Instruction> rhs;
+  private final IRNode<Instruction> lhs;
+  private final IRNode<Instruction> rhs;
   private final Op op;
-  private List<AbstractIR<Instruction>> children;
+  private List<IRNode<Instruction>> children;
 
-  public AbstractAssignStmt(AbstractIR<Instruction> lhs,
-                            AbstractIR<Instruction> rhs,
+  public AbstractAssignStmt(IRNode<Instruction> lhs,
+                            IRNode<Instruction> rhs,
                             Op op) {
     this.lhs = lhs;
     this.rhs = rhs;
@@ -67,7 +68,7 @@ public class AbstractAssignStmt extends AbstractIR<Instruction> {
   }
 
   @Override
-  public List<AbstractIR<Instruction>> getChildren() {
+  public List<IRNode<Instruction>> getChildren() {
     if (children == null) {
       children = List.of(lhs, rhs);
     }

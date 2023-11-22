@@ -4,6 +4,7 @@ import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
 import org.spl.compiler.ir.ASTContext;
 import org.spl.compiler.ir.AbstractIR;
+import org.spl.compiler.ir.IRNode;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class Literal extends AbstractIR<Instruction> {
   }
 
   @Override
-  public List<AbstractIR<Instruction>> getChildren() {
+  public List<IRNode<Instruction>> getChildren() {
     return List.of();
   }
 

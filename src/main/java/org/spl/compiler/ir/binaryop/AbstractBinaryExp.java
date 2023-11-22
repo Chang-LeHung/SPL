@@ -9,12 +9,12 @@ import java.util.List;
 
 public abstract class AbstractBinaryExp<E> extends AbstractIR<E> {
 
-  protected final AbstractIR<E> L;
-  protected final AbstractIR<E> R;
+  protected final IRNode<E> L;
+  protected final IRNode<E> R;
   protected final Op op;
-  private List<AbstractIR<E>> children;
+  private List<IRNode<E>> children;
 
-  public AbstractBinaryExp(AbstractIR<E> left, AbstractIR<E> right, Op op) {
+  public AbstractBinaryExp(IRNode<E> left, IRNode<E> right, Op op) {
     L = left;
     R = right;
     this.op = op;
@@ -45,7 +45,7 @@ public abstract class AbstractBinaryExp<E> extends AbstractIR<E> {
   }
 
   @Override
-  public List<AbstractIR<E>> getChildren() {
+  public List<IRNode<E>> getChildren() {
     if (children == null) {
       children = List.of(L, R);
     }

@@ -4,6 +4,7 @@ import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
 import org.spl.compiler.ir.ASTContext;
 import org.spl.compiler.ir.AbstractIR;
+import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.Op;
 
 import java.util.List;
@@ -11,10 +12,10 @@ import java.util.stream.Collectors;
 
 public class FuncCallExp extends AbstractIR<Instruction> {
   private final String funcName;
-  private final List<AbstractIR<Instruction>> args;
-  private List<AbstractIR<Instruction>> children;
+  private final List<IRNode<Instruction>> args;
+  private List<IRNode<Instruction>> children;
 
-  public FuncCallExp(String funcName, List<AbstractIR<Instruction>> args) {
+  public FuncCallExp(String funcName, List<IRNode<Instruction>> args) {
     this.funcName = funcName;
     this.args = args;
   }
@@ -50,7 +51,7 @@ public class FuncCallExp extends AbstractIR<Instruction> {
   }
 
   @Override
-  public List<AbstractIR<Instruction>> getChildren() {
+  public List<IRNode<Instruction>> getChildren() {
     if (children == null) {
       children = List.of();
     }

@@ -4,6 +4,7 @@ import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
 import org.spl.compiler.ir.ASTContext;
 import org.spl.compiler.ir.AbstractIR;
+import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.Op;
 import org.spl.compiler.ir.vals.Variable;
 
@@ -12,10 +13,10 @@ import java.util.List;
 public class AssignStmt extends AbstractIR<Instruction> {
 
   private final Variable lhs;
-  private final AbstractIR<Instruction> rhs;
-  private List<AbstractIR<Instruction>> children;
+  private final IRNode<Instruction> rhs;
+  private List<IRNode<Instruction>> children;
 
-  public AssignStmt(Variable lhs, AbstractIR<Instruction> rhs) {
+  public AssignStmt(Variable lhs, IRNode<Instruction> rhs) {
     this.lhs = lhs;
     this.rhs = rhs;
   }
@@ -45,7 +46,7 @@ public class AssignStmt extends AbstractIR<Instruction> {
   }
 
   @Override
-  public List<AbstractIR<Instruction>> getChildren() {
+  public List<IRNode<Instruction>> getChildren() {
     if (children == null) {
       children = List.of(rhs);
     }
