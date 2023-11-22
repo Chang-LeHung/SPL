@@ -48,14 +48,9 @@ public interface IRNode<E> {
 
   void setLineNo(int lineNo);
 
-  default void preVisiting(ASTContext<E> context) {
+  default void preVisiting(ASTContext<E> context) {}
 
-  }
-
-  default void postVisiting(ASTContext<E> context) {
-
-  }
-
+  default void postVisiting(ASTContext<E> context) {}
 
   default void accept(ASTContext<E> context) {
     context.visit(this);
