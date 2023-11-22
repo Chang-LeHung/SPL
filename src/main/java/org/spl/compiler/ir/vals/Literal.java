@@ -22,7 +22,7 @@ public class Literal extends AbstractIR<Instruction> {
   }
 
   @Override
-  public List<IRNode<Instruction>> getChildren() {
+  public List<AbstractIR<Instruction>> getChildren() {
     return List.of();
   }
 

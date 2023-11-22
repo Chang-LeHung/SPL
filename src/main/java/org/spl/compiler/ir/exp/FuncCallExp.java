@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
 
 public class FuncCallExp extends AbstractIR<Instruction> {
   private final String funcName;
-  private final List<IRNode<Instruction>> args;
-  private List<IRNode<Instruction>> children;
+  private final List<AbstractIR<Instruction>> args;
+  private List<AbstractIR<Instruction>> children;
 
-  public FuncCallExp(String funcName, List<IRNode<Instruction>> args) {
+  public FuncCallExp(String funcName, List<AbstractIR<Instruction>> args) {
     this.funcName = funcName;
     this.args = args;
   }
@@ -51,7 +51,7 @@ public class FuncCallExp extends AbstractIR<Instruction> {
   }
 
   @Override
-  public List<IRNode<Instruction>> getChildren() {
+  public List<AbstractIR<Instruction>> getChildren() {
     if (children == null) {
       children = List.of();
     }

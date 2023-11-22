@@ -8,11 +8,11 @@ import java.util.List;
 
 public abstract class AbstractUnaryExp<E> extends AbstractIR<E> {
 
-  protected IRNode<E> operand;
+  protected AbstractIR<E> operand;
   protected Op op;
-  protected List<IRNode<E>> children;
+  protected List<AbstractIR<E>> children;
 
-  public AbstractUnaryExp(IRNode<E> operand, Op op) {
+  public AbstractUnaryExp(AbstractIR<E> operand, Op op) {
     this.operand = operand;
     this.op = op;
   }
@@ -23,7 +23,7 @@ public abstract class AbstractUnaryExp<E> extends AbstractIR<E> {
   }
 
   @Override
-  public List<IRNode<E>> getChildren() {
+  public List<AbstractIR<E>> getChildren() {
     if (children == null) {
       children = List.of(operand);
     }

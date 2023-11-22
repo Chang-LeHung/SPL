@@ -13,10 +13,10 @@ import java.util.List;
 public class AssignStmt extends AbstractIR<Instruction> {
 
   private final Variable lhs;
-  private final IRNode<Instruction> rhs;
-  private List<IRNode<Instruction>> children;
+  private final AbstractIR<Instruction> rhs;
+  private List<AbstractIR<Instruction>> children;
 
-  public AssignStmt(Variable lhs, IRNode<Instruction> rhs) {
+  public AssignStmt(Variable lhs, AbstractIR<Instruction> rhs) {
     this.lhs = lhs;
     this.rhs = rhs;
   }
@@ -46,7 +46,7 @@ public class AssignStmt extends AbstractIR<Instruction> {
   }
 
   @Override
-  public List<IRNode<Instruction>> getChildren() {
+  public List<AbstractIR<Instruction>> getChildren() {
     if (children == null) {
       children = List.of(rhs);
     }

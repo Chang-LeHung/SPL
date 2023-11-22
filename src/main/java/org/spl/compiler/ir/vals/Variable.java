@@ -12,7 +12,7 @@ public class Variable extends AbstractIR<Instruction> {
 
   private final String name;
   private final Scope scope;
-  private List<IRNode<Instruction>> children;
+  private List<AbstractIR<Instruction>> children;
 
   public Variable(Scope scope, String name) {
     this.name = name;
@@ -45,7 +45,7 @@ public class Variable extends AbstractIR<Instruction> {
   }
 
   @Override
-  public List<IRNode<Instruction>> getChildren() {
+  public List<AbstractIR<Instruction>> getChildren() {
     if (children == null) {
       children = List.of();
     }

@@ -36,6 +36,19 @@ public interface IRNode<E> {
     return null;
   }
 
+  int getLen();
+
+  int getColumnNo();
+
+  int getLineNo();
+
+  void setLineNo(int lineNo);
+
+  void setColumnNo(int columnNo);
+
+
+  void setLen(int len);
+
   default void preVisiting(ASTContext<E> context) {
 
   }
@@ -51,7 +64,7 @@ public interface IRNode<E> {
 
   default void doVisit(ASTContext<E> context) {
     preVisiting(context);
-    List<IRNode<E>> children = getChildren();
+    List<AbstractIR<E>> children = getChildren();
     for (IRNode<E> child : children) {
       child.accept(context);
     }
@@ -59,6 +72,6 @@ public interface IRNode<E> {
     postVisiting(context);
   }
 
-  List<IRNode<E>> getChildren();
+  List<AbstractIR<E>> getChildren();
 
 }

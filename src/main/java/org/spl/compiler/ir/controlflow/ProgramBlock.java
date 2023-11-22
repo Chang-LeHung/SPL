@@ -2,17 +2,18 @@ package org.spl.compiler.ir.controlflow;
 
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.ir.ASTContext;
+import org.spl.compiler.ir.AbstractIR;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.Op;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProgramBlock implements IRNode<Instruction> {
+public class ProgramBlock extends AbstractIR<Instruction> {
 
-  private final List<IRNode<Instruction>> statements;
+  private final List<AbstractIR<Instruction>> statements;
 
-  public ProgramBlock(List<IRNode<Instruction>> statements) {
+  public ProgramBlock(List<AbstractIR<Instruction>> statements) {
     this.statements = statements;
   }
 
@@ -20,7 +21,7 @@ public class ProgramBlock implements IRNode<Instruction> {
     statements = new ArrayList<>();
   }
 
-  public void addIRNode(IRNode<Instruction> node) {
+  public void addIRNode(AbstractIR<Instruction> node) {
     statements.add(node);
   }
 
@@ -34,7 +35,7 @@ public class ProgramBlock implements IRNode<Instruction> {
   }
 
   @Override
-  public List<IRNode<Instruction>> getChildren() {
+  public List<AbstractIR<Instruction>> getChildren() {
     return statements;
   }
 

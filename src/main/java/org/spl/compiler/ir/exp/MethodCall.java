@@ -13,13 +13,13 @@ public class MethodCall extends AbstractIR<Instruction> {
 
   private final String objName;
   private final String methodName;
-  private final List<IRNode<Instruction>> args;
+  private final List<AbstractIR<Instruction>> args;
   private final Scope scope;
-  private List<IRNode<Instruction>> children;
+  private List<AbstractIR<Instruction>> children;
 
   public MethodCall(String objName,
                     String methodName,
-                    List<IRNode<Instruction>> args,
+                    List<AbstractIR<Instruction>> args,
                     Scope scope) {
     this.objName = objName;
     this.methodName = methodName;
@@ -56,7 +56,7 @@ public class MethodCall extends AbstractIR<Instruction> {
   }
 
   @Override
-  public List<IRNode<Instruction>> getChildren() {
+  public List<AbstractIR<Instruction>> getChildren() {
     if (children == null) {
       children = List.of();
     }
