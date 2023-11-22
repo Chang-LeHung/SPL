@@ -38,16 +38,15 @@ public interface IRNode<E> {
 
   int getLen();
 
+  void setLen(int len);
+
   int getColumnNo();
+
+  void setColumnNo(int columnNo);
 
   int getLineNo();
 
   void setLineNo(int lineNo);
-
-  void setColumnNo(int columnNo);
-
-
-  void setLen(int len);
 
   default void preVisiting(ASTContext<E> context) {
 

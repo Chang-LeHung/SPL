@@ -1,7 +1,6 @@
 package org.spl.compiler.ir.unaryop;
 
 import org.spl.compiler.ir.AbstractIR;
-import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.Op;
 
 import java.util.List;
