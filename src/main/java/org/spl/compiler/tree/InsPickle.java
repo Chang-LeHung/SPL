@@ -1,6 +1,8 @@
 package org.spl.compiler.tree;
 
+import org.spl.compiler.bytecode.Instruction;
+
 public interface InsPickle {
 
-  <T extends Visitor> void accept(T t);
+  void accept(Visitor<Instruction> t);
 }

@@ -33,7 +33,7 @@ public class Instruction implements InsPickle {
   }
 
   @Override
-  public <T extends Visitor> void accept(T t) {
+  public void accept(Visitor<Instruction> t) {
     t.visit(this);
   }
 }
