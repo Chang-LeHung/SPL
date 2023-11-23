@@ -1,0 +1,13 @@
+
+
+a = 1
+b = 2<<2
+c = a + b
+print(c)
+d = b - a
+print(d)
+
+e = b * a
+print("e=", e)
+print("b=", b)
+print("a=", a)

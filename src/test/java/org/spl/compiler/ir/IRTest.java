@@ -2,9 +2,10 @@ package org.spl.compiler.ir;
 
 import org.junit.jupiter.api.Test;
 import org.spl.compiler.bytecode.Instruction;
+import org.spl.compiler.ir.context.DefaultASTContext;
 import org.spl.compiler.parser.ArithmeticParser;
 import org.spl.compiler.tree.InsVisitor;
-import org.spl.exceptions.SPLSyntaxError;
+import org.spl.compiler.exceptions.SPLSyntaxError;
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,7 +25,7 @@ public class IRTest {
     String resource = getResource("arithmetic/test01.spl");
     ArithmeticParser arithmeticParser = new ArithmeticParser(resource);
     IRNode<Instruction> ir = arithmeticParser.buildAST();
-    ASTContext<Instruction> context = arithmeticParser.getContext();
+    DefaultASTContext<Instruction> context = arithmeticParser.getContext();
     ir.accept(context);
     ir.codeGen(context);
     InsVisitor insVisitor = new InsVisitor(context.getConstantTable());
@@ -60,7 +61,7 @@ public class IRTest {
     String resource = getResource("arithmetic/add.spl");
     ArithmeticParser arithmeticParser = new ArithmeticParser(resource);
     IRNode<Instruction> ir = arithmeticParser.buildAST();
-    ASTContext<Instruction> context = arithmeticParser.getContext();
+    DefaultASTContext<Instruction> context = arithmeticParser.getContext();
     ir.accept(context);
     InsVisitor insVisitor = new InsVisitor(context.getConstantTable());
     context.getInstructions().forEach(x->x.accept(insVisitor));
@@ -74,7 +75,7 @@ public class IRTest {
     String resource = getResource("arithmetic/call.spl");
     ArithmeticParser arithmeticParser = new ArithmeticParser(resource);
     IRNode<Instruction> ir = arithmeticParser.buildAST();
-    ASTContext<Instruction> context = arithmeticParser.getContext();
+    DefaultASTContext<Instruction> context = arithmeticParser.getContext();
     ir.accept(context);
     InsVisitor insVisitor = new InsVisitor(context.getConstantTable());
     context.getInstructions().forEach(x->x.accept(insVisitor));
@@ -90,7 +91,7 @@ public class IRTest {
     ArithmeticParser arithmeticParser = new ArithmeticParser(resource);
     System.out.println(arithmeticParser.getTokenFlow());
     IRNode<Instruction> ir = arithmeticParser.buildAST();
-    ASTContext<Instruction> context = arithmeticParser.getContext();
+    DefaultASTContext<Instruction> context = arithmeticParser.getContext();
     ir.accept(context);
     InsVisitor insVisitor = new InsVisitor(context.getConstantTable());
     context.getInstructions().forEach(x->x.accept(insVisitor));
@@ -106,7 +107,7 @@ public class IRTest {
     ArithmeticParser arithmeticParser = new ArithmeticParser(resource);
     System.out.println(arithmeticParser.getTokenFlow());
     IRNode<Instruction> ir = arithmeticParser.buildAST();
-    ASTContext<Instruction> context = arithmeticParser.getContext();
+    DefaultASTContext<Instruction> context = arithmeticParser.getContext();
     ir.accept(context);
     InsVisitor insVisitor = new InsVisitor(context.getConstantTable());
     context.getInstructions().forEach(x->x.accept(insVisitor));

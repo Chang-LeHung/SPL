@@ -1,0 +1,84 @@
+
+a = 1
+b = 2 << 2
+
+b >>>= 2
+print("b >>>= 2:", b)
+
+m = true || false
+print("True or False:", m)
+
+o = a ^ b
+print("a ^ b:", o)
+
+c = a + b
+print("a + b =", c)
+
+d = b - a
+print("b - a =", d)
+
+e = b * a
+print("b * a =", e)
+print("b =", b)
+print("a =", a)
+
+f = a == b
+print("a == b:", f)
+
+g = a != b
+print("a != b:", g)
+
+h = a < b
+print("a < b:", h)
+
+i = a > b
+print("a > b:", i)
+
+j = a <= b
+print("a <= b:", j)
+
+k = a >= b
+print("a >= b:", k)
+
+
+n = a & b
+print("a & b:", n)
+
+o = a ^ b
+print("a ^ b:", o)
+
+p = a >> 1
+print("a >> 1:", p)
+
+q = b >> 1
+print("b >> 1:", q)
+
+r = b << 1
+print("b << 1:", r)
+
+a += 2
+print("a += 2:", a)
+
+b -= 2
+print("b -= 2:", b)
+
+b /= 2
+print("b /= 2:", b)
+
+b *= 2
+print("b *= 2:", b)
+
+b <<= 2
+print("b <<= 2:", b)
+b >>= 2
+print("b >>= 2:", b)
+b &= 2
+print("b &= 2:", b)
+b ^= 2
+print("b ^= 2:", b)
+b |= 2
+print("b |= 2:", b)
+b %= 2
+print("b %= 2:", b)
+
+

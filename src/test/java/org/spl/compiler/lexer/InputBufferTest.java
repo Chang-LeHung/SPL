@@ -2,7 +2,7 @@ package org.spl.compiler.lexer;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.spl.exceptions.SPLSyntaxError;
+import org.spl.compiler.exceptions.SPLSyntaxError;
 
 import java.io.IOException;
 import java.net.URL;
