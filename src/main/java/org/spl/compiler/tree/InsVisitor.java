@@ -61,6 +61,7 @@ public class InsVisitor implements Visitor<Instruction> {
   public String toString() {
     StringBuilder builder = new StringBuilder();
     serializedInstructions.forEach(x -> builder.append(x).append("\n"));
+    builder.delete(builder.length() - 1, builder.length());
     return builder.toString();
   }
 }

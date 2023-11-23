@@ -1,6 +1,8 @@
 package org.spl.compiler.ir;
 
 
+import org.spl.compiler.ir.context.ASTContext;
+
 import java.util.List;
 
 public interface IRNode<E> {

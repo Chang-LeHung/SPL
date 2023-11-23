@@ -2,11 +2,13 @@ package org.spl.compiler.ir.exp;
 
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
-import org.spl.compiler.ir.ASTContext;
+import org.spl.compiler.ir.context.ASTContext;
 import org.spl.compiler.ir.AbstractIR;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.Op;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,7 +25,6 @@ public class FuncCallExp extends AbstractIR<Instruction> {
   @Override
   public void codeGen(ASTContext<Instruction> context) {
     context.addInstruction(new Instruction(OpCode.LOAD_NAME, (byte) context.getConstantIndex(funcName)), getLineNo(), getColumnNo(), getLen());
-    args.forEach(arg -> arg.codeGen(context));
     context.addInstruction(new Instruction(OpCode.CALL, (byte) args.size()), getLineNo(), getColumnNo(), getLen());
   }
 
@@ -53,7 +54,8 @@ public class FuncCallExp extends AbstractIR<Instruction> {
   @Override
   public List<IRNode<Instruction>> getChildren() {
     if (children == null) {
-      children = List.of();
+      children = new ArrayList<>(args);
+      Collections.reverse(children);
     }
     return children;
   }

@@ -1,7 +1,7 @@
 package org.spl.compiler.lexer;
 
-import org.spl.exceptions.SPLException;
-import org.spl.exceptions.SPLSyntaxError;
+import org.spl.compiler.exceptions.SPLException;
+import org.spl.compiler.exceptions.SPLSyntaxError;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -181,19 +181,21 @@ public class Lexer {
           // string branch
           c = nextChar(builder);
           while (c != '"') {
-            if (c == 0 || Character.isWhitespace(c)) break;
+            if (c == 0) break;
             c = nextChar(builder);
           }
+          Token token;
           builder.delete(builder.length() - 1, builder.length());
           if (c == '"') {
-            Token token = new Token(TOKEN_TYPE.STRING, builder.toString());
-            injectTokensAndClearBuilder(token, builder);
-            updateLineAndColumn();
-            tokens.add(token);
+            token = new Token(TOKEN_TYPE.STRING, builder.toString());
           } else {
             String msg = SPLException.buildErrorMessage(stream.getFileName(), lineNo, columnNo, stream.getOff() - columnNo, stream.getBuffer(), "Illegal string literal, string literal must be enclosed in double quotes");
             throw new SPLSyntaxError(msg);
           }
+          injectTokensAndClearBuilder(token, builder);
+          updateLineAndColumn();
+          tokens.add(token);
+          c = nextChar(builder);
           builder.delete(0, builder.length());
           state = CHAR_TYPE.INIT;
         }
@@ -313,7 +315,17 @@ public class Lexer {
               token = new Token(TOKEN_TYPE.ASSIGN_RSHIFT, ">>=");
               c = nextChar(builder);
             } else {
-              token = new Token(TOKEN_TYPE.RSHIFT, ">>");
+              if (c == '>') {
+                c = nextChar(builder);
+                if (c == '=') {
+                  token = new Token(TOKEN_TYPE.ASSIGN_U_RSHIFT, ">>>=");
+                  c = nextChar(builder);
+                } else {
+                  token = new Token(TOKEN_TYPE.RSHIFT, ">>>");
+                }
+              } else {
+                token = new Token(TOKEN_TYPE.RSHIFT, ">>");
+              }
             }
           } else {
             token = new Token(TOKEN_TYPE.GT, ">");
@@ -338,21 +350,7 @@ public class Lexer {
               token = new Token(TOKEN_TYPE.ASSIGN_LSHIFT, "<<=");
               c = nextChar(builder);
             } else {
-              // <<?
-              if (c == '<') {
-                c = nextChar(builder);
-                if (c == '=') {
-                  // <<<=
-                  token = new Token(TOKEN_TYPE.ASSIGN_U_LSHIFT, "<<<=");
-                  c = nextChar(builder);
-                } else {
-                  // <<<
-                  token = new Token(TOKEN_TYPE.U_LSHIFT, "<<<");
-                }
-              } else {
-                // <<
-                token = new Token(TOKEN_TYPE.LSHIFT, "<<");
-              }
+              token = new Token(TOKEN_TYPE.LSHIFT, "<<");
             }
           } else {
             token = new Token(TOKEN_TYPE.LT, "<");
@@ -493,8 +491,8 @@ public class Lexer {
 
   public enum TOKEN_TYPE {
     EOF, NEWLINE, STARTER, // used only in the function doParse()
-    COMMA, IDENTIFIER, TRUE, FALSE, IMPORT, INT, FLOAT, STRING, SEMICOLON, LEFT_PARENTHESES, RIGHT_PARENTHESES, PLUS, MINUS, MUL, DIV, MOD, LSHIFT, RSHIFT, U_LSHIFT, // unconditional left shift
-    ASSIGN, EQ, LT, GT, GE, LE, NE, AND, CONDITIONAL_AND, OR, CONDITIONAL_OR, POWER, XOR, NOT, INVERT, CONDITIONAL_NOT, ASSIGN_ADD, ASSIGN_SUB, ASSIGN_MUL, ASSIGN_DIV, ASSIGN_POWER, ASSIGN_MOD, ASSIGN_INVERT, ASSIGN_LSHIFT, ASSIGN_RSHIFT, ASSIGN_U_LSHIFT, ASSIGN_AND, ASSIGN_OR, ASSIGN_XOR, IF, ELSE, DO, WHILE, FOR, BREAK, CONTINUE, RETURN, DOT, LBRACE, RBRACE, IN, CLASS, DEF, GLOBAL
+    COMMA, IDENTIFIER, TRUE, FALSE, IMPORT, INT, FLOAT, STRING, SEMICOLON, LEFT_PARENTHESES, RIGHT_PARENTHESES, PLUS, MINUS, MUL, DIV, MOD, LSHIFT, RSHIFT, U_RSHIFT, // unconditional left shift
+    ASSIGN, EQ, LT, GT, GE, LE, NE, AND, CONDITIONAL_AND, OR, CONDITIONAL_OR, POWER, XOR, NOT, INVERT, CONDITIONAL_NOT, ASSIGN_ADD, ASSIGN_SUB, ASSIGN_MUL, ASSIGN_DIV, ASSIGN_POWER, ASSIGN_MOD, ASSIGN_INVERT, ASSIGN_LSHIFT, ASSIGN_RSHIFT, ASSIGN_U_RSHIFT, ASSIGN_AND, ASSIGN_OR, ASSIGN_XOR, IF, ELSE, DO, WHILE, FOR, BREAK, CONTINUE, RETURN, DOT, LBRACE, RBRACE, IN, CLASS, DEF, GLOBAL
   }
 
   public static class Token {
@@ -547,6 +545,9 @@ public class Lexer {
           }
           case "import" -> {
             this.token = TOKEN_TYPE.IMPORT;
+          }
+          case "if" -> {
+            this.token = TOKEN_TYPE.IF;
           }
         }
       }
@@ -664,8 +665,8 @@ public class Lexer {
       return token == TOKEN_TYPE.INVERT;
     }
 
-    public boolean isU_LSHIFT() {
-      return token == TOKEN_TYPE.U_LSHIFT;
+    public boolean isU_RSHIFT() {
+      return token == TOKEN_TYPE.U_RSHIFT;
     }
 
     public boolean isASSIGN() {
@@ -677,7 +678,7 @@ public class Lexer {
           token == TOKEN_TYPE.ASSIGN_MOD ||
           token == TOKEN_TYPE.ASSIGN_LSHIFT ||
           token == TOKEN_TYPE.ASSIGN_RSHIFT ||
-          token == TOKEN_TYPE.ASSIGN_U_LSHIFT ||
+          token == TOKEN_TYPE.ASSIGN_U_RSHIFT ||
           token == TOKEN_TYPE.ASSIGN_AND ||
           token == TOKEN_TYPE.ASSIGN_OR ||
           token == TOKEN_TYPE.ASSIGN_XOR ||
@@ -757,8 +758,8 @@ public class Lexer {
       return token == TOKEN_TYPE.ASSIGN_RSHIFT;
     }
 
-    public boolean isASSIGN_U_LSHIFT() {
-      return token == TOKEN_TYPE.ASSIGN_U_LSHIFT;
+    public boolean isASSIGN_U_RSHIFT() {
+      return token == TOKEN_TYPE.ASSIGN_U_RSHIFT;
     }
 
     public boolean isASSIGN_AND() {

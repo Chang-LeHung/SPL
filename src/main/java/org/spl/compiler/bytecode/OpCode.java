@@ -12,10 +12,10 @@ public enum OpCode {
   XOR,
   LSHIFT,
   RSHIFT,
-  U_LSHIFT,
+  U_RSHIFT,
   LSHIFT_ASSIGN,
   RSHIFT_ASSIGN,
-  U_LSHIFT_ASSIGN,
+  U_RSHIFT_ASSIGN,
   AND_ASSIGN,
   OR_ASSIGN,
   XOR_ASSIGN,
@@ -61,5 +61,14 @@ public enum OpCode {
 
   private static class Counter {
     static byte count = 0;
+  }
+
+  public byte getVal() {
+    return val;
+  }
+
+  @Override
+  public String toString() {
+    return String.format("OpCode{val=%-3d, %-15s}", val, name());
   }
 }

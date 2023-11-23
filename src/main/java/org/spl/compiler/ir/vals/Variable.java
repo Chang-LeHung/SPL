@@ -3,6 +3,7 @@ package org.spl.compiler.ir.vals;
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
 import org.spl.compiler.ir.*;
+import org.spl.compiler.ir.context.ASTContext;
 
 import java.util.List;
 
@@ -74,5 +75,9 @@ public class Variable extends AbstractIR<Instruction> {
   @Override
   public void postVisiting(ASTContext<Instruction> context) {
     context.increaseStackSize();
+  }
+
+  public String getVariableName() {
+    return name;
   }
 }

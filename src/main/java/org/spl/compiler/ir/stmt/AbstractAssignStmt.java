@@ -2,10 +2,11 @@ package org.spl.compiler.ir.stmt;
 
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
-import org.spl.compiler.ir.ASTContext;
 import org.spl.compiler.ir.AbstractIR;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.Op;
+import org.spl.compiler.ir.context.ASTContext;
+import org.spl.compiler.ir.vals.Variable;
 
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class AbstractAssignStmt extends AbstractIR<Instruction> {
 
   @Override
   public void codeGen(ASTContext<Instruction> context) {
-    byte opArg = 0;
+    byte opArg = (byte) context.getConstantIndex(((Variable) lhs).getName());
     switch (op) {
       case ASSIGN_ADD -> {
         context.addInstruction(new Instruction(OpCode.ADD_ASSIGN, opArg), getLineNo(), getColumnNo(), getLen());
@@ -49,8 +50,8 @@ public class AbstractAssignStmt extends AbstractIR<Instruction> {
       case ASSIGN_RSHIFT -> {
         context.addInstruction(new Instruction(OpCode.RSHIFT_ASSIGN, opArg), getLineNo(), getColumnNo(), getLen());
       }
-      case ASSIGN_U_LSHIFT -> {
-        context.addInstruction(new Instruction(OpCode.U_LSHIFT_ASSIGN, opArg), getLineNo(), getColumnNo(), getLen());
+      case ASSIGN_U_RSHIFT -> {
+        context.addInstruction(new Instruction(OpCode.U_RSHIFT_ASSIGN, opArg), getLineNo(), getColumnNo(), getLen());
       }
       case ASSIGN_XOR -> {
         context.addInstruction(new Instruction(OpCode.XOR_ASSIGN, opArg), getLineNo(), getColumnNo(), getLen());
@@ -70,7 +71,7 @@ public class AbstractAssignStmt extends AbstractIR<Instruction> {
   @Override
   public List<IRNode<Instruction>> getChildren() {
     if (children == null) {
-      children = List.of(lhs, rhs);
+      children = List.of(rhs);
     }
     return children;
   }

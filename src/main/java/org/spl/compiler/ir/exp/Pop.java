@@ -1,26 +1,21 @@
-package org.spl.compiler.ir.controlflow;
+package org.spl.compiler.ir.exp;
 
 import org.spl.compiler.bytecode.Instruction;
-import org.spl.compiler.ir.context.ASTContext;
+import org.spl.compiler.bytecode.OpCode;
 import org.spl.compiler.ir.AbstractIR;
 import org.spl.compiler.ir.IRNode;
-import org.spl.compiler.ir.Op;
+import org.spl.compiler.ir.context.ASTContext;
 
 import java.util.List;
 
-public class IfStmt extends AbstractIR<Instruction> {
+public class Pop extends AbstractIR<Instruction> {
   @Override
   public void codeGen(ASTContext<Instruction> context) {
-
-  }
-
-  @Override
-  public Op getOperator() {
-    return Op.NOP;
+    context.addInstruction(new Instruction(OpCode.POP), getLineNo(), getColumnNo(), 1);
   }
 
   @Override
   public List<IRNode<Instruction>> getChildren() {
-    return null;
+    return List.of();
   }
 }

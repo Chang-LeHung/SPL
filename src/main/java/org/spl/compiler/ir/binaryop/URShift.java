@@ -6,15 +6,14 @@ import org.spl.compiler.ir.context.ASTContext;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.Op;
 
-public class Add extends AbstractBinaryExp<Instruction> {
-
-  public Add(IRNode<Instruction> left, IRNode<Instruction> right) {
-    super(left, right, Op.ADD);
+public class URShift extends AbstractBinaryExp<Instruction> {
+  public URShift(IRNode<Instruction> left, IRNode<Instruction> right) {
+    super(left, right, Op.U_RSHIFT);
   }
 
   @Override
   public void codeGen(ASTContext<Instruction> context) {
-    context.add(new Instruction(OpCode.ADD), getLineNo(), getColumnNo(), getLen());
-  }
 
+    context.add(new Instruction(OpCode.U_RSHIFT), getLineNo(), getColumnNo(), getLen());
+  }
 }

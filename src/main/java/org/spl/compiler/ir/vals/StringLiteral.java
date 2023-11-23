@@ -27,4 +27,9 @@ public class StringLiteral extends Literal {
   public Op getOperator() {
     return NOP;
   }
+
+  @Override
+  public String toString() {
+    return val;
+  }
 }

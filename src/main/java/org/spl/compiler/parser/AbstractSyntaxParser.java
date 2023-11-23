@@ -3,7 +3,7 @@ package org.spl.compiler.parser;
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.lexer.Lexer;
-import org.spl.exceptions.SPLSyntaxError;
+import org.spl.compiler.exceptions.SPLSyntaxError;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
