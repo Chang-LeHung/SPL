@@ -14,6 +14,6 @@ public class Not extends AbstractUnaryExp<Instruction> {
   @Override
   public void codeGen(ASTContext<Instruction> context) {
     operand.codeGen(context);
-    context.add(new Instruction(OpCode.NOT));
+    context.add(new Instruction(OpCode.NOT), getLineNo(), getColumnNo(), getLen());
   }
 }

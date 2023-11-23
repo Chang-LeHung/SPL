@@ -14,6 +14,6 @@ public class Power extends AbstractBinaryExp<Instruction> {
   @Override
   public void codeGen(ASTContext<Instruction> context) {
 
-    context.add(new Instruction(OpCode.POWER));
+    context.add(new Instruction(OpCode.POWER), getLineNo(), getColumnNo(), getLen());
   }
 }

@@ -28,14 +28,14 @@ public class AssignStmt extends AbstractIR<Instruction> {
     byte idx = (byte) context.getConstantIndex(lhs.getName());
     switch (lhs.scope()) {
       case LOCAL -> {
-        context.add(new Instruction(OpCode.STORE_LOCAL, idx));
+        context.add(new Instruction(OpCode.STORE_LOCAL, idx), getLineNo(), getColumnNo(), getLen());
       }
       case GLOBAL -> {
-        context.add(new Instruction(OpCode.STORE_GLOBAL, idx));
+        context.add(new Instruction(OpCode.STORE_GLOBAL, idx), getLineNo(), getColumnNo(), getLen());
       }
       case OTHERS -> {
         // fallback to STORE
-        context.add(new Instruction(OpCode.STORE, idx));
+        context.add(new Instruction(OpCode.STORE, idx), getLineNo(), getColumnNo(), getLen());
       }
     }
   }

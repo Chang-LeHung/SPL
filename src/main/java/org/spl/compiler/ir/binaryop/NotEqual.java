@@ -14,6 +14,6 @@ public class NotEqual extends AbstractBinaryExp<Instruction> {
   @Override
   public void codeGen(ASTContext<Instruction> context) {
 
-    context.add(new Instruction(OpCode.NE));
+    context.add(new Instruction(OpCode.NE), getLineNo(), getColumnNo(), getLen());
   }
 }

@@ -18,7 +18,7 @@ public class Literal extends AbstractIR<Instruction> {
 
   @Override
   public void codeGen(ASTContext<Instruction> context) {
-    context.add(new Instruction(OpCode.LOAD_CONST, oparg));
+    context.add(new Instruction(OpCode.LOAD_CONST, oparg), getLineNo(), getColumnNo(), getLen());
   }
 
   @Override

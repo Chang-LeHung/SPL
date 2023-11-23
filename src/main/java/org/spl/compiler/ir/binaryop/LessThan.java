@@ -14,6 +14,6 @@ public class LessThan extends AbstractBinaryExp<Instruction> {
   @Override
   public void codeGen(ASTContext<Instruction> context) {
 
-    context.add(new Instruction(OpCode.LT));
+    context.add(new Instruction(OpCode.LT), getLineNo(), getColumnNo(), getLen());
   }
 }

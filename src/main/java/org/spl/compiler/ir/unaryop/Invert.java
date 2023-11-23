@@ -14,6 +14,6 @@ public class Invert extends AbstractUnaryExp<Instruction> {
   @Override
   public void codeGen(ASTContext<Instruction> context) {
     operand.codeGen(context);
-    context.addInstruction(new Instruction(OpCode.INVERT));
+    context.addInstruction(new Instruction(OpCode.INVERT), getLineNo(), getColumnNo(), getLen());
   }
 }

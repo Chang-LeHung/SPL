@@ -14,6 +14,6 @@ public class Mul extends AbstractBinaryExp<Instruction> {
   @Override
   public void codeGen(ASTContext<Instruction> context) {
 
-    context.add(new Instruction(OpCode.MUL));
+    context.add(new Instruction(OpCode.MUL), getLineNo(), getColumnNo(), getLen());
   }
 }

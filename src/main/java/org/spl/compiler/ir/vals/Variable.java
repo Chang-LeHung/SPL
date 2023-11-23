@@ -24,13 +24,13 @@ public class Variable extends AbstractIR<Instruction> {
     byte idx = (byte) context.getConstantIndex(name);
     switch (scope) {
       case LOCAL -> {
-        context.add(new Instruction(OpCode.LOAD_LOCAL, idx));
+        context.add(new Instruction(OpCode.LOAD_LOCAL, idx), getLineNo(), getColumnNo(), getLen());
       }
       case GLOBAL -> {
-        context.add(new Instruction(OpCode.LOAD_GLOBAL, idx));
+        context.add(new Instruction(OpCode.LOAD_GLOBAL, idx), getLineNo(), getColumnNo(), getLen());
       }
       case OTHERS -> {
-        context.add(new Instruction(OpCode.LOAD, idx));
+        context.add(new Instruction(OpCode.LOAD, idx), getLineNo(), getColumnNo(), getLen());
       }
     }
   }

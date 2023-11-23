@@ -14,6 +14,6 @@ public class RShift extends AbstractBinaryExp<Instruction> {
   @Override
   public void codeGen(ASTContext<Instruction> context) {
 
-    context.add(new Instruction(OpCode.RSHIFT));
+    context.add(new Instruction(OpCode.RSHIFT), getLineNo(), getColumnNo(), getLen());
   }
 }

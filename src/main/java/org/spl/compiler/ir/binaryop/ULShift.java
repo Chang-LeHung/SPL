@@ -14,6 +14,6 @@ public class ULShift extends AbstractBinaryExp<Instruction> {
   @Override
   public void codeGen(ASTContext<Instruction> context) {
 
-    context.add(new Instruction(OpCode.U_LSHIFT));
+    context.add(new Instruction(OpCode.U_LSHIFT), getLineNo(), getColumnNo(), getLen());
   }
 }

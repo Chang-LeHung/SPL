@@ -31,20 +31,20 @@ public class MethodCall extends AbstractIR<Instruction> {
   public void codeGen(ASTContext<Instruction> context) {
     args.forEach(x -> x.codeGen(context));
     byte ond = (byte) context.getConstantIndex(methodName);
-    context.addInstruction(new Instruction(OpCode.LOAD_METHOD, ond));
+    context.addInstruction(new Instruction(OpCode.LOAD_METHOD, ond), getLineNo(), getColumnNo(), getLen());
     ond = (byte) context.getConstantIndex(objName);
     switch (scope) {
       case LOCAL -> {
-        context.addInstruction(new Instruction(OpCode.LOAD_LOCAL, ond));
+        context.addInstruction(new Instruction(OpCode.LOAD_LOCAL, ond), getLineNo(), getColumnNo(), getLen());
       }
       case GLOBAL -> {
-        context.addInstruction(new Instruction(OpCode.LOAD_GLOBAL, ond));
+        context.addInstruction(new Instruction(OpCode.LOAD_GLOBAL, ond), getLineNo(), getColumnNo(), getLen());
       }
       case OTHERS -> {
-        context.addInstruction(new Instruction(OpCode.LOAD_NAME, ond));
+        context.addInstruction(new Instruction(OpCode.LOAD_NAME, ond), getLineNo(), getColumnNo(), getLen());
       }
     }
-    context.addInstruction(new Instruction(OpCode.CALL_METHOD, (byte) args.size()));
+    context.addInstruction(new Instruction(OpCode.CALL_METHOD, (byte) args.size()), getLineNo(), getColumnNo(), getLen());
   }
 
   @Override

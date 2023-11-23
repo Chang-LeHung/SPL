@@ -15,6 +15,6 @@ public class ConditionalOr extends AbstractBinaryExp<Instruction> {
   @Override
   public void codeGen(ASTContext<Instruction> context) {
 
-    context.add(new Instruction(OpCode.CONDITIONAL_OR));
+    context.add(new Instruction(OpCode.CONDITIONAL_OR), getLineNo(), getColumnNo(), getLen());
   }
 }

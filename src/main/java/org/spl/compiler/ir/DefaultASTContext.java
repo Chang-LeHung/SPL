@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ASTContext<E> implements Visitor<E> {
+public class DefaultASTContext<E> implements Visitor<E>, ASTContext<E> {
 
   private final List<E> instructions;
   private final Map<String, Integer> labels;
@@ -18,7 +18,7 @@ public class ASTContext<E> implements Visitor<E> {
   private int stackSize;
   private int topStackSize;
 
-  public ASTContext() {
+  public DefaultASTContext() {
     stackSize = 0;
     topStackSize = 0;
     instructions = new ArrayList<>();
@@ -27,7 +27,7 @@ public class ASTContext<E> implements Visitor<E> {
     nameSpace = new NameSpace<>();
   }
 
-  public ASTContext(List<E> instructions) {
+  public DefaultASTContext(List<E> instructions) {
     this.instructions = instructions;
     labels = new HashMap<>();
     constantTable = new HashMap<>();
@@ -36,6 +36,7 @@ public class ASTContext<E> implements Visitor<E> {
     topStackSize = 0;
   }
 
+  @Override
   public int getTopStackSize() {
     return topStackSize;
   }
@@ -44,18 +45,22 @@ public class ASTContext<E> implements Visitor<E> {
     return instructions;
   }
 
-  public void addInstruction(E instruction) {
+  @Override
+  public void addInstruction(E instruction, int lineNo, int columnNo, int len) {
     instructions.add(instruction);
   }
 
-  public void add(E instruction) {
-    addInstruction(instruction);
+  @Override
+  public void add(E instruction, int lineNo, int columnNo, int len) {
+    addInstruction(instruction, lineNo, columnNo, len);
   }
 
+  @Override
   public E getInstruction(int index) {
     return instructions.get(index);
   }
 
+  @Override
   public int getConstantIndex(Object o) {
     if (constantTable.containsKey(o)) {
       return constantTable.get(o);
@@ -63,6 +68,7 @@ public class ASTContext<E> implements Visitor<E> {
     throw new RuntimeException("Constant not found");
   }
 
+  @Override
   public int addConstant(Object o) {
     if (constantTable.containsKey(o))
       return constantTable.get(o);
@@ -70,14 +76,17 @@ public class ASTContext<E> implements Visitor<E> {
     return constantTable.size() - 1;
   }
 
+  @Override
   public void addSymbol(String name) {
     nameSpace.addSymbol(name);
   }
 
+  @Override
   public boolean containSymbol(String name) {
     return nameSpace.contain(name);
   }
 
+  @Override
   public int getSymbolIndex(String name) {
     return constantTable.get(name);
   }
@@ -86,24 +95,29 @@ public class ASTContext<E> implements Visitor<E> {
     return constantTable;
   }
 
+  @Override
   public void increaseStackSize() {
     increaseStackSize(1);
   }
 
+  @Override
   public void increaseStackSize(int size) {
     stackSize += size;
     if (stackSize > topStackSize)
       topStackSize = stackSize;
   }
 
+  @Override
   public void decreaseStackSize() {
     stackSize--;
   }
 
+  @Override
   public int getStackSize() {
     return stackSize;
   }
 
+  @Override
   public void decreaseStackSize(int size) {
     stackSize -= size;
   }

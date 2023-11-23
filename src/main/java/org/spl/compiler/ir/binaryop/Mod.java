@@ -14,6 +14,6 @@ public class Mod extends AbstractBinaryExp<Instruction> {
   @Override
   public void codeGen(ASTContext<Instruction> context) {
 
-    context.add(new Instruction(OpCode.MOD));
+    context.add(new Instruction(OpCode.MOD), getLineNo(), getColumnNo(), getLen());
   }
 }

@@ -14,6 +14,6 @@ public class Or extends AbstractBinaryExp<Instruction> {
   @Override
   public void codeGen(ASTContext<Instruction> context) {
 
-    context.add(new Instruction(OpCode.OR));
+    context.add(new Instruction(OpCode.OR), getLineNo(), getColumnNo(), getLen());
   }
 }

@@ -14,6 +14,6 @@ public class Sub extends AbstractBinaryExp<Instruction> {
   @Override
   public void codeGen(ASTContext<Instruction> context) {
 
-    context.add(new Instruction(OpCode.SUB));
+    context.add(new Instruction(OpCode.SUB), getLineNo(), getColumnNo(), getLen());
   }
 }

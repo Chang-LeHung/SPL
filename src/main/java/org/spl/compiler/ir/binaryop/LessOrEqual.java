@@ -14,6 +14,6 @@ public class LessOrEqual extends AbstractBinaryExp<Instruction> {
   @Override
   public void codeGen(ASTContext<Instruction> context) {
 
-    context.add(new Instruction(OpCode.LE));
+    context.add(new Instruction(OpCode.LE), getLineNo(), getColumnNo(), getLen());
   }
 }

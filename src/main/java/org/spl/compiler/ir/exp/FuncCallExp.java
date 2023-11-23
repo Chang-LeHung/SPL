@@ -22,9 +22,9 @@ public class FuncCallExp extends AbstractIR<Instruction> {
 
   @Override
   public void codeGen(ASTContext<Instruction> context) {
-    context.addInstruction(new Instruction(OpCode.LOAD_NAME, (byte) context.getConstantIndex(funcName)));
+    context.addInstruction(new Instruction(OpCode.LOAD_NAME, (byte) context.getConstantIndex(funcName)), getLineNo(), getColumnNo(), getLen());
     args.forEach(arg -> arg.codeGen(context));
-    context.addInstruction(new Instruction(OpCode.CALL, (byte) args.size()));
+    context.addInstruction(new Instruction(OpCode.CALL, (byte) args.size()), getLineNo(), getColumnNo(), getLen());
   }
 
   @Override

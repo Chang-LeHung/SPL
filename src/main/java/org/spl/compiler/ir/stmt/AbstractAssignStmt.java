@@ -29,40 +29,40 @@ public class AbstractAssignStmt extends AbstractIR<Instruction> {
     byte opArg = 0;
     switch (op) {
       case ASSIGN_ADD -> {
-        context.addInstruction(new Instruction(OpCode.ADD_ASSIGN, opArg));
+        context.addInstruction(new Instruction(OpCode.ADD_ASSIGN, opArg), getLineNo(), getColumnNo(), getLen());
       }
       case ASSIGN_SUB -> {
-        context.addInstruction(new Instruction(OpCode.SUB_ASSIGN, opArg));
+        context.addInstruction(new Instruction(OpCode.SUB_ASSIGN, opArg), getLineNo(), getColumnNo(), getLen());
       }
       case ASSIGN_MUL -> {
-        context.addInstruction(new Instruction(OpCode.MUL_ASSIGN, opArg));
+        context.addInstruction(new Instruction(OpCode.MUL_ASSIGN, opArg), getLineNo(), getColumnNo(), getLen());
       }
       case ASSIGN_DIV -> {
-        context.addInstruction(new Instruction(OpCode.DIV_ASSIGN, opArg));
+        context.addInstruction(new Instruction(OpCode.DIV_ASSIGN, opArg), getLineNo(), getColumnNo(), getLen());
       }
       case ASSIGN_MOD -> {
-        context.addInstruction(new Instruction(OpCode.MOD_ASSIGN, opArg));
+        context.addInstruction(new Instruction(OpCode.MOD_ASSIGN, opArg), getLineNo(), getColumnNo(), getLen());
       }
       case ASSIGN_LSHIFT -> {
-        context.addInstruction(new Instruction(OpCode.LSHIFT_ASSIGN, opArg));
+        context.addInstruction(new Instruction(OpCode.LSHIFT_ASSIGN, opArg), getLineNo(), getColumnNo(), getLen());
       }
       case ASSIGN_RSHIFT -> {
-        context.addInstruction(new Instruction(OpCode.RSHIFT_ASSIGN, opArg));
+        context.addInstruction(new Instruction(OpCode.RSHIFT_ASSIGN, opArg), getLineNo(), getColumnNo(), getLen());
       }
       case ASSIGN_U_LSHIFT -> {
-        context.addInstruction(new Instruction(OpCode.U_LSHIFT_ASSIGN, opArg));
+        context.addInstruction(new Instruction(OpCode.U_LSHIFT_ASSIGN, opArg), getLineNo(), getColumnNo(), getLen());
       }
       case ASSIGN_XOR -> {
-        context.addInstruction(new Instruction(OpCode.XOR_ASSIGN, opArg));
+        context.addInstruction(new Instruction(OpCode.XOR_ASSIGN, opArg), getLineNo(), getColumnNo(), getLen());
       }
       case ASSIGN_AND -> {
-        context.addInstruction(new Instruction(OpCode.AND_ASSIGN, opArg));
+        context.addInstruction(new Instruction(OpCode.AND_ASSIGN, opArg), getLineNo(), getColumnNo(), getLen());
       }
       case ASSIGN_OR -> {
-        context.addInstruction(new Instruction(OpCode.OR_ASSIGN, opArg));
+        context.addInstruction(new Instruction(OpCode.OR_ASSIGN, opArg), getLineNo(), getColumnNo(), getLen());
       }
       case ASSIGN_POWER -> {
-        context.addInstruction(new Instruction(OpCode.POWER_ASSIGN, opArg));
+        context.addInstruction(new Instruction(OpCode.POWER_ASSIGN, opArg), getLineNo(), getColumnNo(), getLen());
       }
     }
   }

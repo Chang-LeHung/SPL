@@ -14,6 +14,6 @@ public class GreaterThan extends AbstractBinaryExp<Instruction> {
   @Override
   public void codeGen(ASTContext<Instruction> context) {
 
-    context.add(new Instruction(OpCode.GT));
+    context.add(new Instruction(OpCode.GT), getLineNo(), getColumnNo(), getLen());
   }
 }

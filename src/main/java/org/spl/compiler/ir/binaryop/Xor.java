@@ -14,6 +14,6 @@ public class Xor extends AbstractBinaryExp<Instruction> {
   @Override
   public void codeGen(ASTContext<Instruction> context) {
 
-    context.add(new Instruction(OpCode.XOR));
+    context.add(new Instruction(OpCode.XOR), getLineNo(), getColumnNo(), getLen());
   }
 }
