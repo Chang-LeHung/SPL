@@ -2,6 +2,7 @@ package org.spl.compiler.ir.exp;
 
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
+import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.context.ASTContext;
 import org.spl.compiler.ir.AbstractIR;
 import org.spl.compiler.ir.IRNode;
@@ -30,7 +31,7 @@ public class MethodCall extends AbstractIR<Instruction> {
   }
 
   @Override
-  public void codeGen(ASTContext<Instruction> context) {
+  public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
     byte ond = (byte) context.getConstantIndex(methodName);
     context.addInstruction(new Instruction(OpCode.LOAD_METHOD, ond), getLineNo(), getColumnNo(), getLen());
     ond = (byte) context.getConstantIndex(objName);

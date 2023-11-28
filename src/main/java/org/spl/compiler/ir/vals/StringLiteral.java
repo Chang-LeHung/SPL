@@ -8,7 +8,7 @@ public class StringLiteral extends Literal {
 
   private final String val;
 
-  public StringLiteral(String value, byte oparg) {
+  public StringLiteral(String value, int oparg) {
     super(oparg);
     val = value;
   }

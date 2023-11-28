@@ -4,7 +4,7 @@ import org.spl.compiler.ir.Op;
 
 public class BoolLiteral extends Literal {
 
-  public BoolLiteral(byte oparg) {
+  public BoolLiteral(int oparg) {
     super(oparg);
   }
 

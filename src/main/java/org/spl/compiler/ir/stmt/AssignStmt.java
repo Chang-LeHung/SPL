@@ -2,6 +2,7 @@ package org.spl.compiler.ir.stmt;
 
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
+import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.context.ASTContext;
 import org.spl.compiler.ir.AbstractIR;
 import org.spl.compiler.ir.IRNode;
@@ -22,10 +23,10 @@ public class AssignStmt extends AbstractIR<Instruction> {
   }
 
   @Override
-  public void codeGen(ASTContext<Instruction> context) {
+  public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
     // lhs.codeGen(context); there is no need to emit this instruction
     // because a STORE instruction will emit after RHS
-    byte idx = (byte) context.getConstantIndex(lhs.getName());
+    int idx = context.getConstantIndex(lhs.getName());
     switch (lhs.scope()) {
       case LOCAL -> {
         context.add(new Instruction(OpCode.STORE_LOCAL, idx), getLineNo(), getColumnNo(), getLen());
@@ -62,4 +63,5 @@ public class AssignStmt extends AbstractIR<Instruction> {
   public String toString() {
     return lhs.toString() + " = " + rhs.toString();
   }
+
 }

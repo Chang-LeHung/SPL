@@ -2,6 +2,7 @@ package org.spl.compiler.ir.exp;
 
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
+import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.context.ASTContext;
 import org.spl.compiler.ir.AbstractIR;
 import org.spl.compiler.ir.IRNode;
@@ -23,9 +24,9 @@ public class FuncCallExp extends AbstractIR<Instruction> {
   }
 
   @Override
-  public void codeGen(ASTContext<Instruction> context) {
-    context.addInstruction(new Instruction(OpCode.LOAD_NAME, (byte) context.getConstantIndex(funcName)), getLineNo(), getColumnNo(), getLen());
-    context.addInstruction(new Instruction(OpCode.CALL, (byte) args.size()), getLineNo(), getColumnNo(), getLen());
+  public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
+    context.addInstruction(new Instruction(OpCode.LOAD_NAME, context.getConstantIndex(funcName)), getLineNo(), getColumnNo(), getLen());
+    context.addInstruction(new Instruction(OpCode.CALL, args.size()), getLineNo(), getColumnNo(), getLen());
   }
 
   @Override

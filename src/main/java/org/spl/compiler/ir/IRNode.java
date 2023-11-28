@@ -1,13 +1,14 @@
 package org.spl.compiler.ir;
 
 
+import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.context.ASTContext;
 
 import java.util.List;
 
 public interface IRNode<E> {
 
-  void codeGen(ASTContext<E> context);
+  void codeGen(ASTContext<E> context) throws SPLSyntaxError;
 
   default boolean isLiteral() {
     return false;
@@ -54,11 +55,11 @@ public interface IRNode<E> {
 
   default void postVisiting(ASTContext<E> context) {}
 
-  default void accept(ASTContext<E> context) {
+  default void accept(ASTContext<E> context) throws SPLSyntaxError {
     context.visit(this);
   }
 
-  default void doVisit(ASTContext<E> context) {
+  default void doVisit(ASTContext<E> context) throws SPLSyntaxError {
     preVisiting(context);
     List<IRNode<E>> children = getChildren();
     for (IRNode<E> child : children) {

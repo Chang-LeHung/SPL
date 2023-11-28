@@ -6,7 +6,7 @@ public class IntLiteral extends Literal {
 
   private final int val;
 
-  public IntLiteral(int val, byte oparg) {
+  public IntLiteral(int val, int oparg) {
     super(oparg);
     this.val = val;
   }

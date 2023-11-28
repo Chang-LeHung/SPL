@@ -1,4 +1,4 @@
-package org.spl.compiler.ir.controlflow;
+package org.spl.compiler.ir;
 
 
 import java.util.HashSet;

@@ -2,6 +2,7 @@ package org.spl.compiler.ir.vals;
 
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
+import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.*;
 import org.spl.compiler.ir.context.ASTContext;
 
@@ -21,8 +22,8 @@ public class Variable extends AbstractIR<Instruction> {
   }
 
   @Override
-  public void codeGen(ASTContext<Instruction> context) {
-    byte idx = (byte) context.getConstantIndex(name);
+  public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
+    int idx = context.getConstantIndex(name);
     switch (scope) {
       case LOCAL -> {
         context.add(new Instruction(OpCode.LOAD_LOCAL, idx), getLineNo(), getColumnNo(), getLen());

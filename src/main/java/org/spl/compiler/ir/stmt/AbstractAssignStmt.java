@@ -2,6 +2,7 @@ package org.spl.compiler.ir.stmt;
 
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
+import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.AbstractIR;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.Op;
@@ -26,7 +27,7 @@ public class AbstractAssignStmt extends AbstractIR<Instruction> {
   }
 
   @Override
-  public void codeGen(ASTContext<Instruction> context) {
+  public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
     byte opArg = (byte) context.getConstantIndex(((Variable) lhs).getName());
     switch (op) {
       case ASSIGN_ADD -> {

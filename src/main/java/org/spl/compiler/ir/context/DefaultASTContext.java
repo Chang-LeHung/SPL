@@ -1,8 +1,9 @@
 package org.spl.compiler.ir.context;
 
 import org.spl.compiler.bytecode.ByteCode;
+import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.IRNode;
-import org.spl.compiler.ir.controlflow.NameSpace;
+import org.spl.compiler.ir.NameSpace;
 import org.spl.compiler.tree.Visitor;
 
 import java.io.ByteArrayOutputStream;
@@ -53,12 +54,13 @@ public class DefaultASTContext<E extends ByteCode> implements Visitor<E>, ASTCon
     return topStackSize;
   }
 
+  @Override
   public List<E> getInstructions() {
     return instructions;
   }
 
   @Override
-  public void addInstruction(E instruction, int lineNo, int columnNo, int len) {
+  public void addInstruction(E instruction, int lineNo, int columnNo, int len) throws SPLSyntaxError {
     instructions.add(instruction);
     if (firstLineNo == -1) {
       firstLineNo = lineNo;
@@ -80,11 +82,13 @@ public class DefaultASTContext<E extends ByteCode> implements Visitor<E>, ASTCon
     write(instruction.getOparg(), code);
     write(len, lenColumn);
     write(columnNo, lenColumn);
-
   }
 
-  public static void write(int v, ByteArrayOutputStream out) {
+  public void write(int v, ByteArrayOutputStream out) throws SPLSyntaxError {
     if (v > 254) {
+      if (v > 0xffff) {
+        throw new SPLSyntaxError("Too constants in file " + filename + "or" + "too many arguments in a function");
+      }
       out.write(0xff);
       // BIG ENDIAN two bytes are enough
       out.write((v >> 8) & 0xff);
@@ -95,7 +99,7 @@ public class DefaultASTContext<E extends ByteCode> implements Visitor<E>, ASTCon
   }
 
   @Override
-  public void add(E instruction, int lineNo, int columnNo, int len) {
+  public void add(E instruction, int lineNo, int columnNo, int len) throws SPLSyntaxError {
     addInstruction(instruction, lineNo, columnNo, len);
   }
 
@@ -177,7 +181,7 @@ public class DefaultASTContext<E extends ByteCode> implements Visitor<E>, ASTCon
 
 
   @Override
-  public void visit(IRNode<E> node) {
+  public void visit(IRNode<E> node) throws SPLSyntaxError {
     node.doVisit(this);
   }
 
@@ -219,7 +223,13 @@ public class DefaultASTContext<E extends ByteCode> implements Visitor<E>, ASTCon
     return args;
   }
 
-  public void completeVisiting() {
+  @Override
+  public void generateByteCodes(IRNode<E> node) throws SPLSyntaxError {
+    node.accept(this);
+    completeVisiting();
+  }
+
+  private void completeVisiting() throws SPLSyntaxError {
     write(insOfLine, debugInfo);
     int rest = currentLineNo - lastLineNo;
     write(rest, debugInfo);

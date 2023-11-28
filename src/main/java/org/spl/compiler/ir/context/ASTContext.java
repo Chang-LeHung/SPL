@@ -1,7 +1,9 @@
 package org.spl.compiler.ir.context;
 
+import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.IRNode;
 
+import java.util.List;
 import java.util.Map;
 
 public interface ASTContext<E> {
@@ -13,11 +15,12 @@ public interface ASTContext<E> {
   void decreaseStackSize();
 
   void decreaseStackSize(int n);
+
   String getFileName();
 
-  void addInstruction(E instruction, int lineNo, int columnNo, int len);
+  void addInstruction(E instruction, int lineNo, int columnNo, int len) throws SPLSyntaxError;
 
-  void add(E instruction, int lineNo, int columnNo, int len);
+  void add(E instruction, int lineNo, int columnNo, int len) throws SPLSyntaxError;
 
   int addConstant(Object o);
 
@@ -35,7 +38,7 @@ public interface ASTContext<E> {
 
   E getInstruction(int index);
 
-  void visit(IRNode<E> node);
+  void visit(IRNode<E> node) throws SPLSyntaxError;
 
   void addSymbol(String name);
 
@@ -44,7 +47,15 @@ public interface ASTContext<E> {
   void setFirstLineNo(int firstLineNo);
 
   byte[] getCode();
+
   byte[] getDebugInfo();
+
   byte[] getLenColumn();
+
   int getNumberOfArgs();
+
+  void generateByteCodes(IRNode<E> node) throws SPLSyntaxError;
+
+  List<E> getInstructions();
+
 }

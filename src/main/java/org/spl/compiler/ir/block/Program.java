@@ -1,23 +1,33 @@
-package org.spl.compiler.ir.exp;
+package org.spl.compiler.ir.block;
 
 import org.spl.compiler.bytecode.Instruction;
-import org.spl.compiler.bytecode.OpCode;
 import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.AbstractIR;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.context.ASTContext;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class Pop extends AbstractIR<Instruction> {
+public class Program extends AbstractIR<Instruction> {
+
+  private final List<IRNode<Instruction>> blocks;
+
+  public Program() {
+    blocks = new ArrayList<>();
+  }
+
   @Override
   public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
-    context.addInstruction(new Instruction(OpCode.POP), getLineNo(), getColumnNo(), 1);
+
+  }
+
+  public void addProgramBlock(IRNode<Instruction> node) {
+    blocks.add(node);
   }
 
   @Override
   public List<IRNode<Instruction>> getChildren() {
-    return List.of();
+    return blocks;
   }
-
 }

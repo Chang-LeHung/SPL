@@ -6,7 +6,7 @@ public class FloatLiteral extends Literal {
 
   private final float val;
 
-  public FloatLiteral(float val, byte oparg) {
+  public FloatLiteral(float val, int oparg) {
     super(oparg);
     this.val = val;
   }
