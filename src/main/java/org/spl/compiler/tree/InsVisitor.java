@@ -8,7 +8,7 @@ import java.util.*;
 public class InsVisitor implements Visitor<Instruction> {
 
   private final Map<Integer, Object> idx2constant;
-
+  private int offset;
   private final List<Instruction> instructions;
   private final List<String> serializedInstructions;
   private final HashSet<OpCode> loadStoreInstructions;
@@ -18,8 +18,11 @@ public class InsVisitor implements Visitor<Instruction> {
     constantTable.forEach((x, y) -> {
       idx2constant.put(y, x);
     });
+    offset = 0;
     instructions = new ArrayList<>();
     serializedInstructions = new ArrayList<>();
+    String header = String.format("\u001B[31m%-6s %s %15s %s\u001B[0m", "Offset", "OpCode", "OpName", "OpArg");
+    serializedInstructions.add(header);
     loadStoreInstructions = new HashSet<>();
     loadStoreInstructions.add(OpCode.LOAD_GLOBAL);
     loadStoreInstructions.add(OpCode.STORE_GLOBAL);
@@ -36,15 +39,20 @@ public class InsVisitor implements Visitor<Instruction> {
     String serialized;
     if (loadStoreInstructions.contains(instruction.getCode())) {
       serialized = String.format(
-          "%-11s %s", instruction.getCode(),
-          idx2constant.get((int) instruction.getOpArg()));
+          "%-6d %s %s", offset, instruction.getCode(),
+          idx2constant.get((instruction.getOpArg())));
     } else if (instruction.getCode() == OpCode.CALL ||
+        instruction.getCode() == OpCode.JUMP_FALSE ||
         instruction.getCode() == OpCode.CALL_METHOD) {
-      serialized = String.format("%-11s %d", instruction.getCode(),
+      serialized = String.format("%-6d %s %d", offset, instruction.getCode(),
           instruction.getOpArg());
     } else {
-      serialized = String.format("%-11s", instruction.getCode());
+      serialized = String.format("%-6d %s", offset, instruction.getCode());
     }
+    if (instruction.getOparg() >= 255)
+      offset += 4;
+    else
+      offset += 2;
     serializedInstructions.add(serialized);
   }
 
