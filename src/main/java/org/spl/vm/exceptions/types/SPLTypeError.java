@@ -4,7 +4,7 @@ import org.spl.vm.types.SPLCommonType;
 
 public class SPLTypeError extends SPLCommonType {
   public SPLTypeError(SPLCommonType type) {
-    super(type, "TypeError");
+    super(type, "TypeError", SPLTypeError.class);
   }
 
   public static SPLTypeError getInstance() {

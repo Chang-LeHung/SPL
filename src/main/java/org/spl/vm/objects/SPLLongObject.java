@@ -38,9 +38,10 @@ public class SPLLongObject extends SPLObject {
     if (rhs instanceof SPLLongObject l) {
       return create(val + l.val);
     } else if (rhs instanceof SPLFloatObject f) {
-
       double res = getVal() + f.getVal();
       return new SPLFloatObject(res);
+    } else if (rhs instanceof SPLStringObject s) {
+      return new SPLStringObject(String.valueOf(val) + s.getVal());
     }
     return SPLErrorUtils.splErrorFormat(new SPLTypeError("can not apply operator '+' on long and " + rhs.getType().getName()));
   }

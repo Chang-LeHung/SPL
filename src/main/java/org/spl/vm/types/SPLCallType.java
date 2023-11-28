@@ -1,8 +1,10 @@
 package org.spl.vm.types;
 
+import org.spl.vm.objects.SPLCallObject;
+
 public class SPLCallType extends SPLCommonType{
   public SPLCallType(SPLCommonType type, String name) {
-    super(type, name);
+    super(type, name, SPLCallObject.class);
   }
 
   private static class SelfHolder {

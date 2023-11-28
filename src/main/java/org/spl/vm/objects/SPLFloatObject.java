@@ -24,6 +24,8 @@ public class SPLFloatObject extends SPLObject {
       return new SPLFloatObject(val + f.getVal());
     } else if (rhs instanceof SPLLongObject l) {
       return new SPLFloatObject(val + l.getVal());
+    } else if (rhs instanceof SPLStringObject s) {
+      return new SPLStringObject(val + s.getVal());
     }
     return SPLErrorUtils.splErrorFormat(new SPLTypeError("can not apply operator '+' on float and " + rhs.getType().getName()));
   }

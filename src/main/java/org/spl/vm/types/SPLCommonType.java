@@ -9,12 +9,14 @@ public class SPLCommonType extends SPLObject {
 
   private final Deque<SPLCommonType> bases;
   private final String name;
+  private Class<?> clazz;
 
-  public SPLCommonType(SPLCommonType type, String name) {
+  public SPLCommonType(SPLCommonType type, String name, Class<?> clazz) {
     super(type);
     bases = new LinkedList<>();
     this.bases.addFirst(SPLObjectType.getInstance());
     this.name = name;
+    this.clazz = clazz;
   }
 
   public Deque<SPLCommonType> getBases() {

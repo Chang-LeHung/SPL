@@ -1,9 +1,11 @@
 package org.spl.vm.types;
 
 
+import org.spl.vm.objects.SPLFloatObject;
+
 public class SPlFloatType extends SPLCommonType {
   private SPlFloatType(SPLCommonType type) {
-    super(type, "float");
+    super(type, "float", SPLFloatObject.class);
   }
 
   public static SPlFloatType getInstance() {

@@ -1,10 +1,11 @@
 package org.spl.vm.exceptions.types;
 
+import org.spl.vm.exceptions.splexceptions.SPLNotImplemented;
 import org.spl.vm.types.SPLCommonType;
 
 public class SPLNotImplementedType extends SPLCommonType {
   private SPLNotImplementedType(SPLCommonType type, String name) {
-    super(type, name);
+    super(type, name, SPLNotImplemented.class);
   }
 
   public static SPLNotImplementedType getInstance() {

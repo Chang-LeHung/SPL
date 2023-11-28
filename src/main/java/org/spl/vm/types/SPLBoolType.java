@@ -1,9 +1,11 @@
 package org.spl.vm.types;
 
+import org.spl.vm.objects.SPLBoolObject;
+
 public class SPLBoolType extends SPLCommonType {
 
   private SPLBoolType(SPLCommonType type) {
-    super(type, "bool");
+    super(type, "bool", SPLBoolObject.class);
   }
 
   public static SPLBoolType getInstance() {

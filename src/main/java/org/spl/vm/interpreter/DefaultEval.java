@@ -40,7 +40,7 @@ public class DefaultEval implements Evaluation {
     try {
       while (pc < code.length) {
         insNumExecuted++;
-        switch (code[pc++]) {
+        switch (code[pc++] & 0xff) {
           case 0 -> { // NOP
             pc++;
           }
@@ -436,6 +436,15 @@ public class DefaultEval implements Evaluation {
           case 46 -> { // POP
             pc++;
             top--;
+          }
+          case 49 -> { // JUMP_FALSE
+            int oparg = code[pc++];
+            if (evalStack[--top] == SPLBoolObject.getFalse()) {
+              pc += oparg;
+            }
+          }
+          default -> {
+            throw new SPLInternalException("InternalError: unknown opcode " + code[--pc]);
           }
         }
 

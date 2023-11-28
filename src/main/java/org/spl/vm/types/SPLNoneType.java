@@ -1,8 +1,10 @@
 package org.spl.vm.types;
 
+import org.spl.vm.objects.SPLNoneObject;
+
 public class SPLNoneType extends SPLCommonType {
   SPLNoneType(SPLCommonType type, String name) {
-    super(type, name);
+    super(type, name, SPLNoneObject.class);
   }
 
   private static class SelfHolder {

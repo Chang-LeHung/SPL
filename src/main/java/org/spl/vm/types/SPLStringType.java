@@ -1,8 +1,10 @@
 package org.spl.vm.types;
 
+import org.spl.vm.objects.SPLStringObject;
+
 public class SPLStringType extends SPLCommonType {
   public SPLStringType(SPLCommonType type) {
-    super(type, "str");
+    super(type, "str", SPLStringObject.class);
   }
 
   public static SPLStringType getInstance() {

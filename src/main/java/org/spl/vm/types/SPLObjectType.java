@@ -1,9 +1,11 @@
 package org.spl.vm.types;
 
+import org.spl.vm.objects.SPLObject;
+
 public class SPLObjectType extends SPLCommonType {
 
   private SPLObjectType(SPLCommonType type) {
-    super(type, "object");
+    super(type, "object", SPLObject.class);
   }
 
   public static SPLObjectType getInstance() {
