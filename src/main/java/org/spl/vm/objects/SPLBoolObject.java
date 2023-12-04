@@ -27,8 +27,8 @@ public class SPLBoolObject extends SPLObject {
   public static class SelfHolder {
     public static SPLBoolObject TRUE = new SPLBoolObject(true);
     public static SPLBoolObject FALSE = new SPLBoolObject(false);
-    public static SPLStringObject True = new SPLStringObject("true");
-    public static SPLStringObject False = new SPLStringObject("false");
+    public static SPLBoolObject True = TRUE;
+    public static SPLBoolObject False = FALSE;
   }
 
   @Override
