@@ -15,6 +15,7 @@ public interface SPLInterface {
   SPLObject mul(SPLObject rhs) throws SPLInternalException;
 
   SPLObject div(SPLObject rhs) throws SPLInternalException;
+  SPLObject trueDiv(SPLObject rhs) throws SPLInternalException;
 
   SPLObject mod(SPLObject rhs) throws SPLInternalException;
 

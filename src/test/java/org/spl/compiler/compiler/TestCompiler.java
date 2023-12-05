@@ -64,4 +64,22 @@ public class TestCompiler {
     DefaultEval defaultEval = new DefaultEval(code);
     defaultEval.evalFrame();
   }
+
+  public void run(String filename) throws SPLSyntaxError, IOException, SPLInternalException {
+    SPLCompiler compiler = new SPLCompiler(getResource(filename));
+    SPLCodeObject code = compiler.compile();
+    ASTContext<Instruction> context = compiler.getContext();
+    InsVisitor insVisitor = new InsVisitor(context.getConstantTable());
+    context.getInstructions().forEach(insVisitor::visit);
+    System.out.println(insVisitor);
+    System.out.println(context.getTopStackSize());
+    System.out.println(code);
+    DefaultEval defaultEval = new DefaultEval(code);
+    defaultEval.evalFrame();
+  }
+
+  @Test
+  public void testMinus() throws SPLInternalException, SPLSyntaxError, IOException {
+    run("arithmetic/minus.spl");
+  }
 }

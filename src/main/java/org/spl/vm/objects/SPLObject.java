@@ -39,6 +39,10 @@ public class SPLObject implements SPLInterface {
   }
 
   @Override
+  public SPLObject trueDiv(SPLObject rhs) throws SPLInternalException {
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation '//' not implemented"));  }
+
+  @Override
   public SPLObject mod(SPLObject rhs) throws SPLInternalException {
     return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation '%' not implemented"));
   }
