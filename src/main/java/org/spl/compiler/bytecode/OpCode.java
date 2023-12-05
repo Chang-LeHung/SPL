@@ -52,7 +52,9 @@ public enum OpCode {
   JUMP_FALSE,
   JUMP_UNCON,
   TRUE_DIV,
-  NEG;
+  NEG,
+  RETURN,
+  RETURN_NONE;
   public final byte val;
 
   OpCode() {

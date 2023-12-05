@@ -460,6 +460,10 @@ public class DefaultEval implements Evaluation {
             int oparg = getOparg();
             pc += oparg;
           }
+          case RETURN -> {
+            pc++;
+            return evalStack[--top];
+          }
           default -> {
             throw new SPLInternalException("InternalError: unknown opcode " + code[--pc]);
           }

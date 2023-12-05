@@ -12,7 +12,7 @@ import org.spl.compiler.ir.controlflow.IfStmt;
 import org.spl.compiler.ir.exp.FuncCallExp;
 import org.spl.compiler.ir.exp.MethodCall;
 import org.spl.compiler.ir.exp.Pop;
-import org.spl.compiler.ir.stmt.*;
+import org.spl.compiler.ir.stmt.assignstmt.*;
 import org.spl.compiler.ir.unaryop.Invert;
 import org.spl.compiler.ir.unaryop.Neg;
 import org.spl.compiler.ir.unaryop.Not;

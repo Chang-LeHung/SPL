@@ -1,6 +1,7 @@
 package org.spl.vm.interpreter;
 
 import org.spl.compiler.bytecode.OpCode;
+import org.spl.compiler.ir.Op;
 import org.spl.vm.objects.SPLObject;
 
 public interface Evaluation {
@@ -63,6 +64,7 @@ public interface Evaluation {
     opcode[OpCode.NEG.val] = OpCode.NEG;
     opcode[OpCode.CONDITIONAL_AND.val] = OpCode.CONDITIONAL_AND;
     opcode[OpCode.CONDITIONAL_OR.val] = OpCode.CONDITIONAL_OR;
+    opcode[OpCode.RETURN.val] = OpCode.RETURN;
   }
 
   SPLObject evalFrame();
