@@ -358,7 +358,8 @@ public class DefaultEval implements Evaluation {
           }
           case INVERT -> { // INVERT
             pc++;
-            evalStack[top++] = evalStack[--top].invert();
+            SPLObject o = evalStack[--top].invert();
+            evalStack[top++] = o;
           }
           case CONDITIONAL_AND -> { // CONDITIONAL_AND
             pc++;
@@ -455,7 +456,7 @@ public class DefaultEval implements Evaluation {
               pc += oparg;
             }
           }
-          case JUMP_UNCON -> {
+          case JUMP_UNCON -> { // unconditional jump
             int oparg = getOparg();
             pc += oparg;
           }
