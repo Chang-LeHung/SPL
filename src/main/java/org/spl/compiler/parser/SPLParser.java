@@ -19,6 +19,7 @@ import org.spl.compiler.ir.unaryop.Not;
 import org.spl.compiler.ir.vals.*;
 import org.spl.compiler.lexer.Lexer;
 import org.spl.vm.objects.SPLBoolObject;
+import org.spl.vm.objects.SPLNoneObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -470,36 +471,43 @@ public class SPLParser extends AbstractSyntaxParser {
 
   private IRNode<Instruction> atom() throws SPLSyntaxError {
     Lexer.Token token = tokenFlow.peek();
-    if (token.isINT()) {
+    if (token.isNone()) {
+      tokenFlow.next();
+      int idx = context.addConstant(SPLNoneObject.getInstance());
+      Literal literal = new Literal(idx);
+      setSourceCodeInfo(literal, token);
+      return literal;
+    }
+    else if (token.isINT()) {
       tokenFlow.next();
       int idx = context.addConstant(token.getInt());
-      IntLiteral intLiteral = new IntLiteral(token.getInt(), (byte) idx);
+      IntLiteral intLiteral = new IntLiteral(token.getInt(), idx);
       setSourceCodeInfo(intLiteral, token);
       return intLiteral;
     } else if (token.isFLOAT()) {
       tokenFlow.next();
       int idx = context.addConstant(token.getFloat());
-      FloatLiteral floatLiteral = new FloatLiteral(token.getFloat(), (byte) idx);
+      FloatLiteral floatLiteral = new FloatLiteral(token.getFloat(), idx);
       setSourceCodeInfo(floatLiteral, token);
       return floatLiteral;
     } else if (token.isSTRING()) {
       tokenFlow.next();
       int idx = context.addConstant(token.getValueAsString());
-      StringLiteral stringLiteral = new StringLiteral(token.getValueAsString(), (byte) idx);
+      StringLiteral stringLiteral = new StringLiteral(token.getValueAsString(), idx);
       setSourceCodeInfo(stringLiteral, token);
       return stringLiteral;
     } else if (token.isFALSE()) {
       tokenFlow.next();
       SPLBoolObject o = SPLBoolObject.getFalse();
       int idx = context.addConstant(o);
-      BoolLiteral boolLiteral = new BoolLiteral((byte) idx);
+      BoolLiteral boolLiteral = new BoolLiteral(idx);
       setSourceCodeInfo(boolLiteral, token);
       return boolLiteral;
     } else if (token.isTRUE()) {
       tokenFlow.next();
       SPLBoolObject o = SPLBoolObject.getTrue();
       int idx = context.addConstant(o);
-      BoolLiteral boolLiteral = new BoolLiteral((byte) idx);
+      BoolLiteral boolLiteral = new BoolLiteral(idx);
       setSourceCodeInfo(boolLiteral, token);
       return boolLiteral;
     } else if (token.isIDENTIFIER() &&
