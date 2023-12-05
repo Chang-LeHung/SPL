@@ -4,7 +4,6 @@ import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.context.ASTContext;
-import org.spl.compiler.parser.ArithmeticParser;
 import org.spl.compiler.parser.SPLParser;
 import org.spl.vm.internal.SPLCodeObjectBuilder;
 import org.spl.vm.internal.objs.SPLCodeObject;
