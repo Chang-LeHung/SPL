@@ -1,4 +1,4 @@
-package org.spl.compiler.ir.stmt;
+package org.spl.compiler.ir.stmt.assignstmt;
 
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
