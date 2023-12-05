@@ -8,7 +8,7 @@ import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.Scope;
 import org.spl.compiler.ir.binaryop.*;
 import org.spl.compiler.ir.block.ProgramBlock;
-import org.spl.compiler.ir.controlflow.IfStmt;
+import org.spl.compiler.ir.stmt.controlflow.IfStmt;
 import org.spl.compiler.ir.exp.FuncCallExp;
 import org.spl.compiler.ir.exp.MethodCall;
 import org.spl.compiler.ir.exp.Pop;

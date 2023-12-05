@@ -1,4 +1,4 @@
-package org.spl.compiler.ir.controlflow;
+package org.spl.compiler.ir.stmt.controlflow;
 
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
