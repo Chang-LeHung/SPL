@@ -26,7 +26,8 @@ public class IfStmt extends AbstractIR<Instruction> {
   @Override
   public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
     JumpContext innerContex = new JumpContext(context);
-    thenBlock.doVisit(innerContex);
+    thenBlock.accept(innerContex);
+//    thenBlock.doVisit(innerContex);
     int size = innerContex.getNBytes();
     context.addInstruction(new Instruction(OpCode.JUMP_FALSE, size), condition.getLineNo(), condition.getColumnNo(), condition.getLen());
     List<JumpContext.Ins> ins = innerContex.getIns();
@@ -35,7 +36,8 @@ public class IfStmt extends AbstractIR<Instruction> {
     }
     if (elseBlock != null) {
       innerContex = new JumpContext(context);
-      elseBlock.doVisit(innerContex);
+      elseBlock.accept(innerContex);
+//      elseBlock.doVisit(innerContex);
       size = innerContex.getNBytes();
       context.addInstruction(new Instruction(OpCode.JUMP_UNCON, size), condition.getLineNo(), condition.getColumnNo(), condition.getLen());
       ins = innerContex.getIns();
