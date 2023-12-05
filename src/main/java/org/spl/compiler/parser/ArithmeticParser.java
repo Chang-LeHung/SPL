@@ -7,8 +7,8 @@ import org.spl.compiler.ir.BuiltinNames;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.Scope;
 import org.spl.compiler.ir.binaryop.*;
+import org.spl.compiler.ir.block.ProgramBlock;
 import org.spl.compiler.ir.context.DefaultASTContext;
-import org.spl.compiler.ir.controlflow.ProgramBlock;
 import org.spl.compiler.ir.exp.FuncCallExp;
 import org.spl.compiler.ir.exp.MethodCall;
 import org.spl.compiler.ir.exp.Pop;
@@ -41,14 +41,10 @@ import java.util.List;
  * IDENTIFIER       : [a-zA-Z]+;
  */
 public class ArithmeticParser extends AbstractSyntaxParser {
-  private final TokenFlow<Lexer.Token> tokenFlow;
-  private final DefaultASTContext<Instruction> context;
   private IRNode<Instruction> root;
 
   public ArithmeticParser(String filename) throws IOException, SPLSyntaxError {
     super(filename);
-    tokenFlow = new TokenFlow<>(tokens);
-    context = new DefaultASTContext<>(filename);
   }
 
   @Override
@@ -57,6 +53,7 @@ public class ArithmeticParser extends AbstractSyntaxParser {
     return root;
   }
 
+  @Override
   public IRNode<Instruction> getAST() {
     if (root == null) {
       throw new RuntimeException("AST not built");
@@ -549,29 +546,11 @@ public class ArithmeticParser extends AbstractSyntaxParser {
     }
   }
 
-  private void throwSyntaxError(String message, Lexer.Token token) throws SPLSyntaxError {
-    throw new SPLSyntaxError(
-        SPLException.buildErrorMessage(
-            filename,
-            token.getLineNo(),
-            token.getColumnNo(),
-            token.getLength(),
-            sourceCode.get(token.getLineNo() - 1),
-            message
-        ));
-  }
-
   public DefaultASTContext<Instruction> getContext() {
     return context;
   }
 
   public TokenFlow<Lexer.Token> getTokenFlow() {
     return tokenFlow;
-  }
-
-  public void setSourceCodeInfo(IRNode<?> node, Lexer.Token token) {
-    node.setLineNo(token.getLineNo());
-    node.setColumnNo(token.getColumnNo());
-    node.setLen(token.getLength());
   }
 }

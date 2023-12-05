@@ -8,7 +8,7 @@ public class SPLNoneType extends SPLCommonType {
   }
 
   private static class SelfHolder {
-    public static final SPLNoneType instance = new SPLNoneType(null, "None");
+    public static final SPLNoneType instance = new SPLNoneType(null, "none");
   }
 
   public static SPLNoneType getInstance() {

@@ -5,4 +5,6 @@ import org.spl.compiler.exceptions.SPLSyntaxError;
 
 public interface ASTBuilder<E> {
   IRNode<E> buildAST() throws SPLSyntaxError;
+
+  IRNode<E> getAST();
 }

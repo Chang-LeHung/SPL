@@ -34,9 +34,14 @@ public class IfStmt extends AbstractIR<Instruction> {
       context.addInstruction(i.ins, i.lineNo, i.columnNo, i.len);
     }
     if (elseBlock != null) {
-      elseBlock.accept(context);
-    } else {
-      context.addInstruction(new Instruction(OpCode.NOP), getLineNo(), getColumnNo(), getLen());
+      innerContex = new JumpContext(context);
+      elseBlock.doVisit(innerContex);
+      size = innerContex.getNBytes();
+      context.addInstruction(new Instruction(OpCode.JUMP_UNCON, size), condition.getLineNo(), condition.getColumnNo(), condition.getLen());
+      ins = innerContex.getIns();
+      for (JumpContext.Ins i : ins) {
+        context.addInstruction(i.ins, i.lineNo, i.columnNo, i.len);
+      }
     }
   }
 

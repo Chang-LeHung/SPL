@@ -21,7 +21,8 @@ public class InsVisitor implements Visitor<Instruction> {
     offset = 0;
     instructions = new ArrayList<>();
     serializedInstructions = new ArrayList<>();
-    String header = String.format("\u001B[31m%-6s %s %15s %s\u001B[0m", "Offset", "OpCode", "OpName", "OpArg");
+    String header = String.format("\u001B[31m%-6s %-15s %-16s %-15s\u001B[0m",
+        "Offset", "OpCode", "OpName", "Constant/OpArg");
     serializedInstructions.add(header);
     loadStoreInstructions = new HashSet<>();
     loadStoreInstructions.add(OpCode.LOAD_GLOBAL);
@@ -42,7 +43,7 @@ public class InsVisitor implements Visitor<Instruction> {
           "%-6d %s %s", offset, instruction.getCode(),
           idx2constant.get((instruction.getOpArg())));
     } else if (instruction.getCode() == OpCode.CALL ||
-        instruction.getCode() == OpCode.JUMP_FALSE ||
+        instruction.getCode() == OpCode.JUMP_FALSE || instruction.getCode() == OpCode.JUMP_UNCON ||
         instruction.getCode() == OpCode.CALL_METHOD) {
       serialized = String.format("%-6d %s %d", offset, instruction.getCode(),
           instruction.getOpArg());

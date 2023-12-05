@@ -7,9 +7,9 @@ import org.spl.compiler.tree.Visitor;
 public class Instruction implements InsPickle, ByteCode {
 
   private final OpCode code;
-  private final byte opArg;
+  private final int opArg;
 
-  public Instruction(OpCode code, byte opArg) {
+  public Instruction(OpCode code, int opArg) {
     this.code = code;
     this.opArg = opArg;
   }
@@ -23,7 +23,7 @@ public class Instruction implements InsPickle, ByteCode {
     return code;
   }
 
-  public byte getOpArg() {
+  public int getOpArg() {
     return opArg;
   }
 

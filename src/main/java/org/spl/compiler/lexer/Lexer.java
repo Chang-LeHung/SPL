@@ -268,7 +268,12 @@ public class Lexer {
             token = new Token(TOKEN_TYPE.ASSIGN_DIV, "/=");
             c = nextChar(builder);
           } else {
-            token = new Token(TOKEN_TYPE.DIV, "/");
+            if (c == '/') {
+              token = new Token(TOKEN_TYPE.TRUE_DIV, "//");
+              c = nextChar(builder);
+            } else {
+              token = new Token(TOKEN_TYPE.DIV, "/");
+            }
           }
           injectTokensAndClearBuilder(token, builder);
           tokens.add(token);
@@ -491,7 +496,7 @@ public class Lexer {
 
   public enum TOKEN_TYPE {
     EOF, NEWLINE, STARTER, // used only in the function doParse()
-    COMMA, IDENTIFIER, TRUE, FALSE, IMPORT, INT, FLOAT, STRING, SEMICOLON, LEFT_PARENTHESES, RIGHT_PARENTHESES, PLUS, MINUS, MUL, DIV, MOD, LSHIFT, RSHIFT, U_RSHIFT, // unconditional left shift
+    COMMA, IDENTIFIER, TRUE, FALSE, IMPORT, INT, FLOAT, STRING, SEMICOLON, LEFT_PARENTHESES, RIGHT_PARENTHESES, PLUS, MINUS, MUL, DIV, TRUE_DIV, MOD, LSHIFT, RSHIFT, U_RSHIFT, // unconditional left shift
     ASSIGN, EQ, LT, GT, GE, LE, NE, AND, CONDITIONAL_AND, OR, CONDITIONAL_OR, POWER, XOR, NOT, INVERT, CONDITIONAL_NOT, ASSIGN_ADD, ASSIGN_SUB, ASSIGN_MUL, ASSIGN_DIV, ASSIGN_POWER, ASSIGN_MOD, ASSIGN_INVERT, ASSIGN_LSHIFT, ASSIGN_RSHIFT, ASSIGN_U_RSHIFT, ASSIGN_AND, ASSIGN_OR, ASSIGN_XOR, IF, ELSE, DO, WHILE, FOR, BREAK, CONTINUE, RETURN, DOT, LBRACE, RBRACE, IN, CLASS, DEF, GLOBAL
   }
 
@@ -548,6 +553,9 @@ public class Lexer {
           }
           case "if" -> {
             this.token = TOKEN_TYPE.IF;
+          }
+          case "else" -> {
+            this.token = TOKEN_TYPE.ELSE;
           }
         }
       }
@@ -702,6 +710,13 @@ public class Lexer {
       return token == TOKEN_TYPE.LEFT_PARENTHESES;
     }
 
+    public boolean isRBRACE() {
+      return token == TOKEN_TYPE.RBRACE;
+    }
+
+    public boolean isLBRACE() {
+      return token == TOKEN_TYPE.LBRACE;
+    }
     public boolean isRPAREN() {
       return token == TOKEN_TYPE.RIGHT_PARENTHESES;
     }

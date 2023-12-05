@@ -7,6 +7,7 @@ public enum Op {
   SUB("-"),
   MUL("*"),
   DIV("/"),
+  TRUE_DIV("//"),
   MOD("%"),
   LT("<"),
   GT(">"),

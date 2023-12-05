@@ -48,7 +48,11 @@ public enum OpCode {
   LOAD,
   CALL,
   LOAD_CONST,
-  POP;
+  POP,
+  JUMP_FALSE,
+  JUMP_UNCON,
+  TRUE_DIV,
+  NEG;
   public final byte val;
 
   OpCode() {

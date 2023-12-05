@@ -34,8 +34,7 @@ public class CodeObjectTest {
     ArithmeticParser arithmeticParser = new ArithmeticParser(resource);
     IRNode<Instruction> ir = arithmeticParser.buildAST();
     DefaultASTContext<Instruction> context = arithmeticParser.getContext();
-    ir.accept(context);
-    context.completeVisiting();
+    context.generateByteCodes(ir);
     InsVisitor insVisitor = new InsVisitor(context.getConstantTable());
     context.getInstructions().forEach(x -> x.accept(insVisitor));
     System.out.println(insVisitor);
@@ -50,8 +49,7 @@ public class CodeObjectTest {
     ArithmeticParser arithmeticParser = new ArithmeticParser(resource);
     IRNode<Instruction> ir = arithmeticParser.buildAST();
     DefaultASTContext<Instruction> context = arithmeticParser.getContext();
-    ir.accept(context);
-    context.completeVisiting();
+    context.generateByteCodes(ir);
     InsVisitor insVisitor = new InsVisitor(context.getConstantTable());
     context.getInstructions().forEach(x -> x.accept(insVisitor));
     System.out.println(insVisitor);
@@ -85,8 +83,7 @@ public class CodeObjectTest {
     System.out.println(arithmeticParser.getTokenFlow());
     IRNode<Instruction> ir = arithmeticParser.buildAST();
     DefaultASTContext<Instruction> context = arithmeticParser.getContext();
-    ir.accept(context);
-    context.completeVisiting();
+    context.generateByteCodes(ir);
     InsVisitor insVisitor = new InsVisitor(context.getConstantTable());
     context.getInstructions().forEach(x -> x.accept(insVisitor));
     System.out.println(insVisitor);

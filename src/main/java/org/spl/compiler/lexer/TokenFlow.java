@@ -22,9 +22,12 @@ public class TokenFlow<T> implements Flow<T>, List<T> {
     off++;
   }
 
-  @Override
   public int getOff() {
     return off;
+  }
+
+  public void setOff(int off) {
+    this.off = off;
   }
 
   @Override
@@ -170,6 +173,16 @@ public class TokenFlow<T> implements Flow<T>, List<T> {
   @Override
   public T lookAhead(int n) {
     return tokens.get(off + n);
+  }
+
+  @Override
+  public int getCursor() {
+   return getOff();
+  }
+
+  @Override
+  public void setCursor(int cursor) {
+    setOff(cursor);
   }
 
   @Override

@@ -3,22 +3,33 @@ package org.spl.compiler.ir.vals;
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
 import org.spl.compiler.exceptions.SPLSyntaxError;
-import org.spl.compiler.ir.*;
+import org.spl.compiler.ir.AbstractIR;
+import org.spl.compiler.ir.IRNode;
+import org.spl.compiler.ir.Op;
+import org.spl.compiler.ir.Scope;
 import org.spl.compiler.ir.context.ASTContext;
 
 import java.util.List;
 
 import static org.spl.compiler.ir.Op.NOP;
 
-public class Variable extends AbstractIR<Instruction> {
+public class Variable extends AbstractIR<Instruction> implements RValue<Instruction> {
 
   private final String name;
   private final Scope scope;
+  private final IRNode<Instruction> rValue;
   private List<IRNode<Instruction>> children;
 
   public Variable(Scope scope, String name) {
     this.name = name;
     this.scope = scope;
+    rValue = null;
+  }
+
+  public Variable(Scope scope, String name, IRNode<Instruction> rValue) {
+    this.name = name;
+    this.scope = scope;
+    this.rValue = rValue;
   }
 
   @Override
@@ -49,7 +60,10 @@ public class Variable extends AbstractIR<Instruction> {
   @Override
   public List<IRNode<Instruction>> getChildren() {
     if (children == null) {
-      children = List.of();
+      if (rValue == null)
+        children = List.of();
+      else
+        children = List.of(rValue);
     }
     return children;
   }
@@ -80,5 +94,15 @@ public class Variable extends AbstractIR<Instruction> {
 
   public String getVariableName() {
     return name;
+  }
+
+  @Override
+  public String getRValueName() {
+    return name;
+  }
+
+  @Override
+  public IRNode<Instruction> getRValueNode() {
+    return rValue;
   }
 }

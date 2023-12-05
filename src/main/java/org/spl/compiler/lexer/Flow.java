@@ -8,7 +8,9 @@ public interface Flow<T> {
 
   T lookAhead(int n);
 
-  int getOff();
+  int getCursor();
+
+  void setCursor(int cursor);
 
   T peek();
 

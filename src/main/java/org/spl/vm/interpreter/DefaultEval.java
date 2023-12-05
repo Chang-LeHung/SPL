@@ -26,6 +26,7 @@ public class DefaultEval implements Evaluation {
     if (codeObj.getArgs() != 0) {
       throw new SPLInternalException("SPLCodeObject's args must be zero");
     }
+    Evaluation.init();
     pc = 0;
     evalStack = new SPLObject[codeObj.getMaxStackSize()];
     code = codeObj.getCode();
@@ -40,71 +41,71 @@ public class DefaultEval implements Evaluation {
     try {
       while (pc < code.length) {
         insNumExecuted++;
-        switch (code[pc++] & 0xff) {
-          case 0 -> { // NOP
+        switch (opcode[code[pc++] & 0xff]) {
+          case NOP -> { // NOP
             pc++;
           }
-          case 1 -> { // ADD
+          case ADD -> { // ADD
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
             evalStack[top++] = lhs.add(rhs);
           }
-          case 2 -> { // SUB
+          case SUB -> { // SUB
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
             evalStack[top++] = lhs.sub(rhs);
           }
-          case 3 -> { // MUL
+          case MUL -> { // MUL
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
             evalStack[top++] = lhs.mul(rhs);
           }
-          case 4 -> { // DIV
+          case DIV -> { // DIV
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
             evalStack[top++] = lhs.div(rhs);
           }
-          case 5 -> { // MOD
+          case MOD -> { // MOD
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
             evalStack[top++] = lhs.mod(rhs);
           }
-          case 6 -> { // POWER
+          case POWER -> { // POWER
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
             evalStack[top++] = lhs.pow(rhs);
           }
-          case 7 -> { // XOR
+          case XOR -> { // XOR
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
             evalStack[top++] = lhs.xor(rhs);
           }
-          case 8 -> { // LSHIFT
+          case LSHIFT -> { // LSHIFT
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
             evalStack[top++] = lhs.lshift(rhs);
           }
-          case 9 -> { // RSHIFT
+          case RSHIFT -> { // RSHIFT
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
             evalStack[top++] = lhs.rshift(rhs);
           }
-          case 10 -> { // U_RSHIFT
+          case U_RSHIFT -> { // U_RSHIFT
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
             evalStack[top++] = lhs.URshift(rhs);
           }
-          case 11 -> { // LSHIFT_ASSIGN
+          case LSHIFT_ASSIGN -> { // LSHIFT_ASSIGN
             byte oparg = code[pc++];
             SPLObject rhs = evalStack[--top];
             SPLObject name = constants[oparg];
@@ -118,7 +119,7 @@ public class DefaultEval implements Evaluation {
             }
             throw new SPLInternalException("InternalError: not found " + name.str());
           }
-          case 12 -> { // RSHIFT_ASSIGN
+          case RSHIFT_ASSIGN  -> { // RSHIFT_ASSIGN
             byte oparg = code[pc++];
             SPLObject rhs = evalStack[--top];
             SPLObject name = constants[oparg];
@@ -132,7 +133,7 @@ public class DefaultEval implements Evaluation {
             }
             throw new SPLInternalException("InternalError: not found " + name.str());
           }
-          case 13 -> { // U_RSHIFT_ASSIGN
+          case U_RSHIFT_ASSIGN -> { // U_RSHIFT_ASSIGN
             byte oparg = code[pc++];
             SPLObject rhs = evalStack[--top];
             SPLObject name = constants[oparg];
@@ -146,7 +147,7 @@ public class DefaultEval implements Evaluation {
             }
             throw new SPLInternalException("InternalError: not found " + name.str());
           }
-          case 14 -> { // AND_ASSIGN
+          case AND_ASSIGN -> { // AND_ASSIGN
             byte oparg = code[pc++];
             SPLObject rhs = evalStack[--top];
             SPLObject name = constants[oparg];
@@ -160,7 +161,7 @@ public class DefaultEval implements Evaluation {
             }
             throw new SPLInternalException("InternalError: not found " + name.str());
           }
-          case 15 -> { // OR_ASSIGN
+          case OR_ASSIGN -> { // OR_ASSIGN
             byte oparg = code[pc++];
             SPLObject rhs = evalStack[--top];
             SPLObject name = constants[oparg];
@@ -174,7 +175,7 @@ public class DefaultEval implements Evaluation {
             }
             throw new SPLInternalException("InternalError: not found " + name.str());
           }
-          case 16 -> { // XOR_ASSIGN
+          case XOR_ASSIGN -> { // XOR_ASSIGN
             byte oparg = code[pc++];
             SPLObject rhs = evalStack[--top];
             SPLObject name = constants[oparg];
@@ -188,7 +189,7 @@ public class DefaultEval implements Evaluation {
             }
             throw new SPLInternalException("InternalError: not found " + name.str());
           }
-          case 17 -> { // ADD_ASSIGN
+          case ADD_ASSIGN -> { // ADD_ASSIGN
             byte oparg = code[pc++];
             SPLObject rhs = evalStack[--top];
             SPLObject name = constants[oparg];
@@ -202,7 +203,7 @@ public class DefaultEval implements Evaluation {
             }
             throw new SPLInternalException("InternalError: not found " + name.str());
           }
-          case 18 -> { // SUB_ASSIGN
+          case SUB_ASSIGN -> { // SUB_ASSIGN
             byte oparg = code[pc++];
             SPLObject rhs = evalStack[--top];
             SPLObject name = constants[oparg];
@@ -216,7 +217,7 @@ public class DefaultEval implements Evaluation {
             }
             throw new SPLInternalException("InternalError: not found " + name.str());
           }
-          case 19 -> { // MUL_ASSIGN
+          case MUL_ASSIGN -> { // MUL_ASSIGN
             byte oparg = code[pc++];
             SPLObject rhs = evalStack[--top];
             SPLObject name = constants[oparg];
@@ -230,7 +231,7 @@ public class DefaultEval implements Evaluation {
             }
             throw new SPLInternalException("InternalError: not found " + name.str());
           }
-          case 20 -> { // DIV_ASSIGN
+          case DIV_ASSIGN -> { // DIV_ASSIGN
             byte oparg = code[pc++];
             SPLObject rhs = evalStack[--top];
             SPLObject name = constants[oparg];
@@ -244,7 +245,7 @@ public class DefaultEval implements Evaluation {
             }
             throw new SPLInternalException("InternalError: not found " + name.str());
           }
-          case 21 -> { // MOD_ASSIGN
+          case MOD_ASSIGN -> { // MOD_ASSIGN
             byte oparg = code[pc++];
             SPLObject rhs = evalStack[--top];
             SPLObject name = constants[oparg];
@@ -258,7 +259,7 @@ public class DefaultEval implements Evaluation {
             }
             throw new SPLInternalException("InternalError: not found " + name.str());
           }
-          case 22 -> { // POWER_ASSIGN
+          case POWER_ASSIGN -> { // POWER_ASSIGN
             byte oparg = code[pc++];
             SPLObject rhs = evalStack[--top];
             SPLObject name = constants[oparg];
@@ -272,7 +273,7 @@ public class DefaultEval implements Evaluation {
             }
             throw new SPLInternalException("InternalError: not found " + name.str());
           }
-          case 23 -> { // LT
+          case LT -> { // LT
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
@@ -282,7 +283,7 @@ public class DefaultEval implements Evaluation {
               evalStack[top++] = SPLBoolObject.getFalse();
             }
           }
-          case 24 -> { // GT
+          case GT -> { // GT
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
@@ -292,7 +293,7 @@ public class DefaultEval implements Evaluation {
               evalStack[top++] = SPLBoolObject.getFalse();
             }
           }
-          case 25 -> { // EQ
+          case EQ -> { // EQ
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
@@ -302,7 +303,7 @@ public class DefaultEval implements Evaluation {
               evalStack[top++] = SPLBoolObject.getFalse();
             }
           }
-          case 26 -> { // NE
+          case NE -> { // NE
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
@@ -312,7 +313,7 @@ public class DefaultEval implements Evaluation {
               evalStack[top++] = SPLBoolObject.getFalse();
             }
           }
-          case 27 -> { // LE
+          case LE -> { // LE
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
@@ -322,7 +323,7 @@ public class DefaultEval implements Evaluation {
               evalStack[top++] = SPLBoolObject.getFalse();
             }
           }
-          case 28 -> { // GE
+          case GE -> { // GE
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
@@ -332,23 +333,23 @@ public class DefaultEval implements Evaluation {
               evalStack[top++] = SPLBoolObject.getFalse();
             }
           }
-          case 29 -> { // AND
+          case AND -> { // AND
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
             evalStack[top++] = lhs.and(rhs);
           }
-          case 30 -> { // OR
+          case OR -> { // OR
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
             evalStack[top++] = lhs.or(rhs);
           }
-          case 31 -> { // INVERT
+          case INVERT -> { // INVERT
             pc++;
             evalStack[top++] = evalStack[--top].invert();
           }
-          case 32 -> { // CONDITIONAL_AND
+          case CONDITIONAL_AND -> { // CONDITIONAL_AND
             pc++;
             if (evalStack[--top].conditionalAnd(evalStack[--top]) == SPLBoolObject.getTrue()) {
               evalStack[top++] = SPLBoolObject.getTrue();
@@ -356,7 +357,7 @@ public class DefaultEval implements Evaluation {
               evalStack[top++] = SPLBoolObject.getFalse();
             }
           }
-          case 33 -> { // CONDITIONAL_OR
+          case CONDITIONAL_OR -> { // CONDITIONAL_OR
             pc++;
             if (evalStack[--top].conditionalOr(evalStack[--top]) == SPLBoolObject.getTrue()) {
               evalStack[top++] = SPLBoolObject.getTrue();
@@ -364,17 +365,17 @@ public class DefaultEval implements Evaluation {
               evalStack[top++] = SPLBoolObject.getFalse();
             }
           }
-          case 34 -> { // NOT
+          case NOT -> { // NOT
             pc++;
             evalStack[top++] = evalStack[--top].not();
           }
-          case 35 -> { // STORE_LOCAL
+          case STORE_LOCAL -> { // STORE_LOCAL
             int oparg = code[pc++];
             SPLObject o = evalStack[--top];
             SPLObject key = constants[oparg];
             locals.put(key, o);
           }
-          case 36 -> { // LOAD_LOCAL
+          case LOAD_LOCAL -> { // LOAD_LOCAL
             int oparg = code[pc++];
             if (locals.containsKey(constants[oparg])) {
               evalStack[top++] = locals.get(constants[oparg]);
@@ -382,12 +383,12 @@ public class DefaultEval implements Evaluation {
             }
             throw new SPLInternalException("InternalError: LOAD_LOCAL failed, " + constants[oparg].str() + " is not defined");
           }
-          case 37 -> { // STORE_GLOBAL
+          case STORE_GLOBAL -> { // STORE_GLOBAL
             int oparg = code[pc++];
             SPLObject o = evalStack[--top];
             globals.put(constants[oparg], o);
           }
-          case 38 -> { // LOAD_GLOBAL
+          case LOAD_GLOBAL -> { // LOAD_GLOBAL
             int oparg = code[pc++];
             if (globals.containsKey(constants[oparg])) {
               evalStack[top++] = globals.get(constants[oparg]);
@@ -395,7 +396,7 @@ public class DefaultEval implements Evaluation {
             }
             throw new SPLInternalException("InternalError: not found, " + constants[oparg].str() + " is not defined");
           }
-          case 39 -> { // LOAD_NAME
+          case LOAD_NAME -> { // LOAD_NAME
             int oparg = code[pc++];
             if (locals.containsKey(constants[oparg])) {
               evalStack[top++] = locals.get(constants[oparg]);
@@ -412,15 +413,15 @@ public class DefaultEval implements Evaluation {
             }
             throw new SPLInternalException("InternalError: LOAD_NAME failed, " + constants[oparg].str() + " is not defined");
           }
-          case 40 -> { // LOAD_METHOD
+          case LOAD_METHOD -> { // LOAD_METHOD
           }
-          case 41 -> { // CALL_METHOD
+          case CALL_METHOD -> { // CALL_METHOD
           }
-          case 42 -> { // STORE
+          case STORE -> { // STORE
           }
-          case 43 -> { // LOAD
+          case LOAD -> { // LOAD
           }
-          case 44 -> { // CALL
+          case CALL -> { // CALL
             int oparg = code[pc++];
             SPLObject callable = evalStack[--top];
             SPLObject[] args = new SPLObject[oparg];
@@ -429,19 +430,23 @@ public class DefaultEval implements Evaluation {
             }
             evalStack[top++] = callable.call(args);
           }
-          case 45 -> { // LOAD_CONST
+          case LOAD_CONST -> { // LOAD_CONST
             int oparg = code[pc++];
             evalStack[top++] = constants[oparg];
           }
-          case 46 -> { // POP
+          case POP -> { // POP
             pc++;
             top--;
           }
-          case 49 -> { // JUMP_FALSE
+          case JUMP_FALSE -> { // JUMP_FALSE
             int oparg = code[pc++];
             if (evalStack[--top] == SPLBoolObject.getFalse()) {
               pc += oparg;
             }
+          }
+          case JUMP_UNCON -> {
+            int oparg = code[pc++];
+            pc += oparg;
           }
           default -> {
             throw new SPLInternalException("InternalError: unknown opcode " + code[--pc]);
