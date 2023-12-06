@@ -15,6 +15,9 @@ public class BreakVisitor extends JumpContext {
 
   @Override
   public void visit(IRNode<Instruction> node) throws SPLSyntaxError {
+    // Only need to handle the first layer of nesting.
+    if (node instanceof DoWhile || node instanceof ForStmt || node instanceof WhileStmt)
+      return;
     if (node instanceof Break brk) {
       brk.setAbsoluteAddr(position);
     }
