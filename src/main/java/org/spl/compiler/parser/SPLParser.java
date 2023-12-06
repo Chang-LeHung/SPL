@@ -12,6 +12,7 @@ import org.spl.compiler.ir.exp.FuncCallExp;
 import org.spl.compiler.ir.exp.MethodCall;
 import org.spl.compiler.ir.exp.Pop;
 import org.spl.compiler.ir.stmt.assignstmt.*;
+import org.spl.compiler.ir.stmt.controlflow.DoWhile;
 import org.spl.compiler.ir.stmt.controlflow.IfStmt;
 import org.spl.compiler.ir.stmt.controlflow.WhileStmt;
 import org.spl.compiler.ir.unaryop.Invert;
@@ -34,6 +35,8 @@ import java.util.List;
  *              | expression
  *              | assign
  *              | whileStmt
+ *              | doWhile
+ * doWhile      : 'do' block 'while' '(' expression ')'
  * ifStatement  : 'if' '(' expression  ') 'block ('else if' '(' expression  ') block)* ('else' block)*
  * whileStmt    : 'while' '(' expression ')' block
  * assign       : IDENTIFIER '=' expression
@@ -165,7 +168,10 @@ public class SPLParser extends AbstractSyntaxParser {
         return ifStatement();
       } else if (tokenFlow.peek().isWHILE()) {
         return whileStatement();
-      } else if (tokenFlow.peek().isIDENTIFIER() && tokenFlow.lookAhead().isASSIGN()) {
+      } else if (tokenFlow.peek().isDO()) {
+        return doWhileStatement();
+      }
+      else if (tokenFlow.peek().isIDENTIFIER() && tokenFlow.lookAhead().isASSIGN()) {
         return assignment();
       } else {
         // we will perfect this in the future
@@ -183,6 +189,24 @@ public class SPLParser extends AbstractSyntaxParser {
       throwSyntaxError("Illegal statement, expected assignment or expression", tokenFlow.peek());
     }
     return null;
+  }
+
+  private IRNode<Instruction> doWhileStatement() throws SPLSyntaxError {
+    Lexer.Token token = tokenFlow.peek();
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.DO, "require 'do' instead of " + tokenFlow.peek().getValueAsString());
+    tokenFlow.next();
+    IRNode<Instruction> block = block();
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.WHILE, "require 'while' instead of "
+        + tokenFlow.peek().getValueAsString());
+    tokenFlow.next();
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LEFT_PARENTHESES, "require '(' instead of " + tokenFlow.peek().getValueAsString());
+    tokenFlow.next();
+    IRNode<Instruction> condition = expression();
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RIGHT_PARENTHESES, "require ')' instead of " + tokenFlow.peek().getValueAsString());
+    tokenFlow.next();
+    DoWhile doWhile = new DoWhile(condition, block);
+    setSourceCodeInfo(doWhile, token);
+    return doWhile;
   }
 
   private IRNode<Instruction> whileStatement() throws SPLSyntaxError {

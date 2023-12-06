@@ -456,9 +456,15 @@ public class DefaultEval implements Evaluation {
               pc += oparg;
             }
           }
-          case JUMP_BACK -> {
+          case JUMP_BACK -> { // JUMP_BACK
             int oparg = getOparg();
             pc -= oparg;
+          }
+          case JUMP_BACK_TRUE -> { // JUMP_BACK_TRUE
+            int oparg = getOparg();
+            if (evalStack[--top] == SPLBoolObject.getTrue()) {
+              pc -= oparg;
+            }
           }
           case JUMP_UNCON -> { // unconditional jump
             int oparg = getOparg();

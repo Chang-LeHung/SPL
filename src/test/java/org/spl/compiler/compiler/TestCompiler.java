@@ -87,4 +87,9 @@ public class TestCompiler {
   public void testWhile() throws SPLInternalException, SPLSyntaxError, IOException {
     run("controlflow/while.spl");
   }
+
+  @Test
+  public void testDoWhile() throws SPLInternalException, SPLSyntaxError, IOException {
+    run("controlflow/dowhile.spl");
+  }
 }
