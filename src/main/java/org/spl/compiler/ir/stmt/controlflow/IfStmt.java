@@ -30,20 +30,14 @@ public class IfStmt extends AbstractIR<Instruction> {
 //    thenBlock.doVisit(innerContex);
     int size = innerContex.getNBytes();
     context.addInstruction(new Instruction(OpCode.JUMP_FALSE, size), condition.getLineNo(), condition.getColumnNo(), condition.getLen());
-    List<JumpContext.Ins> ins = innerContex.getIns();
-    for (JumpContext.Ins i : ins) {
-      context.addInstruction(i.ins, i.lineNo, i.columnNo, i.len);
-    }
+    thenBlock.accept(context);
     if (elseBlock != null) {
       innerContex = new JumpContext(context);
       elseBlock.accept(innerContex);
 //      elseBlock.doVisit(innerContex);
       size = innerContex.getNBytes();
       context.addInstruction(new Instruction(OpCode.JUMP_UNCON, size), condition.getLineNo(), condition.getColumnNo(), condition.getLen());
-      ins = innerContex.getIns();
-      for (JumpContext.Ins i : ins) {
-        context.addInstruction(i.ins, i.lineNo, i.columnNo, i.len);
-      }
+      elseBlock.accept(context);
     }
   }
 

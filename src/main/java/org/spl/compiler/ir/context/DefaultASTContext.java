@@ -1,6 +1,8 @@
 package org.spl.compiler.ir.context;
 
 import org.spl.compiler.bytecode.ByteCode;
+import org.spl.compiler.bytecode.Instruction;
+import org.spl.compiler.bytecode.OpCode;
 import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.NameSpace;
@@ -12,11 +14,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DefaultASTContext<E extends ByteCode> implements Visitor<E>, ASTContext<E> {
+public class DefaultASTContext<E extends Instruction> implements Visitor<E>, ASTContext<E> {
 
   private String filename;
   private final List<E> instructions;
-  private final Map<String, Integer> labels;
   private final Map<Object, Integer> constantTable;
   private int firstLineNo;
   private final ByteArrayOutputStream code;
@@ -36,7 +37,6 @@ public class DefaultASTContext<E extends ByteCode> implements Visitor<E>, ASTCon
     stackSize = 0;
     topStackSize = 0;
     instructions = new ArrayList<>();
-    labels = new HashMap<>();
     constantTable = new HashMap<>();
     nameSpace = new NameSpace<>();
     firstLineNo = -1;
@@ -84,7 +84,15 @@ public class DefaultASTContext<E extends ByteCode> implements Visitor<E>, ASTCon
     }
     // write instruction info
     write(instruction.getOpCode(), code);
-    write(instruction.getOparg(), code);
+    if (instruction.getCode() == OpCode.JUMP_ABSOLUTE) {
+      int arg = instruction.getOparg();
+      code.write(arg >> 16);
+      code.write(arg >> 8);
+      code.write(arg);
+    } else {
+      write(instruction.getOparg(), code);
+    }
+    // write debug info
     write(len, lenColumn);
     write(columnNo, lenColumn);
   }

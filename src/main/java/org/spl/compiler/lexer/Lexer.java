@@ -735,6 +735,14 @@ public class Lexer {
       return token == TOKEN_TYPE.INT;
     }
 
+    public boolean isBreak() {
+      return token == TOKEN_TYPE.BREAK;
+    }
+
+    public boolean isContinue() {
+      return token == TOKEN_TYPE.CONTINUE;
+    }
+
     public boolean isFLOAT() {
       return token == TOKEN_TYPE.FLOAT;
     }

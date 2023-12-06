@@ -1,6 +1,7 @@
 package org.spl.compiler.ir.stmt.controlflow;
 
 import org.spl.compiler.bytecode.Instruction;
+import org.spl.compiler.bytecode.OpCode;
 import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.context.ASTContext;
@@ -50,9 +51,13 @@ public class JumpContext implements ASTContext<Instruction> {
   @Override
   public void addInstruction(Instruction instruction, int lineNo, int columnNo, int len) throws SPLSyntaxError {
     code.add(new Ins(instruction, lineNo, columnNo, len));
-    nBytes += 2;
-    if (instruction.getOparg() >= 255)
+    if (instruction.getCode() == OpCode.JUMP_ABSOLUTE) {
+      nBytes += 4;
+    } else {
       nBytes += 2;
+      if (instruction.getOparg() >= 255)
+        nBytes += 2;
+    }
   }
 
   @Override

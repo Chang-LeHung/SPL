@@ -470,6 +470,15 @@ public class DefaultEval implements Evaluation {
             int oparg = getOparg();
             pc += oparg;
           }
+          case JUMP_ABSOLUTE -> {
+            int pos = 0;
+            pos |= code[pc++];
+            pos <<= 8;
+            pos |= code[pc++];
+            pos <<= 8;
+            pos |= code[pc];
+            pc = pos;
+          }
           case RETURN -> {
             pc++;
             return evalStack[--top];

@@ -23,11 +23,18 @@ public class DoWhile extends AbstractIR<Instruction> {
   public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
     int size = context.getCodeSize();
     block.accept(context);
+    int target = context.getCodeSize();
     condition.accept(context);
     int diff = context.getCodeSize() - size + 2;
     if (diff >= 255) {
       diff += 2;
     }
+    BreakVisitor brkVisitor = new BreakVisitor(context, size + diff);
+    // fix all break statements' jump target
+    block.accept(brkVisitor);
+    ContinueVisitor continueVisitor = new ContinueVisitor(context, target);
+    // fix all continue statements' jump target
+    block.accept(continueVisitor);
     context.addInstruction(new Instruction(OpCode.JUMP_BACK_TRUE, diff), condition.getLineNo(), condition.getColumnNo(), condition.getLen());
   }
 

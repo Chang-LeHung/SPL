@@ -12,9 +12,7 @@ import org.spl.compiler.ir.exp.FuncCallExp;
 import org.spl.compiler.ir.exp.MethodCall;
 import org.spl.compiler.ir.exp.Pop;
 import org.spl.compiler.ir.stmt.assignstmt.*;
-import org.spl.compiler.ir.stmt.controlflow.DoWhile;
-import org.spl.compiler.ir.stmt.controlflow.IfStmt;
-import org.spl.compiler.ir.stmt.controlflow.WhileStmt;
+import org.spl.compiler.ir.stmt.controlflow.*;
 import org.spl.compiler.ir.unaryop.Invert;
 import org.spl.compiler.ir.unaryop.Neg;
 import org.spl.compiler.ir.unaryop.Not;
@@ -527,7 +525,18 @@ public class SPLParser extends AbstractSyntaxParser {
       Literal literal = new Literal(idx);
       setSourceCodeInfo(literal, token);
       return literal;
-    } else if (token.isINT()) {
+    } else if (token.isBreak()) {
+      tokenFlow.next();
+      Break brk = new Break();
+      setSourceCodeInfo(brk, token);
+      return brk;
+    } else if (token.isContinue()) {
+      tokenFlow.next();
+      Continue cont = new Continue();
+      setSourceCodeInfo(cont, token);
+      return cont;
+    }
+    else if (token.isINT()) {
       tokenFlow.next();
       int idx = context.addConstant(token.getInt());
       IntLiteral intLiteral = new IntLiteral(token.getInt(), idx);
@@ -594,10 +603,10 @@ public class SPLParser extends AbstractSyntaxParser {
       if (token.isRPAREN()) {
         return expression;
       } else {
-        throwSyntaxError("Expected ')' instead of " + token.getValueAsString(), token);
+        throwSyntaxError("Expected ')' instead of \"" + token.getValueAsString() + "\"", token);
       }
     }
-    throwSyntaxError("Expected an expression instead of " + token.getValueAsString(), token);
+    throwSyntaxError("Expected an expression instead of \"" + token.getValueAsString() + "\"", token);
     return null;
   }
 
@@ -614,7 +623,7 @@ public class SPLParser extends AbstractSyntaxParser {
               token.getColumnNo(),
               token.getLength(),
               sourceCode.get(token.getLineNo()),
-              "Expected an assign operator instead of " + token.getValueAsString()
+              "Expected an assign operator instead of \"" + token.getValueAsString() + "\""
           ));
     }
     tokenFlow.next();
@@ -728,7 +737,7 @@ public class SPLParser extends AbstractSyntaxParser {
       setSourceCodeInfo(funcCallExp, token);
       return funcCallExp;
     }
-    throwSyntaxError("Expected an function name instead of " + token.getValueAsString(), token);
+    throwSyntaxError("Expected an function name instead of \"" + token.getValueAsString() + "\"", token);
     return null;
   }
 
@@ -736,7 +745,7 @@ public class SPLParser extends AbstractSyntaxParser {
     Lexer.Token token = tokenFlow.peek();
     tokenFlow.next();
     if (token.isIDENTIFIER()) {
-      throwSyntaxError("Expected an method name instead of " + token.getValueAsString(), token);
+      throwSyntaxError("Expected an method name instead of \"" + token.getValueAsString() + "\"", token);
     }
     if (tokenFlow.lookAhead().isDOT()) {
       throwSyntaxError("Expected dot instead of " + tokenFlow.lookAhead().getValueAsString(), token);
@@ -755,7 +764,7 @@ public class SPLParser extends AbstractSyntaxParser {
     }
     token = tokenFlow.peek();
     tokenFlow.next();
-    tokenAssertion(token, Lexer.TOKEN_TYPE.LEFT_PARENTHESES, "Expected '(' instead of " + token.getValueAsString());
+    tokenAssertion(token, Lexer.TOKEN_TYPE.LEFT_PARENTHESES, "Expected '(' instead of \"" + token.getValueAsString() + "\"");
     List<IRNode<Instruction>> args = new ArrayList<>();
     extractArgs(args);
     MethodCall methodCall = new MethodCall(objName, methodName, args, Scope.LOCAL);
