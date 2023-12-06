@@ -58,4 +58,5 @@ public interface ASTContext<E> {
 
   List<E> getInstructions();
 
+  int getCodeSize();
 }

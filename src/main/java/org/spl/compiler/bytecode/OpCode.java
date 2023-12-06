@@ -51,6 +51,8 @@ public enum OpCode {
   POP,
   JUMP_FALSE,
   JUMP_UNCON,
+  JUMP_BACK,
+  JUMP_ABSOLUTE,
   TRUE_DIV,
   NEG,
   RETURN,

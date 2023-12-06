@@ -8,11 +8,12 @@ import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.Scope;
 import org.spl.compiler.ir.binaryop.*;
 import org.spl.compiler.ir.block.ProgramBlock;
-import org.spl.compiler.ir.stmt.controlflow.IfStmt;
 import org.spl.compiler.ir.exp.FuncCallExp;
 import org.spl.compiler.ir.exp.MethodCall;
 import org.spl.compiler.ir.exp.Pop;
 import org.spl.compiler.ir.stmt.assignstmt.*;
+import org.spl.compiler.ir.stmt.controlflow.IfStmt;
+import org.spl.compiler.ir.stmt.controlflow.WhileStmt;
 import org.spl.compiler.ir.unaryop.Invert;
 import org.spl.compiler.ir.unaryop.Neg;
 import org.spl.compiler.ir.unaryop.Not;
@@ -32,7 +33,9 @@ import java.util.List;
  * statement    : ifStatement
  *              | expression
  *              | assign
+ *              | whileStmt
  * ifStatement  : 'if' '(' expression  ') 'block ('else if' '(' expression  ') block)* ('else' block)*
+ * whileStmt    : 'while' '(' expression ')' block
  * assign       : IDENTIFIER '=' expression
  *              | IDENTIFIER '+=' expression
  *              | IDENTIFIER '-=' expression
@@ -160,6 +163,8 @@ public class SPLParser extends AbstractSyntaxParser {
     try {
       if (tokenFlow.peek().isIF()) {
         return ifStatement();
+      } else if (tokenFlow.peek().isWHILE()) {
+        return whileStatement();
       } else if (tokenFlow.peek().isIDENTIFIER() && tokenFlow.lookAhead().isASSIGN()) {
         return assignment();
       } else {
@@ -180,6 +185,20 @@ public class SPLParser extends AbstractSyntaxParser {
     return null;
   }
 
+  private IRNode<Instruction> whileStatement() throws SPLSyntaxError {
+    Lexer.Token token = tokenFlow.peek();
+    tokenFlow.next();
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LEFT_PARENTHESES, "require ( instead of " + tokenFlow.peek().getValueAsString());
+    tokenFlow.next();
+    IRNode<Instruction> condition = expression();
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RIGHT_PARENTHESES, "require ) instead of " + tokenFlow.peek().getValueAsString());
+    tokenFlow.next();
+    IRNode<Instruction> block = block();
+    WhileStmt whileStmt = new WhileStmt(condition, block);
+    setSourceCodeInfo(whileStmt, token);
+    return whileStmt;
+  }
+
   private IRNode<Instruction> block() throws SPLSyntaxError {
     if (tokenFlow.peek().isLBRACE()) {
       tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LBRACE, "require { instead of " + tokenFlow.peek().getValueAsString());
@@ -188,7 +207,14 @@ public class SPLParser extends AbstractSyntaxParser {
       ProgramBlock codeBlock = new ProgramBlock();
       setSourceCodeInfo(codeBlock, tokenFlow.peek());
       while (!tokenFlow.peek().isRBRACE()) {
-        codeBlock.addIRNode(statement());
+        IRNode<Instruction> stmt = statement();
+        codeBlock.addIRNode(stmt);
+        if (stmt instanceof FuncCallExp || stmt instanceof MethodCall) {
+          Lexer.Token token = tokenFlow.peek();
+          Pop pop = new Pop();
+          setSourceCodeInfo(pop, token);
+          codeBlock.addIRNode(pop);
+        }
         iterateToEffectiveToken();
       }
       tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RBRACE, "require } instead of " + tokenFlow.peek().getValueAsString());
@@ -477,8 +503,7 @@ public class SPLParser extends AbstractSyntaxParser {
       Literal literal = new Literal(idx);
       setSourceCodeInfo(literal, token);
       return literal;
-    }
-    else if (token.isINT()) {
+    } else if (token.isINT()) {
       tokenFlow.next();
       int idx = context.addConstant(token.getInt());
       IntLiteral intLiteral = new IntLiteral(token.getInt(), idx);

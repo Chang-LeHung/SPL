@@ -37,7 +37,7 @@ public class DefaultEval implements Evaluation {
   }
 
   @Override
-  public SPLObject evalFrame() {
+  public SPLObject evalFrame() throws SPLInternalException {
     try {
       while (pc < code.length) {
         insNumExecuted++;
@@ -456,6 +456,10 @@ public class DefaultEval implements Evaluation {
               pc += oparg;
             }
           }
+          case JUMP_BACK -> {
+            int oparg = getOparg();
+            pc -= oparg;
+          }
           case JUMP_UNCON -> { // unconditional jump
             int oparg = getOparg();
             pc += oparg;
@@ -473,6 +477,7 @@ public class DefaultEval implements Evaluation {
     } catch (SPLInternalException e) {
       e.printStackTrace();
       System.err.println("pc = " + pc);
+      throw e;
     }
     return SPLNoneObject.getInstance();
   }

@@ -150,6 +150,11 @@ public class JumpContext implements ASTContext<Instruction> {
     return null;
   }
 
+  @Override
+  public int getCodeSize() {
+    return nBytes;
+  }
+
   public int getNBytes() {
     return nBytes;
   }

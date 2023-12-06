@@ -60,6 +60,11 @@ public class DefaultASTContext<E extends ByteCode> implements Visitor<E>, ASTCon
   }
 
   @Override
+  public int getCodeSize() {
+    return code.size();
+  }
+
+  @Override
   public void addInstruction(E instruction, int lineNo, int columnNo, int len) throws SPLSyntaxError {
     instructions.add(instruction);
     if (firstLineNo == -1) {

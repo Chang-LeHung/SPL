@@ -82,4 +82,9 @@ public class TestCompiler {
   public void testMinus() throws SPLInternalException, SPLSyntaxError, IOException {
     run("arithmetic/minus.spl");
   }
+
+  @Test
+  public void testWhile() throws SPLInternalException, SPLSyntaxError, IOException {
+    run("controlflow/while.spl");
+  }
 }

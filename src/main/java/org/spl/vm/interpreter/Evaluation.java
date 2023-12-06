@@ -1,7 +1,7 @@
 package org.spl.vm.interpreter;
 
 import org.spl.compiler.bytecode.OpCode;
-import org.spl.compiler.ir.Op;
+import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.objects.SPLObject;
 
 public interface Evaluation {
@@ -65,7 +65,9 @@ public interface Evaluation {
     opcode[OpCode.CONDITIONAL_AND.val] = OpCode.CONDITIONAL_AND;
     opcode[OpCode.CONDITIONAL_OR.val] = OpCode.CONDITIONAL_OR;
     opcode[OpCode.RETURN.val] = OpCode.RETURN;
+    opcode[OpCode.JUMP_BACK.val] = OpCode.JUMP_BACK;
+    opcode[OpCode.JUMP_ABSOLUTE.val] = OpCode.JUMP_ABSOLUTE;
   }
 
-  SPLObject evalFrame();
+  SPLObject evalFrame() throws SPLInternalException;
 }
