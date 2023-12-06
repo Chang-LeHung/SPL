@@ -1,0 +1,11 @@
+
+
+a = 1
+
+for(;a < 10; a += 1) {
+    if (a == 3)
+        continue
+    print(a)
+    if (a > 5)
+        break
+}

@@ -102,4 +102,9 @@ public class TestCompiler {
   public void testDoWhileBreakContinue() throws SPLInternalException, SPLSyntaxError, IOException {
     run("controlflow/dowhilebreak.spl");
   }
+
+  @Test
+  public void testForBreakContinue() throws SPLInternalException, SPLSyntaxError, IOException {
+    run("controlflow/for.spl");
+  }
 }
