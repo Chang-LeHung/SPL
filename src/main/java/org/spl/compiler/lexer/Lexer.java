@@ -815,6 +815,10 @@ public class Lexer {
       return token == TOKEN_TYPE.DO;
     }
 
+    public boolean isFor() {
+      return token == TOKEN_TYPE.FOR;
+    }
+
     public boolean isWHILE() {
       return token == TOKEN_TYPE.WHILE;
     }
@@ -849,6 +853,10 @@ public class Lexer {
 
     public boolean isNEWLINE() {
       return token == TOKEN_TYPE.NEWLINE;
+    }
+
+    public boolean isSemiColon() {
+      return token == TOKEN_TYPE.SEMICOLON;
     }
 
     public boolean isEOF() {

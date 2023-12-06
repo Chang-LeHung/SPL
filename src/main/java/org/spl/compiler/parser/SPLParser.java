@@ -14,6 +14,7 @@ import org.spl.compiler.ir.exp.Pop;
 import org.spl.compiler.ir.stmt.assignstmt.*;
 import org.spl.compiler.ir.stmt.controlflow.*;
 import org.spl.compiler.ir.unaryop.Invert;
+import org.spl.compiler.ir.unaryop.NOP;
 import org.spl.compiler.ir.unaryop.Neg;
 import org.spl.compiler.ir.unaryop.Not;
 import org.spl.compiler.ir.vals.*;
@@ -34,6 +35,8 @@ import java.util.List;
  *              | assign
  *              | whileStmt
  *              | doWhile
+ *              | forStmt
+ * forStmt      : 'for' '(' expression? ';' expression? ';' expression? ')' block
  * doWhile      : 'do' block 'while' '(' expression ')'
  * ifStatement  : 'if' '(' expression  ') 'block ('else if' '(' expression  ') block)* ('else' block)*
  * whileStmt    : 'while' '(' expression ')' block
@@ -168,8 +171,9 @@ public class SPLParser extends AbstractSyntaxParser {
         return whileStatement();
       } else if (tokenFlow.peek().isDO()) {
         return doWhileStatement();
-      }
-      else if (tokenFlow.peek().isIDENTIFIER() && tokenFlow.lookAhead().isASSIGN()) {
+      } else if (tokenFlow.peek().isFor()) {
+        return forStatement();
+      } else if (tokenFlow.peek().isIDENTIFIER() && tokenFlow.lookAhead().isASSIGN()) {
         return assignment();
       } else {
         // we will perfect this in the future
@@ -189,18 +193,47 @@ public class SPLParser extends AbstractSyntaxParser {
     return null;
   }
 
+  private IRNode<Instruction> forStatement() throws SPLSyntaxError {
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.FOR, "require 'for' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+    Lexer.Token token = tokenFlow.peek();
+    tokenFlow.next();
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LEFT_PARENTHESES, "require '(' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+    tokenFlow.next();
+    IRNode<Instruction> initializer = statement();
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.SEMICOLON, "require ';' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+    tokenFlow.next();
+    IRNode<Instruction> condition = statement();
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.SEMICOLON, "require ';' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+    tokenFlow.next();
+    IRNode<Instruction> increment;
+    if (tokenFlow.peek().isRIGHT_PARENTHESES()) {
+      token = tokenFlow.peek();
+      tokenFlow.next();
+      increment = new NOP();
+      setSourceCodeInfo(increment, token);
+    } else {
+      increment = statement();
+      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RIGHT_PARENTHESES, "require ')' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+      tokenFlow.next();
+    }
+    IRNode<Instruction> block = block();
+    ForStmt forStmt = new ForStmt(initializer, condition, increment, block);
+    setSourceCodeInfo(forStmt, token);
+    return forStmt;
+  }
+
   private IRNode<Instruction> doWhileStatement() throws SPLSyntaxError {
     Lexer.Token token = tokenFlow.peek();
-    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.DO, "require 'do' instead of " + tokenFlow.peek().getValueAsString());
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.DO, "require 'do' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
     tokenFlow.next();
     IRNode<Instruction> block = block();
     tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.WHILE, "require 'while' instead of "
         + tokenFlow.peek().getValueAsString());
     tokenFlow.next();
-    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LEFT_PARENTHESES, "require '(' instead of " + tokenFlow.peek().getValueAsString());
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LEFT_PARENTHESES, "require '(' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
     tokenFlow.next();
     IRNode<Instruction> condition = expression();
-    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RIGHT_PARENTHESES, "require ')' instead of " + tokenFlow.peek().getValueAsString());
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RIGHT_PARENTHESES, "require ')' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
     tokenFlow.next();
     DoWhile doWhile = new DoWhile(condition, block);
     setSourceCodeInfo(doWhile, token);
@@ -210,10 +243,10 @@ public class SPLParser extends AbstractSyntaxParser {
   private IRNode<Instruction> whileStatement() throws SPLSyntaxError {
     Lexer.Token token = tokenFlow.peek();
     tokenFlow.next();
-    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LEFT_PARENTHESES, "require ( instead of " + tokenFlow.peek().getValueAsString());
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LEFT_PARENTHESES, "require ( instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
     tokenFlow.next();
     IRNode<Instruction> condition = expression();
-    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RIGHT_PARENTHESES, "require ) instead of " + tokenFlow.peek().getValueAsString());
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RIGHT_PARENTHESES, "require ) instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
     tokenFlow.next();
     IRNode<Instruction> block = block();
     WhileStmt whileStmt = new WhileStmt(condition, block);
@@ -223,7 +256,7 @@ public class SPLParser extends AbstractSyntaxParser {
 
   private IRNode<Instruction> block() throws SPLSyntaxError {
     if (tokenFlow.peek().isLBRACE()) {
-      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LBRACE, "require { instead of " + tokenFlow.peek().getValueAsString());
+      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LBRACE, "require { instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
       tokenFlow.next();
       iterateToEffectiveToken();
       ProgramBlock codeBlock = new ProgramBlock();
@@ -239,7 +272,7 @@ public class SPLParser extends AbstractSyntaxParser {
         }
         iterateToEffectiveToken();
       }
-      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RBRACE, "require } instead of " + tokenFlow.peek().getValueAsString());
+      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RBRACE, "require } instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
       tokenFlow.next();
       iterateToEffectiveToken();
       return codeBlock;
@@ -496,13 +529,14 @@ public class SPLParser extends AbstractSyntaxParser {
     IRNode<Instruction> condition;
     IRNode<Instruction> thenBlock;
     IRNode<Instruction> elseBlock;
-    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.IF, "require if instead of " + tokenFlow.peek().getValueAsString());
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.IF, "require if instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
     tokenFlow.next();
-    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LEFT_PARENTHESES, "require ( instead of " + tokenFlow.peek().getValueAsString());
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LEFT_PARENTHESES, "require ( instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
     tokenFlow.next();
     condition = expression();
-    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RIGHT_PARENTHESES, "require ) instead of " + tokenFlow.peek().getValueAsString());
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RIGHT_PARENTHESES, "require ) instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
     tokenFlow.next();
+    iterateToEffectiveToken();
     thenBlock = block();
     if (tokenFlow.peek().isELSE() && tokenFlow.lookAhead().isIF()) {
       tokenFlow.next();
@@ -530,13 +564,17 @@ public class SPLParser extends AbstractSyntaxParser {
       Break brk = new Break();
       setSourceCodeInfo(brk, token);
       return brk;
+    } else if (token.isSemiColon()) {
+      // tokenFlow.next() is prohibited here causing for-statement will consume this token
+      NOP nop = new NOP();
+      setSourceCodeInfo(nop, token);
+      return nop;
     } else if (token.isContinue()) {
       tokenFlow.next();
       Continue cont = new Continue();
       setSourceCodeInfo(cont, token);
       return cont;
-    }
-    else if (token.isINT()) {
+    } else if (token.isINT()) {
       tokenFlow.next();
       int idx = context.addConstant(token.getInt());
       IntLiteral intLiteral = new IntLiteral(token.getInt(), idx);
@@ -788,7 +826,7 @@ public class SPLParser extends AbstractSyntaxParser {
                 tokenFlow.peek().getColumnNo(),
                 tokenFlow.peek().getLength(),
                 sourceCode.get(tokenFlow.peek().getLineNo()),
-                "Expected ',' or ')' instead of " + tokenFlow.peek().getValueAsString())
+                "Expected ',' or ')' instead of \"" + tokenFlow.peek().getValueAsString() + "\"")
         );
       }
     }
