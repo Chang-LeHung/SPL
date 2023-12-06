@@ -22,10 +22,11 @@ public class DoWhile extends AbstractIR<Instruction> {
   @Override
   public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
     int size = context.getCodeSize();
-    block.accept(context);
+    JumpContext auxContext = new JumpContext(context);
+    block.accept(auxContext);
     int target = context.getCodeSize();
-    condition.accept(context);
-    int diff = context.getCodeSize() - size + 2;
+    condition.accept(auxContext);
+    int diff = auxContext.getCodeSize() + 2;
     if (diff >= 255) {
       diff += 2;
     }
@@ -35,6 +36,8 @@ public class DoWhile extends AbstractIR<Instruction> {
     ContinueVisitor continueVisitor = new ContinueVisitor(context, target);
     // fix all continue statements' jump target
     block.accept(continueVisitor);
+    block.accept(context);
+    condition.accept(context);
     context.addInstruction(new Instruction(OpCode.JUMP_BACK_TRUE, diff), condition.getLineNo(), condition.getColumnNo(), condition.getLen());
   }
 
