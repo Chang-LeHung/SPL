@@ -527,6 +527,9 @@ public class Lexer {
           case "continue" -> {
             this.token = TOKEN_TYPE.CONTINUE;
           }
+          case "break" -> {
+            this.token = TOKEN_TYPE.BREAK;
+          }
           case "do" -> {
             this.token = TOKEN_TYPE.DO;
           }
