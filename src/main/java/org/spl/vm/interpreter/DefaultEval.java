@@ -471,7 +471,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               pc -= oparg;
             }
           }
-          case JUMP_UNCON -> { // unconditional jump
+          case JUMP_UNCON_FORWARD -> { // unconditional jump
             int oparg = getOparg();
             pc += oparg;
           }

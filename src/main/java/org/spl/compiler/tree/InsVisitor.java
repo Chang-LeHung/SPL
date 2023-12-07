@@ -79,7 +79,7 @@ public class InsVisitor implements Visitor<Instruction> {
           idx2Constant.get((instruction.getOpArg())));
     }
     else if (instruction.getCode() == OpCode.CALL ||
-        instruction.getCode() == OpCode.JUMP_FALSE || instruction.getCode() == OpCode.JUMP_UNCON ||
+        instruction.getCode() == OpCode.JUMP_FALSE || instruction.getCode() == OpCode.JUMP_UNCON_FORWARD ||
         instruction.getCode() == OpCode.JUMP_BACK || instruction.getCode() == OpCode.JUMP_BACK_TRUE ||
         instruction.getCode() == OpCode.JUMP_ABSOLUTE ||
         instruction.getCode() == OpCode.JMP_TRUE_NO_POP ||

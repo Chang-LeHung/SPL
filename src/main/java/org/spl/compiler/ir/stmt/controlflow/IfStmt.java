@@ -36,7 +36,7 @@ public class IfStmt extends AbstractIR<Instruction> {
       elseBlock.accept(innerContex);
 //      elseBlock.doVisit(innerContex);
       size = innerContex.getNBytes();
-      context.addInstruction(new Instruction(OpCode.JUMP_UNCON, size), condition.getLineNo(), condition.getColumnNo(), condition.getLen());
+      context.addInstruction(new Instruction(OpCode.JUMP_UNCON_FORWARD, size), condition.getLineNo(), condition.getColumnNo(), condition.getLen());
       elseBlock.accept(context);
     }
   }
