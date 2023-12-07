@@ -8,11 +8,14 @@ import org.spl.compiler.ir.context.ASTContext;
 import org.spl.compiler.tree.InsVisitor;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.internal.objs.SPLCodeObject;
+import org.spl.vm.internal.objs.SPLFuncObject;
+import org.spl.vm.internal.utils.Dissembler;
 import org.spl.vm.interpreter.DefaultEval;
 import org.spl.vm.interpreter.Evaluation;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 
 public class TestCompiler {
 
@@ -30,7 +33,7 @@ public class TestCompiler {
     SPLCodeObject code = compiler.compile();
     DefaultEval defaultEval = new DefaultEval(code);
     ASTContext<Instruction> context = compiler.getContext();
-    InsVisitor insVisitor = new InsVisitor(context.getConstantTable());
+    InsVisitor insVisitor = new InsVisitor(context.getVarnames(), context.getConstantMap());
     context.getInstructions().forEach(insVisitor::visit);
     System.out.println(insVisitor);
     defaultEval.evalFrame();
@@ -41,7 +44,7 @@ public class TestCompiler {
     SPLCompiler compiler = new SPLCompiler(getResource("controlflow/if.spl"));
     SPLCodeObject code = compiler.compile();
     ASTContext<Instruction> context = compiler.getContext();
-    InsVisitor insVisitor = new InsVisitor(context.getConstantTable());
+    InsVisitor insVisitor = new InsVisitor(context.getVarnames(), context.getConstantMap());
     context.getInstructions().forEach(insVisitor::visit);
     System.out.println(insVisitor);
     System.out.println(context.getTopStackSize());
@@ -56,7 +59,7 @@ public class TestCompiler {
     SPLCompiler compiler = new SPLCompiler(getResource("controlflow/condition.spl"));
     SPLCodeObject code = compiler.compile();
     ASTContext<Instruction> context = compiler.getContext();
-    InsVisitor insVisitor = new InsVisitor(context.getConstantTable());
+    InsVisitor insVisitor = new InsVisitor(context.getVarnames(), context.getConstantMap());
     context.getInstructions().forEach(insVisitor::visit);
     System.out.println(insVisitor);
     System.out.println(context.getTopStackSize());
@@ -65,17 +68,18 @@ public class TestCompiler {
     defaultEval.evalFrame();
   }
 
-  public void run(String filename) throws SPLSyntaxError, IOException, SPLInternalException {
+  public DefaultEval run(String filename) throws SPLSyntaxError, IOException, SPLInternalException {
     SPLCompiler compiler = new SPLCompiler(getResource(filename));
     SPLCodeObject code = compiler.compile();
     ASTContext<Instruction> context = compiler.getContext();
-    InsVisitor insVisitor = new InsVisitor(context.getConstantTable());
+    InsVisitor insVisitor = new InsVisitor(context.getVarnames(), context.getConstantMap());
     context.getInstructions().forEach(insVisitor::visit);
     System.out.println(insVisitor);
     System.out.println(context.getTopStackSize());
     System.out.println(code);
     DefaultEval defaultEval = new DefaultEval(code);
     defaultEval.evalFrame();
+    return defaultEval;
   }
 
   @Test
@@ -106,5 +110,13 @@ public class TestCompiler {
   @Test
   public void testForBreakContinue() throws SPLInternalException, SPLSyntaxError, IOException {
     run("controlflow/for.spl");
+  }
+
+  @Test
+  public void testFunctionDef() throws SPLInternalException, SPLSyntaxError, IOException {
+    DefaultEval eval = run("function/basic.spl");
+    System.out.println(Arrays.toString(eval.getConstants()));
+    Dissembler dissembler = new Dissembler(((SPLFuncObject) eval.getConstants()[1]));
+    dissembler.prettyPrint();
   }
 }

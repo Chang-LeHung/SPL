@@ -28,7 +28,7 @@ public class AbstractAssignStmt extends AbstractIR<Instruction> {
 
   @Override
   public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
-    byte opArg = (byte) context.getConstantIndex(((Variable) lhs).getName());
+    byte opArg = (byte) context.getVarNameIndex(((Variable) lhs).getName());
     switch (op) {
       case ASSIGN_ADD -> {
         context.addInstruction(new Instruction(OpCode.ADD_ASSIGN, opArg), getLineNo(), getColumnNo(), getLen());

@@ -25,7 +25,7 @@ public class FuncCallExp extends AbstractIR<Instruction> {
 
   @Override
   public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
-    context.addInstruction(new Instruction(OpCode.LOAD_NAME, context.getConstantIndex(funcName)), getLineNo(), getColumnNo(), getLen());
+    context.addInstruction(new Instruction(OpCode.LOAD_NAME, context.getVarNameIndex(funcName)), getLineNo(), getColumnNo(), getLen());
     context.addInstruction(new Instruction(OpCode.CALL, args.size()), getLineNo(), getColumnNo(), getLen());
   }
 

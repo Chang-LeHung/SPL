@@ -32,9 +32,9 @@ public class MethodCall extends AbstractIR<Instruction> {
 
   @Override
   public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
-    byte ond = (byte) context.getConstantIndex(methodName);
+    byte ond = (byte) context.getVarNameIndex(methodName);
     context.addInstruction(new Instruction(OpCode.LOAD_METHOD, ond), getLineNo(), getColumnNo(), getLen());
-    ond = (byte) context.getConstantIndex(objName);
+    ond = (byte) context.getVarNameIndex(objName);
     switch (scope) {
       case LOCAL -> {
         context.addInstruction(new Instruction(OpCode.LOAD_LOCAL, ond), getLineNo(), getColumnNo(), getLen());

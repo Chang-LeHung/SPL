@@ -20,7 +20,7 @@ public abstract class AbstractSyntaxParser implements ASTBuilder<Instruction> {
   protected final String filename;
   protected final List<String> sourceCode;
   protected final TokenFlow<Lexer.Token> tokenFlow;
-  protected final DefaultASTContext<Instruction> context;
+  protected DefaultASTContext<Instruction> context;
 
   public AbstractSyntaxParser(String filename) throws IOException, SPLSyntaxError {
     this.filename = filename;
@@ -49,7 +49,7 @@ public abstract class AbstractSyntaxParser implements ASTBuilder<Instruction> {
         SPLException.buildErrorMessage(
             filename,
             token.getLineNo(),
-            token.getColumnNo(),
+            token.getColumnNo() - 1,
             token.getLength(),
             sourceCode.get(token.getLineNo() - 1),
             message

@@ -2,6 +2,7 @@ package org.spl.compiler.ir.context;
 
 import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.IRNode;
+import org.spl.vm.objects.SPLObject;
 
 import java.util.List;
 import java.util.Map;
@@ -22,15 +23,15 @@ public interface ASTContext<E> {
 
   void add(E instruction, int lineNo, int columnNo, int len) throws SPLSyntaxError;
 
-  int addConstant(Object o);
+  int addVarName(Object o);
 
-  int getConstantIndex(Object o);
+  int getVarNameIndex(Object o);
 
   boolean containSymbol(String name);
 
   int getSymbolIndex(String name);
 
-  Map<Object, Integer> getConstantTable();
+  Map<Object, Integer> getVarnames();
 
   int getTopStackSize();
 
@@ -59,4 +60,13 @@ public interface ASTContext<E> {
   List<E> getInstructions();
 
   int getCodeSize();
+
+  boolean isGlobal(String name);
+
+  SPLObject[] getConstants();
+  Map<SPLObject, Integer> getConstantMap();
+  void addConstantObject(SPLObject o);
+  int getConstantObjectIndex(SPLObject o);
+
+  int getConstantsSize();
 }

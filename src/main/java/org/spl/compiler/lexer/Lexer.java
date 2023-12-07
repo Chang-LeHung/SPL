@@ -595,6 +595,11 @@ public class Lexer {
       return (Integer) (value);
     }
 
+
+    public boolean isComma() {
+      return token == TOKEN_TYPE.COMMA;
+    }
+
     public String getIdentifier() {
       return (String) (value);
     }
@@ -681,6 +686,10 @@ public class Lexer {
 
     public boolean isU_RSHIFT() {
       return token == TOKEN_TYPE.U_RSHIFT;
+    }
+
+    public boolean isGlobal() {
+      return token == TOKEN_TYPE.GLOBAL;
     }
 
     public boolean isASSIGN() {
@@ -821,6 +830,10 @@ public class Lexer {
 
     public boolean isWHILE() {
       return token == TOKEN_TYPE.WHILE;
+    }
+
+    public boolean isDef() {
+      return token == TOKEN_TYPE.DEF;
     }
 
     public boolean isNOT() {

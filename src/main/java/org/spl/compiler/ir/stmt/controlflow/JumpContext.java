@@ -5,6 +5,7 @@ import org.spl.compiler.bytecode.OpCode;
 import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.context.ASTContext;
+import org.spl.vm.objects.SPLObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,13 +67,13 @@ public class JumpContext implements ASTContext<Instruction> {
   }
 
   @Override
-  public int addConstant(Object o) {
-    return context.addConstant(o);
+  public int addVarName(Object o) {
+    return context.addVarName(o);
   }
 
   @Override
-  public int getConstantIndex(Object o) {
-    return context.getConstantIndex(o);
+  public int getVarNameIndex(Object o) {
+    return context.getVarNameIndex(o);
   }
 
   @Override
@@ -86,8 +87,8 @@ public class JumpContext implements ASTContext<Instruction> {
   }
 
   @Override
-  public Map<Object, Integer> getConstantTable() {
-    return context.getConstantTable();
+  public Map<Object, Integer> getVarnames() {
+    return context.getVarnames();
   }
 
   @Override
@@ -158,6 +159,36 @@ public class JumpContext implements ASTContext<Instruction> {
   @Override
   public int getCodeSize() {
     return nBytes;
+  }
+
+  @Override
+  public boolean isGlobal(String name) {
+    return context.isGlobal(name);
+  }
+
+  @Override
+  public SPLObject[] getConstants() {
+    return context.getConstants();
+  }
+
+  @Override
+  public Map<SPLObject, Integer> getConstantMap() {
+    return context.getConstantMap();
+  }
+
+  @Override
+  public void addConstantObject(SPLObject object) {
+    context.addConstantObject(object);
+  }
+
+  @Override
+  public int getConstantObjectIndex(SPLObject o) {
+    return context.getConstantObjectIndex(o);
+  }
+
+  @Override
+  public int getConstantsSize() {
+    return context.getConstantsSize();
   }
 
   public int getNBytes() {

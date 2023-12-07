@@ -26,7 +26,7 @@ public class AssignStmt extends AbstractIR<Instruction> {
   public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
     // lhs.codeGen(context); there is no need to emit this instruction
     // because a STORE instruction will emit after RHS
-    int idx = context.getConstantIndex(lhs.getName());
+    int idx = context.getVarNameIndex(lhs.getName());
     switch (lhs.scope()) {
       case LOCAL -> {
         context.add(new Instruction(OpCode.STORE_LOCAL, idx), getLineNo(), getColumnNo(), getLen());

@@ -34,7 +34,7 @@ public class Variable extends AbstractIR<Instruction> implements RValue<Instruct
 
   @Override
   public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
-    int idx = context.getConstantIndex(name);
+    int idx = context.getVarNameIndex(name);
     switch (scope) {
       case LOCAL -> {
         context.add(new Instruction(OpCode.LOAD_LOCAL, idx), getLineNo(), getColumnNo(), getLen());

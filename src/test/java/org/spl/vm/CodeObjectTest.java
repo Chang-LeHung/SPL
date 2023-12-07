@@ -35,10 +35,10 @@ public class CodeObjectTest {
     IRNode<Instruction> ir = arithmeticParser.buildAST();
     DefaultASTContext<Instruction> context = arithmeticParser.getContext();
     context.generateByteCodes(ir);
-    InsVisitor insVisitor = new InsVisitor(context.getConstantTable());
+    InsVisitor insVisitor = new InsVisitor(context.getVarnames(), context.getConstantMap());
     context.getInstructions().forEach(x -> x.accept(insVisitor));
     System.out.println(insVisitor);
-    System.out.println(context.getConstantTable());
+    System.out.println(context.getVarnames());
     SPLCodeObject build = SPLCodeObjectBuilder.build(context);
     System.out.println(build);
   }
@@ -50,10 +50,10 @@ public class CodeObjectTest {
     IRNode<Instruction> ir = arithmeticParser.buildAST();
     DefaultASTContext<Instruction> context = arithmeticParser.getContext();
     context.generateByteCodes(ir);
-    InsVisitor insVisitor = new InsVisitor(context.getConstantTable());
+    InsVisitor insVisitor = new InsVisitor(context.getVarnames(), context.getConstantMap());
     context.getInstructions().forEach(x -> x.accept(insVisitor));
     System.out.println(insVisitor);
-    System.out.println(context.getConstantTable());
+    System.out.println(context.getVarnames());
     SPLCodeObject build = SPLCodeObjectBuilder.build(context);
     System.out.println(build);
     DefaultEval defaultEval = new DefaultEval(build);
@@ -84,14 +84,14 @@ public class CodeObjectTest {
     IRNode<Instruction> ir = arithmeticParser.buildAST();
     DefaultASTContext<Instruction> context = arithmeticParser.getContext();
     context.generateByteCodes(ir);
-    InsVisitor insVisitor = new InsVisitor(context.getConstantTable());
+    InsVisitor insVisitor = new InsVisitor(context.getVarnames(), context.getConstantMap());
     context.getInstructions().forEach(x -> x.accept(insVisitor));
     System.out.println(insVisitor);
-    System.out.println(context.getConstantTable());
+    System.out.println(context.getVarnames());
     SPLCodeObject build = SPLCodeObjectBuilder.build(context);
     System.out.println(build);
     DefaultEval defaultEval = new DefaultEval(build);
-    System.out.println(context.getConstantTable());
+    System.out.println(context.getVarnames());
     defaultEval.evalFrame();
   }
 }

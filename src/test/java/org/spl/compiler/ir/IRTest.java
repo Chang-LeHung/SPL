@@ -28,10 +28,10 @@ public class IRTest {
     DefaultASTContext<Instruction> context = arithmeticParser.getContext();
     ir.accept(context);
     ir.codeGen(context);
-    InsVisitor insVisitor = new InsVisitor(context.getConstantTable());
+    InsVisitor insVisitor = new InsVisitor(context.getVarnames(), context.getConstantMap());
     context.getInstructions().forEach(x->x.accept(insVisitor));
     System.out.println(insVisitor);
-    System.out.println(context.getConstantTable());
+    System.out.println(context.getVarnames());
   }
 
   @Test
@@ -63,10 +63,10 @@ public class IRTest {
     IRNode<Instruction> ir = arithmeticParser.buildAST();
     DefaultASTContext<Instruction> context = arithmeticParser.getContext();
     ir.accept(context);
-    InsVisitor insVisitor = new InsVisitor(context.getConstantTable());
+    InsVisitor insVisitor = new InsVisitor(context.getVarnames(), context.getConstantMap());
     context.getInstructions().forEach(x->x.accept(insVisitor));
     System.out.println(insVisitor);
-    System.out.println(context.getConstantTable());
+    System.out.println(context.getVarnames());
     System.out.println(context.getTopStackSize());
   }
 
@@ -77,10 +77,10 @@ public class IRTest {
     IRNode<Instruction> ir = arithmeticParser.buildAST();
     DefaultASTContext<Instruction> context = arithmeticParser.getContext();
     ir.accept(context);
-    InsVisitor insVisitor = new InsVisitor(context.getConstantTable());
+    InsVisitor insVisitor = new InsVisitor(context.getVarnames(), context.getConstantMap());
     context.getInstructions().forEach(x->x.accept(insVisitor));
     System.out.println(insVisitor);
-    System.out.println(context.getConstantTable());
+    System.out.println(context.getVarnames());
     System.out.println(ir);
     System.out.println(context.getTopStackSize());
   }
@@ -93,10 +93,10 @@ public class IRTest {
     IRNode<Instruction> ir = arithmeticParser.buildAST();
     DefaultASTContext<Instruction> context = arithmeticParser.getContext();
     ir.accept(context);
-    InsVisitor insVisitor = new InsVisitor(context.getConstantTable());
+    InsVisitor insVisitor = new InsVisitor(context.getVarnames(), context.getConstantMap());
     context.getInstructions().forEach(x->x.accept(insVisitor));
     System.out.println(insVisitor);
-    System.out.println(context.getConstantTable());
+    System.out.println(context.getVarnames());
     System.out.println(ir);
     System.out.println(context.getTopStackSize());
   }
@@ -109,10 +109,10 @@ public class IRTest {
     IRNode<Instruction> ir = arithmeticParser.buildAST();
     DefaultASTContext<Instruction> context = arithmeticParser.getContext();
     ir.accept(context);
-    InsVisitor insVisitor = new InsVisitor(context.getConstantTable());
+    InsVisitor insVisitor = new InsVisitor(context.getVarnames(), context.getConstantMap());
     context.getInstructions().forEach(x->x.accept(insVisitor));
     System.out.println(insVisitor);
-    System.out.println(context.getConstantTable());
+    System.out.println(context.getVarnames());
     System.out.println(ir);
     System.out.println(context.getTopStackSize());
   }

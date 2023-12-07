@@ -2,22 +2,23 @@ package org.spl.compiler.tree;
 
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
+import org.spl.vm.objects.SPLObject;
+import org.spl.vm.objects.SPLStringObject;
 
 import java.util.*;
 
 public class InsVisitor implements Visitor<Instruction> {
 
-  private final Map<Integer, Object> idx2constant;
+  private final Map<Integer, Object> idx2Var;
+  private final Map<Integer, SPLObject> idx2Constant;
   private int offset;
   private final List<Instruction> instructions;
   private final List<String> serializedInstructions;
   private final HashSet<OpCode> loadStoreInstructions;
 
-  public InsVisitor(Map<?, Integer> constantTable) {
-    idx2constant = new HashMap<>();
-    constantTable.forEach((x, y) -> {
-      idx2constant.put(y, x);
-    });
+  public InsVisitor() {
+    idx2Var = new HashMap<>();
+    idx2Constant = new HashMap<>();
     offset = 0;
     instructions = new ArrayList<>();
     serializedInstructions = new ArrayList<>();
@@ -30,7 +31,6 @@ public class InsVisitor implements Visitor<Instruction> {
     loadStoreInstructions.add(OpCode.LOAD_LOCAL);
     loadStoreInstructions.add(OpCode.STORE_LOCAL);
     loadStoreInstructions.add(OpCode.LOAD_METHOD);
-    loadStoreInstructions.add(OpCode.LOAD_CONST);
     loadStoreInstructions.add(OpCode.LOAD_NAME);
     loadStoreInstructions.add(OpCode.STORE);
     loadStoreInstructions.add(OpCode.ADD_ASSIGN);
@@ -47,14 +47,38 @@ public class InsVisitor implements Visitor<Instruction> {
     loadStoreInstructions.add(OpCode.U_RSHIFT_ASSIGN);
   }
 
+  public InsVisitor(Map<?, Integer> varMap, Map<SPLObject, Integer> constants) {
+    this();
+    varMap.forEach((x, y) -> {
+      idx2Var.put(y, x);
+    });
+    constants.forEach((x, y) -> {
+      idx2Constant.put(y, x);
+    });
+  }
+
+  public InsVisitor(SPLStringObject[] vars, SPLObject[] constants) {
+    this();
+    for (int i = 0; i < vars.length; i++) {
+      idx2Var.put(i, vars[i]);
+    }
+    for (int i = 0; i < constants.length; i++) {
+      idx2Constant.put(i, constants[i]);
+    }
+  }
+
   @Override
   public void visit(Instruction instruction) {
     String serialized;
     if (loadStoreInstructions.contains(instruction.getCode())) {
       serialized = String.format(
           "%-6d %s %s", offset, instruction.getCode(),
-          idx2constant.get((instruction.getOpArg())));
-    } else if (instruction.getCode() == OpCode.CALL ||
+          idx2Var.get((instruction.getOpArg())));
+    } else if (instruction.getCode() == OpCode.LOAD_CONST) {
+      serialized = String.format("%-6d %s %s", offset, instruction.getCode(),
+          idx2Constant.get((instruction.getOpArg())));
+    }
+    else if (instruction.getCode() == OpCode.CALL ||
         instruction.getCode() == OpCode.JUMP_FALSE || instruction.getCode() == OpCode.JUMP_UNCON ||
         instruction.getCode() == OpCode.JUMP_BACK || instruction.getCode() == OpCode.JUMP_BACK_TRUE ||
         instruction.getCode() == OpCode.JUMP_ABSOLUTE ||

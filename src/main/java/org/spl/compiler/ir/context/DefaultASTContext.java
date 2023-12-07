@@ -1,24 +1,22 @@
 package org.spl.compiler.ir.context;
 
-import org.spl.compiler.bytecode.ByteCode;
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
 import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.NameSpace;
 import org.spl.compiler.tree.Visitor;
+import org.spl.vm.objects.SPLObject;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DefaultASTContext<E extends Instruction> implements Visitor<E>, ASTContext<E> {
 
   private String filename;
   private final List<E> instructions;
-  private final Map<Object, Integer> constantTable;
+  private final Map<Object, Integer> varnames;
+  private final Map<SPLObject, Integer> constants;
   private int firstLineNo;
   private final ByteArrayOutputStream code;
   private final ByteArrayOutputStream debugInfo;
@@ -26,7 +24,7 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
   private int insOfLine;
   private int currentLineNo;
   private int lastLineNo;
-
+  private final Set<String> globals;
   private final NameSpace<String> nameSpace;
   private int stackSize;
   private int topStackSize;
@@ -37,7 +35,7 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
     stackSize = 0;
     topStackSize = 0;
     instructions = new ArrayList<>();
-    constantTable = new HashMap<>();
+    varnames = new HashMap<>();
     nameSpace = new NameSpace<>();
     firstLineNo = -1;
     insOfLine = 0;
@@ -46,6 +44,8 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
     currentLineNo = 0;
     lastLineNo = 0;
     lenColumn = new ByteArrayOutputStream();
+    globals = new HashSet<>();
+    constants = new HashMap<>();
   }
 
 
@@ -62,6 +62,44 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
   @Override
   public int getCodeSize() {
     return code.size();
+  }
+
+  @Override
+  public boolean isGlobal(String name) {
+    return globals.contains(name);
+  }
+
+  @Override
+  public SPLObject[] getConstants() {
+    SPLObject[] constants = new SPLObject[this.constants.size()];
+    this.constants.forEach((x, y) -> {
+      constants[y] = x;
+    });
+    return constants;
+  }
+
+  @Override
+  public Map<SPLObject, Integer> getConstantMap() {
+    return constants;
+  }
+
+  @Override
+  public void addConstantObject(SPLObject object) {
+    if (constants.containsKey(object))
+      return;
+    constants.put(object, constants.size());
+  }
+
+  @Override
+  public int getConstantObjectIndex(SPLObject o) {
+    if (!constants.containsKey(o))
+      throw new RuntimeException("not found \"" + o + "\"");
+    return constants.get(o);
+  }
+
+  @Override
+  public int getConstantsSize() {
+    return constants.size();
   }
 
   @Override
@@ -122,19 +160,19 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
   }
 
   @Override
-  public int getConstantIndex(Object o) {
-    if (constantTable.containsKey(o)) {
-      return constantTable.get(o);
+  public int getVarNameIndex(Object o) {
+    if (varnames.containsKey(o)) {
+      return varnames.get(o);
     }
     throw new RuntimeException("Constant not found");
   }
 
   @Override
-  public int addConstant(Object o) {
-    if (constantTable.containsKey(o))
-      return constantTable.get(o);
-    constantTable.put(o, constantTable.size());
-    return constantTable.size() - 1;
+  public int addVarName(Object o) {
+    if (varnames.containsKey(o))
+      return varnames.get(o);
+    varnames.put(o, varnames.size());
+    return varnames.size() - 1;
   }
 
   @Override
@@ -149,11 +187,11 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
 
   @Override
   public int getSymbolIndex(String name) {
-    return constantTable.get(name);
+    return varnames.get(name);
   }
 
-  public Map<Object, Integer> getConstantTable() {
-    return constantTable;
+  public Map<Object, Integer> getVarnames() {
+    return varnames;
   }
 
   @Override
@@ -191,7 +229,6 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
   public String setFileName(String filename) {
     return this.filename = filename;
   }
-
 
   @Override
   public void visit(IRNode<E> node) throws SPLSyntaxError {
@@ -250,5 +287,10 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
     currentLineNo = 0;
     insOfLine = 0;
   }
+
+  public void addGlobal(String name) {
+    globals.add(name);
+  }
+
 }
 
