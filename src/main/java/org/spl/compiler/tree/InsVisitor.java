@@ -82,6 +82,7 @@ public class InsVisitor implements Visitor<Instruction> {
         instruction.getCode() == OpCode.JUMP_FALSE || instruction.getCode() == OpCode.JUMP_UNCON ||
         instruction.getCode() == OpCode.JUMP_BACK || instruction.getCode() == OpCode.JUMP_BACK_TRUE ||
         instruction.getCode() == OpCode.JUMP_ABSOLUTE ||
+        instruction.getCode() == OpCode.JUMP_TRUE ||
         instruction.getCode() == OpCode.CALL_METHOD) {
       serialized = String.format("%-6d %s %d", offset, instruction.getCode(),
           instruction.getOpArg());

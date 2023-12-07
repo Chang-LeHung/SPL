@@ -50,6 +50,7 @@ public enum OpCode {
   LOAD_CONST,
   POP,
   JUMP_FALSE,
+  JUMP_TRUE,
   JUMP_UNCON,
   JUMP_BACK,
   JUMP_BACK_TRUE,
