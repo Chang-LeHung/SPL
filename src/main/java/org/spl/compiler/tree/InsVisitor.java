@@ -33,6 +33,18 @@ public class InsVisitor implements Visitor<Instruction> {
     loadStoreInstructions.add(OpCode.LOAD_CONST);
     loadStoreInstructions.add(OpCode.LOAD_NAME);
     loadStoreInstructions.add(OpCode.STORE);
+    loadStoreInstructions.add(OpCode.ADD_ASSIGN);
+    loadStoreInstructions.add(OpCode.SUB_ASSIGN);
+    loadStoreInstructions.add(OpCode.MUL_ASSIGN);
+    loadStoreInstructions.add(OpCode.DIV_ASSIGN);
+    loadStoreInstructions.add(OpCode.MOD_ASSIGN);
+    loadStoreInstructions.add(OpCode.POWER_ASSIGN);
+    loadStoreInstructions.add(OpCode.AND_ASSIGN);
+    loadStoreInstructions.add(OpCode.OR_ASSIGN);
+    loadStoreInstructions.add(OpCode.XOR_ASSIGN);
+    loadStoreInstructions.add(OpCode.LSHIFT_ASSIGN);
+    loadStoreInstructions.add(OpCode.RSHIFT_ASSIGN);
+    loadStoreInstructions.add(OpCode.U_RSHIFT_ASSIGN);
   }
 
   @Override
