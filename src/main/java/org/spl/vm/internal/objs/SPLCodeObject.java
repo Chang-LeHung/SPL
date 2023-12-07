@@ -1,7 +1,10 @@
 package org.spl.vm.internal.objs;
 
 import org.spl.vm.internal.typs.SPLCodeType;
-import org.spl.vm.objects.*;
+import org.spl.vm.objects.SPLFloatObject;
+import org.spl.vm.objects.SPLLongObject;
+import org.spl.vm.objects.SPLObject;
+import org.spl.vm.objects.SPLStringObject;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -13,6 +16,7 @@ public class SPLCodeObject extends SPLObject {
   private final byte[] code;
   private final byte[] lenColumn;
   private final byte[] debugInfo;
+  private final SPLStringObject[] varnames;
   private final SPLObject[] constants;
   private final int maxStackSize;
 
@@ -23,7 +27,7 @@ public class SPLCodeObject extends SPLObject {
                        byte[] code,
                        byte[] lenColumn,
                        byte[] debugInfo,
-                       Map<Object, Integer> constantTable) {
+                       Map<Object, Integer> varnames, SPLObject[] constants) {
     super(SPLCodeType.getInstance());
     this.args = args;
     this.maxStackSize = maxStackSize;
@@ -32,20 +36,12 @@ public class SPLCodeObject extends SPLObject {
     this.code = code;
     this.lenColumn = lenColumn;
     this.debugInfo = debugInfo;
-    constants = new SPLObject[constantTable.size()];
-    constantTable.forEach((k, v) -> {
-      if (k instanceof Integer) {
-        constants[v] = getSPL((int) k);
-      } else if (k instanceof Long) {
-        constants[v] = getSPL((long) k);
-      } else if (k instanceof Double) {
-        constants[v] = getSPL((double) k);
-      } else if (k instanceof String) {
-        constants[v] = getSPL((String) k);
-      } else if (k instanceof SPLBoolObject b) {
-        constants[v] = b;
-      }
+    this.varnames = new SPLStringObject[varnames.size()];
+    varnames.forEach((k, v) -> {
+      assert k instanceof String;
+      this.varnames[v] = new SPLStringObject((String) k);
     });
+    this.constants = constants;
   }
 
   public int getArgs() {
@@ -82,30 +78,35 @@ public class SPLCodeObject extends SPLObject {
         ",\nlenColumn=" + Arrays.toString(lenColumn) +
         ",\ndebugInfo=" + Arrays.toString(debugInfo) +
         ",\nconstants=" + Arrays.toString(constants) +
+        ",\nvarnames=" + Arrays.toString(varnames) +
         '\n' + '}';
   }
 
-  private SPLLongObject getSPL(int val) {
+  public static SPLLongObject getSPL(int val) {
     return SPLLongObject.create(val);
   }
 
-  private SPLLongObject getSPL(long val) {
+  public static SPLLongObject getSPL(long val) {
     return SPLLongObject.create(val);
   }
 
-  private SPLFloatObject getSPL(double val) {
+  public static SPLFloatObject getSPL(double val) {
     return new SPLFloatObject(val);
   }
 
-  private SPLStringObject getSPL(String val) {
+  public static SPLStringObject getSPL(String val) {
     return new SPLStringObject(val);
   }
 
-  public SPLObject[] getConstants() {
-    return constants;
+  public SPLStringObject[] getVarnames() {
+    return varnames;
   }
 
   public int getMaxStackSize() {
     return maxStackSize;
+  }
+
+  public SPLObject[] getConstants() {
+    return constants;
   }
 }

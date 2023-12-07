@@ -3,6 +3,8 @@ package org.spl.vm.objects;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.types.SPLCommonType;
 
+import java.util.Map;
+
 public interface SPLInterface {
 
 
@@ -58,4 +60,12 @@ public interface SPLInterface {
   SPLObject call(SPLObject... args) throws SPLInternalException;
 
   SPLObject str();
+
+  default Map<SPLObject, SPLObject> getGlobals() {
+    return null;
+  }
+
+  default void setGlobals(Map<SPLObject, SPLObject> globals) {
+    return;
+  }
 }

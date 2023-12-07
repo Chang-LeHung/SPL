@@ -14,6 +14,8 @@ import java.util.Map;
 public class DefaultEval extends SPLFrameObject implements Evaluation {
 
 
+  private String name;
+
   public DefaultEval(SPLCodeObject codeObj) throws SPLInternalException {
     super(codeObj);
     if (codeObj.getArgs() != 0) {
@@ -22,9 +24,14 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
     Evaluation.init();
   }
 
-  public DefaultEval(Map<SPLObject, SPLObject> locals, Map<SPLObject, SPLObject> globals, SPLCodeObject codeObj) {
+  public DefaultEval(String name, Map<SPLObject, SPLObject> locals, Map<SPLObject, SPLObject> globals, SPLCodeObject codeObj) {
     super(locals, globals, codeObj);
+    this.name = name;
     Evaluation.init();
+  }
+
+  public String getName() {
+    return name;
   }
 
   @Override
@@ -110,7 +117,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
           case LSHIFT_ASSIGN -> { // LSHIFT_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = constants[oparg];
+            SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs != null) {
               locals.put(name, lhs.lshift(rhs));
@@ -124,7 +131,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
           case RSHIFT_ASSIGN  -> { // RSHIFT_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = constants[oparg];
+            SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs != null) {
               locals.put(name, lhs.rshift(rhs));
@@ -138,7 +145,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
           case U_RSHIFT_ASSIGN -> { // U_RSHIFT_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = constants[oparg];
+            SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs != null) {
               locals.put(name, lhs.URshift(rhs));
@@ -152,7 +159,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
           case AND_ASSIGN -> { // AND_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = constants[oparg];
+            SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs != null) {
               locals.put(name, lhs.and(rhs));
@@ -166,7 +173,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
           case OR_ASSIGN -> { // OR_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = constants[oparg];
+            SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs != null) {
               locals.put(name, lhs.or(rhs));
@@ -180,7 +187,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
           case XOR_ASSIGN -> { // XOR_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = constants[oparg];
+            SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs != null) {
               locals.put(name, lhs.xor(rhs));
@@ -194,7 +201,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
           case ADD_ASSIGN -> { // ADD_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = constants[oparg];
+            SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs != null) {
               locals.put(name, lhs.add(rhs));
@@ -208,7 +215,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
           case SUB_ASSIGN -> { // SUB_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = constants[oparg];
+            SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs != null) {
               locals.put(name, lhs.sub(rhs));
@@ -222,7 +229,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
           case MUL_ASSIGN -> { // MUL_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = constants[oparg];
+            SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs!= null) {
               locals.put(name, lhs.mul(rhs));
@@ -236,7 +243,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
           case DIV_ASSIGN -> { // DIV_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = constants[oparg];
+            SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs!= null) {
               locals.put(name, lhs.div(rhs));
@@ -250,7 +257,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
           case MOD_ASSIGN -> { // MOD_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = constants[oparg];
+            SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs!= null) {
               locals.put(name, lhs.mod(rhs));
@@ -264,7 +271,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
           case POWER_ASSIGN -> { // POWER_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = constants[oparg];
+            SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs!= null) {
               locals.put(name, lhs.pow(rhs));
@@ -375,46 +382,46 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
           case STORE_LOCAL -> { // STORE_LOCAL
             int oparg = code[pc++];
             SPLObject o = evalStack[--top];
-            SPLObject key = constants[oparg];
+            SPLObject key = varnames[oparg];
             locals.put(key, o);
           }
           case LOAD_LOCAL -> { // LOAD_LOCAL
             int oparg = code[pc++];
-            if (locals.containsKey(constants[oparg])) {
-              evalStack[top++] = locals.get(constants[oparg]);
+            if (locals.containsKey(varnames[oparg])) {
+              evalStack[top++] = locals.get(varnames[oparg]);
               continue;
             }
-            throw new SPLInternalException("InternalError: LOAD_LOCAL failed, " + constants[oparg].str() + " is not defined");
+            throw new SPLInternalException("InternalError: LOAD_LOCAL failed, " + varnames[oparg].str() + " is not defined");
           }
           case STORE_GLOBAL -> { // STORE_GLOBAL
             int oparg = code[pc++];
             SPLObject o = evalStack[--top];
-            globals.put(constants[oparg], o);
+            globals.put(varnames[oparg], o);
           }
           case LOAD_GLOBAL -> { // LOAD_GLOBAL
             int oparg = code[pc++];
-            if (globals.containsKey(constants[oparg])) {
-              evalStack[top++] = globals.get(constants[oparg]);
+            if (globals.containsKey(varnames[oparg])) {
+              evalStack[top++] = globals.get(varnames[oparg]);
               continue;
             }
-            throw new SPLInternalException("InternalError: not found, " + constants[oparg].str() + " is not defined");
+            throw new SPLInternalException("InternalError: not found, " + varnames[oparg].str() + " is not defined");
           }
           case LOAD_NAME -> { // LOAD_NAME
             int oparg = code[pc++];
-            if (locals.containsKey(constants[oparg])) {
-              evalStack[top++] = locals.get(constants[oparg]);
+            if (locals.containsKey(varnames[oparg])) {
+              evalStack[top++] = locals.get(varnames[oparg]);
               continue;
-            } else if (globals.containsKey(constants[oparg])) {
-              evalStack[top++] = globals.get(constants[oparg]);
+            } else if (globals.containsKey(varnames[oparg])) {
+              evalStack[top++] = globals.get(varnames[oparg]);
               continue;
             } else {
-              SPLObject o = Builtin.get(constants[oparg]);
+              SPLObject o = Builtin.get(varnames[oparg]);
               if (o != null) {
                 evalStack[top++] = o;
                 continue;
               }
             }
-            throw new SPLInternalException("InternalError: LOAD_NAME failed, " + constants[oparg].str() + " is not defined");
+            throw new SPLInternalException("InternalError: LOAD_NAME failed, " + varnames[oparg].str() + " is not defined");
           }
           case LOAD_METHOD -> { // LOAD_METHOD
           }
@@ -431,6 +438,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             for (int i = 0; i < oparg; i++) {
               args[i] = evalStack[--top];
             }
+            callable.setGlobals(globals);
             evalStack[top++] = callable.call(args);
           }
           case LOAD_CONST -> { // LOAD_CONST
@@ -500,11 +508,4 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
     }
   }
 
-  public int getPc() {
-    return pc;
-  }
-
-  public long getInsNumExecuted() {
-    return insNumExecuted;
-  }
 }

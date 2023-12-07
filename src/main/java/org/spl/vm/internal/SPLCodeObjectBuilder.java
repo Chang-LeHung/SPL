@@ -15,7 +15,14 @@ public class SPLCodeObjectBuilder {
     byte[] lenColumn = context.getLenColumn();
     int firstLineNo = context.getFirstLineNo();
     int args = context.getNumberOfArgs();
-    Map<Object, Integer> constantTable = context.getConstantTable();
-    return new SPLCodeObject(args, context.getTopStackSize(), fileName, firstLineNo, code, lenColumn, debugInfo, constantTable);
+    return new SPLCodeObject(args,
+        context.getTopStackSize(),
+        fileName,
+        firstLineNo,
+        code,
+        lenColumn,
+        debugInfo,
+        context.getVarnames(),
+        context.getConstants());
   }
 }
