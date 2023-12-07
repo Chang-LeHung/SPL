@@ -13,14 +13,16 @@ import java.util.Map;
 public class SPLFuncObject extends SPLObject {
   private final List<String> parameters;
   private Map<SPLObject, SPLObject> globals;
+  private final List<SPLObject> defaults;
   private final String name;
   private final SPLCodeObject codeObject;
 
-  public SPLFuncObject(List<String> parameters, String name, SPLCodeObject codeObject) {
+  public SPLFuncObject(List<String> parameters, List<SPLObject> defaults, String name, SPLCodeObject codeObject) {
     super(SPLFuncType.getInstance());
     this.parameters = parameters;
     this.name = name;
     this.codeObject = codeObject;
+    this.defaults = defaults;
   }
 
   public List<String> getParameters() {
@@ -52,17 +54,20 @@ public class SPLFuncObject extends SPLObject {
 
   @Override
   public SPLObject call(SPLObject... args) throws SPLInternalException {
-    if (args.length < parameters.size()) {
+    if (args.length + defaults.size() < parameters.size()) {
       throw new SPLInternalException(
           String.format("Invalid number of arguments, request %d parameters but only found %d arguments",
-              parameters.size(), args.length));
+              parameters.size() - defaults.size(), args.length));
     } else if (args.length > parameters.size()) {
       throw new SPLInternalException(
           String.format("Invalid number of arguments, request %d parameters but found %d arguments",
-              parameters.size(), args.length));
+              parameters.size() - defaults.size(), args.length));
     }
     // pass function's parameters as locals
     Map<SPLObject, SPLObject> locals = new HashMap<>();
+    for (int i = args.length; i < parameters.size(); i++) {
+      locals.put(new SPLStringObject(parameters.get(i)), defaults.get(i - args.length));
+    }
     for (int i = 0; i < args.length; i++) {
       locals.put(new SPLStringObject(parameters.get(i)), args[i]);
     }
