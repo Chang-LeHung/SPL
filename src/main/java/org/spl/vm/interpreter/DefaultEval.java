@@ -457,7 +457,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
           }
           case JUMP_TRUE -> { // JUMP_TRUE
             int oparg = getOparg();
-            if (evalStack[--top] == SPLBoolObject.getTrue()) {
+            if (evalStack[top] == SPLBoolObject.getTrue()) {
               pc += oparg;
             }
           }
