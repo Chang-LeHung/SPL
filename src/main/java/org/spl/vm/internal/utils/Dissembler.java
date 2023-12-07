@@ -36,6 +36,10 @@ public class Dissembler {
     Instruction ins;
     while (pc < code.length) {
       switch (Evaluation.opcode[code[pc++] & 0xff]) {
+        case RETURN_NONE -> {
+          ins = new Instruction(OpCode.RETURN_NONE, 0);
+          pc++;
+        }
         case NOP -> {
           ins = new Instruction(OpCode.NOP, 0);
           pc++;

@@ -145,4 +145,12 @@ public class TestCompiler {
     lexer.doParse();
     System.out.println(lexer.getTokens());
   }
+
+  @Test
+  public void testFunctionReturn() throws SPLInternalException, SPLSyntaxError, IOException {
+    DefaultEval eval = run("function/fib.spl");
+    System.out.println(Arrays.toString(eval.getConstants()));
+    Dissembler dissembler = new Dissembler(((SPLFuncObject) eval.getConstants()[0]));
+    dissembler.prettyPrint();
+  }
 }

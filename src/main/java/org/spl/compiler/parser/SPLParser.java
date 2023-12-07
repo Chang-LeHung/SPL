@@ -17,6 +17,7 @@ import org.spl.compiler.ir.stmt.assignstmt.*;
 import org.spl.compiler.ir.stmt.controlflow.*;
 import org.spl.compiler.ir.stmt.func.FuncDef;
 import org.spl.compiler.ir.stmt.returnstmt.Return;
+import org.spl.compiler.ir.stmt.returnstmt.ReturnNone;
 import org.spl.compiler.ir.unaryop.*;
 import org.spl.compiler.ir.vals.*;
 import org.spl.compiler.lexer.Lexer;
@@ -212,6 +213,7 @@ public class SPLParser extends AbstractSyntaxParser {
   public IRNode<Instruction> returnStatement() throws SPLSyntaxError {
     tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RETURN, "require 'return' instead of \"" + tokenFlow.peek().getValueAsString());
     Lexer.Token token = tokenFlow.peek();
+    tokenFlow.next();
     IRNode<Instruction> expression = expression();
     Return ret = new Return(expression);
     setSourceCodeInfo(ret, token);
@@ -305,7 +307,17 @@ public class SPLParser extends AbstractSyntaxParser {
     parameters.forEach(funcContext::addSymbol);
     parameters.forEach(funcContext::addVarName);
     context = funcContext;
+    funcContext.addVarName(funcName);
+    funcContext.addSymbol(funcName);
     IRNode<Instruction> block = block();
+    assert block instanceof ProgramBlock;
+    var pb = (ProgramBlock) block;
+    IRNode<Instruction> last = pb.getLast();
+    if (!(last instanceof Return || last instanceof ReturnNone)) {
+      ReturnNone returnNone = new ReturnNone();
+      setSourceCodeInfo(returnNone, token);
+      pb.addIRNode(returnNone);
+    }
     // restore old context
     context = oldState;
     funcContext.generateByteCodes(block);
@@ -748,12 +760,14 @@ public class SPLParser extends AbstractSyntaxParser {
       return boolLiteral;
     } else if (token.isIDENTIFIER() &&
         tokenFlow.lookAhead().token == Lexer.TOKEN_TYPE.LEFT_PARENTHESES) {
-      if (context.containSymbol(token.getIdentifier()) ||
-          BuiltinNames.contain(token.getIdentifier())) {
-        context.addVarName(token.getIdentifier());
-        return functionCall();
-      }
-      throwSyntaxError("Unknown(Undefined) variable " + token.getIdentifier(), token);
+      context.addVarName(token.getIdentifier());
+      return functionCall();
+//      if (context.containSymbol(token.getIdentifier()) ||
+//          BuiltinNames.contain(token.getIdentifier())) {
+//        context.addVarName(token.getIdentifier());
+//        return functionCall();
+//      }
+//      throwSyntaxError("Unknown(Undefined) variable " + token.getIdentifier(), token);
     } else if (token.isIDENTIFIER() &&
         tokenFlow.lookAhead(1).token == Lexer.TOKEN_TYPE.DOT &&
         tokenFlow.lookAhead(2).token == Lexer.TOKEN_TYPE.IDENTIFIER &&

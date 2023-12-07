@@ -47,4 +47,12 @@ public class ProgramBlock extends AbstractIR<Instruction> {
     builder.append("}\n");
     return builder.toString();
   }
+
+  public List<IRNode<Instruction>> getStatements() {
+    return statements;
+  }
+
+  public IRNode<Instruction> getLast() {
+    return statements.get(statements.size() - 1);
+  }
 }

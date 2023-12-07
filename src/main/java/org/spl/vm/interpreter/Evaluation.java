@@ -65,6 +65,7 @@ public interface Evaluation {
     opcode[OpCode.CONDITIONAL_AND.val] = OpCode.CONDITIONAL_AND;
     opcode[OpCode.CONDITIONAL_OR.val] = OpCode.CONDITIONAL_OR;
     opcode[OpCode.RETURN.val] = OpCode.RETURN;
+    opcode[OpCode.RETURN_NONE.val] = OpCode.RETURN_NONE;
     opcode[OpCode.JUMP_BACK.val] = OpCode.JUMP_BACK;
     opcode[OpCode.JUMP_ABSOLUTE.val] = OpCode.JUMP_ABSOLUTE;
     opcode[OpCode.JUMP_BACK_TRUE.val] = OpCode.JUMP_BACK_TRUE;

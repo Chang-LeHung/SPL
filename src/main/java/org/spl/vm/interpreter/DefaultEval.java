@@ -482,6 +482,10 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             pc++;
             return evalStack[--top];
           }
+          case RETURN_NONE -> {
+            pc++;
+            return SPLNoneObject.getInstance();
+          }
           default -> {
             throw new SPLInternalException("InternalError: unknown opcode " + code[--pc]);
           }

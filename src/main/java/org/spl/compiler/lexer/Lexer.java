@@ -582,6 +582,9 @@ public class Lexer {
           case "none" -> {
             this.token = TOKEN_TYPE.NONE;
           }
+          case "return" -> {
+            this.token = TOKEN_TYPE.RETURN;
+          }
         }
       }
     }
@@ -763,6 +766,10 @@ public class Lexer {
     }
     public boolean isRPAREN() {
       return token == TOKEN_TYPE.RIGHT_PARENTHESES;
+    }
+
+    public boolean isReturn() {
+      return token == TOKEN_TYPE.RETURN;
     }
 
     public boolean isRIGHT_PARENTHESES() {
