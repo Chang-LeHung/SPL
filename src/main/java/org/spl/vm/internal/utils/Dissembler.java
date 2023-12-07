@@ -216,8 +216,8 @@ public class Dissembler {
         case JUMP_FALSE -> {
           ins = new Instruction(OpCode.JUMP_FALSE, getOparg());
         }
-        case JUMP_TRUE -> {
-          ins = new Instruction(OpCode.JUMP_TRUE, getOparg());
+        case JMP_TRUE_NO_POP -> {
+          ins = new Instruction(OpCode.JMP_TRUE_NO_POP, getOparg());
         }
         case JUMP_BACK -> {
           ins = new Instruction(OpCode.JUMP_BACK, getOparg());

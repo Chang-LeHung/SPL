@@ -51,7 +51,7 @@ public interface Evaluation {
     opcode[OpCode.NOP.val] = OpCode.NOP;
     opcode[OpCode.CALL.val] = OpCode.CALL;
     opcode[OpCode.JUMP_FALSE.val] = OpCode.JUMP_FALSE;
-    opcode[OpCode.JUMP_TRUE.val] = OpCode.JUMP_TRUE;
+    opcode[OpCode.JMP_TRUE_NO_POP.val] = OpCode.JMP_TRUE_NO_POP;
     opcode[OpCode.JUMP_UNCON.val] = OpCode.JUMP_UNCON;
     opcode[OpCode.STORE_LOCAL.val] = OpCode.STORE_LOCAL;
     opcode[OpCode.STORE_GLOBAL.val] = OpCode.STORE_GLOBAL;
