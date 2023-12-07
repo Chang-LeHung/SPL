@@ -49,7 +49,7 @@ public abstract class AbstractSyntaxParser implements ASTBuilder<Instruction> {
         SPLException.buildErrorMessage(
             filename,
             token.getLineNo(),
-            token.getColumnNo() - 1,
+            token.getColumnNo(),
             token.getLength(),
             sourceCode.get(token.getLineNo() - 1),
             message

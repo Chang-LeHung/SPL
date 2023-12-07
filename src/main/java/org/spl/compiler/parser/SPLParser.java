@@ -241,20 +241,50 @@ public class SPLParser extends AbstractSyntaxParser {
     var funcContext = new DefaultASTContext<>(filename);
     funcContext.setFirstLineNo(token.getLineNo());
     List<String> parameters = new ArrayList<>();
+    List<SPLObject> defaults = new ArrayList<>();
     while (tokenFlow.peek().isIDENTIFIER()) {
       parameters.add(tokenFlow.peek().getValueAsString());
       context.addSymbol(tokenFlow.peek().getValueAsString());
       context.addVarName(tokenFlow.peek().getValueAsString());
       tokenFlow.next();
+      if (tokenFlow.peek().isPureAssign()) {
+        tokenFlow.back();
+        while (tokenFlow.peek().isIDENTIFIER()) {
+          tokenFlow.next();
+          tokenAssertion(tokenFlow.peek(),  Lexer.TOKEN_TYPE.ASSIGN, "require '=' instead of \"" + tokenFlow.peek().getValueAsString());
+          tokenFlow.next();
+          if (tokenFlow.peek().isConstant()) {
+            token = tokenFlow.peek();
+            switch (token.token) {
+              case INT -> {
+                defaults.add(SPLCodeObject.getSPL(token.getInt()));
+              }
+              case FLOAT -> {
+                defaults.add(SPLCodeObject.getSPL(token.getFloat()));
+              }
+              case STRING -> {
+                defaults.add(SPLCodeObject.getSPL(token.getValueAsString()));
+              }
+            }
+          } else {
+            throwSyntaxError("require a constant instead of \"" + tokenFlow.peek().getValueAsString() + "\"", tokenFlow.peek());
+          }
+          tokenFlow.next();
+          if (tokenFlow.peek().isComma()) {
+            tokenFlow.next();
+          }
+        }
+        break;
+      }
       if (tokenFlow.peek().isComma()) {
         tokenFlow.next();
         tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.IDENTIFIER, "require identifier instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
       } else {
-        tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RIGHT_PARENTHESES, "require ')' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
-        tokenFlow.next();
         break;
       }
     }
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RIGHT_PARENTHESES, "require ')' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+    tokenFlow.next();
     tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LBRACE, "require '{' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
     DefaultASTContext<Instruction> oldState = context;
     parameters.forEach(funcContext::addSymbol);
@@ -265,7 +295,7 @@ public class SPLParser extends AbstractSyntaxParser {
     context = oldState;
     funcContext.generateByteCodes(block);
     SPLCodeObject code = SPLCodeObjectBuilder.build(funcContext);
-    SPLFuncObject func = new SPLFuncObject(parameters, funcName, code);
+    SPLFuncObject func = new SPLFuncObject(parameters, defaults, funcName, code);
     context.addConstantObject(func);
 //    InsVisitor insVisitor = new InsVisitor(funcContext.getVarnames(), funcContext.getConstantMap());
 //    funcContext.getInstructions().forEach(insVisitor::visit);

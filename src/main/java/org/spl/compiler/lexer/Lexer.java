@@ -110,9 +110,10 @@ public class Lexer {
           Token token = new Token(TOKEN_TYPE.COMMA, ",");
           tokens.add(token);
           injectTokensAndClearBuilder(token, builder);
+          // must call updateLineAndColumn before nextChar, or `columnNo--`
           updateLineAndColumn();
-          state = CHAR_TYPE.INIT;
           c = nextChar(builder);
+          state = CHAR_TYPE.INIT;
           builder.delete(0, builder.length());
         }
         case NEWLINE -> {
@@ -125,7 +126,7 @@ public class Lexer {
           builder.delete(0, builder.length());
         }
         case DOT -> {
-          c = nextChar(builder);
+          nextChar(builder);
           Token token = new Token(TOKEN_TYPE.DOT, ".");
           injectTokensAndClearBuilder(token, builder);
           tokens.add(token);
@@ -146,6 +147,7 @@ public class Lexer {
           tokens.add(token);
           updateLineAndColumn();
           state = CHAR_TYPE.INIT;
+          columnNo--;
         }
         case NUMBER -> {
           // number branch
@@ -175,6 +177,7 @@ public class Lexer {
             updateLineAndColumn();
             tokens.add(token);
           }
+          columnNo--;
           state = CHAR_TYPE.INIT;
         }
         case QUOTATION -> {
@@ -213,6 +216,7 @@ public class Lexer {
           updateLineAndColumn();
           builder.delete(0, builder.length());
           state = CHAR_TYPE.INIT;
+          columnNo--;
         }
         case SEMICOLON -> {
           c = nextChar(builder);
@@ -220,6 +224,7 @@ public class Lexer {
           injectTokensAndClearBuilder(token, builder);
           tokens.add(token);
           updateLineAndColumn();
+          columnNo--;
           builder.delete(0, builder.length());
           state = CHAR_TYPE.INIT;
         }
@@ -235,6 +240,7 @@ public class Lexer {
           injectTokensAndClearBuilder(token, builder);
           tokens.add(token);
           updateLineAndColumn();
+          columnNo--;
           state = CHAR_TYPE.INIT;
         }
         case MUL -> {
@@ -259,6 +265,7 @@ public class Lexer {
           injectTokensAndClearBuilder(token, builder);
           tokens.add(token);
           updateLineAndColumn();
+          columnNo--;
           state = CHAR_TYPE.INIT;
         }
         case DIV -> {
@@ -278,6 +285,7 @@ public class Lexer {
           injectTokensAndClearBuilder(token, builder);
           tokens.add(token);
           updateLineAndColumn();
+          columnNo--;
           state = CHAR_TYPE.INIT;
         }
         case MOD -> {
@@ -292,6 +300,7 @@ public class Lexer {
           injectTokensAndClearBuilder(token, builder);
           tokens.add(token);
           updateLineAndColumn();
+          columnNo--;
           state = CHAR_TYPE.INIT;
         }
         case ASSIGN -> {
@@ -306,6 +315,7 @@ public class Lexer {
           injectTokensAndClearBuilder(token, builder);
           tokens.add(token);
           updateLineAndColumn();
+          columnNo--;
           state = CHAR_TYPE.INIT;
         }
         case GT -> {
@@ -338,6 +348,7 @@ public class Lexer {
           injectTokensAndClearBuilder(token, builder);
           tokens.add(token);
           updateLineAndColumn();
+          columnNo--;
           state = CHAR_TYPE.INIT;
         }
         case LT -> {
@@ -363,6 +374,7 @@ public class Lexer {
           injectTokensAndClearBuilder(token, builder);
           tokens.add(token);
           updateLineAndColumn();
+          columnNo--;
           state = CHAR_TYPE.INIT;
         }
         case AND -> {
@@ -383,6 +395,7 @@ public class Lexer {
           injectTokensAndClearBuilder(token, builder);
           tokens.add(token);
           updateLineAndColumn();
+          columnNo--;
           state = CHAR_TYPE.INIT;
         }
         case OR -> {
@@ -403,6 +416,7 @@ public class Lexer {
           injectTokensAndClearBuilder(token, builder);
           tokens.add(token);
           updateLineAndColumn();
+          columnNo--;
           state = CHAR_TYPE.INIT;
         }
         case NOT -> {
@@ -417,6 +431,7 @@ public class Lexer {
           injectTokensAndClearBuilder(token, builder);
           tokens.add(token);
           updateLineAndColumn();
+          columnNo--;
           state = CHAR_TYPE.INIT;
         }
         case INVERT -> {
@@ -431,6 +446,7 @@ public class Lexer {
           injectTokensAndClearBuilder(token, builder);
           tokens.add(token);
           updateLineAndColumn();
+          columnNo--;
           state = CHAR_TYPE.INIT;
         }
         case LPAREN -> {
@@ -439,6 +455,7 @@ public class Lexer {
           injectTokensAndClearBuilder(token, builder);
           tokens.add(token);
           updateLineAndColumn();
+          columnNo--;
           state = CHAR_TYPE.INIT;
         }
         case RPAREN -> {
@@ -447,6 +464,7 @@ public class Lexer {
           injectTokensAndClearBuilder(token, builder);
           tokens.add(token);
           updateLineAndColumn();
+          columnNo--;
           state = CHAR_TYPE.INIT;
         }
         case POWER -> {
@@ -461,6 +479,7 @@ public class Lexer {
           injectTokensAndClearBuilder(token, builder);
           tokens.add(token);
           updateLineAndColumn();
+          columnNo--;
           state = CHAR_TYPE.INIT;
         }
         case LBRACE -> {
@@ -707,6 +726,16 @@ public class Lexer {
           token == TOKEN_TYPE.ASSIGN_XOR ||
           token == TOKEN_TYPE.ASSIGN_POWER ||
           token == TOKEN_TYPE.ASSIGN_INVERT;
+    }
+
+    public boolean isPureAssign() {
+      return token == TOKEN_TYPE.ASSIGN;
+    }
+
+    public boolean isConstant() {
+      return token == TOKEN_TYPE.INT ||
+          token == TOKEN_TYPE.FLOAT ||
+          token == TOKEN_TYPE.STRING;
     }
 
     public boolean isPower() {

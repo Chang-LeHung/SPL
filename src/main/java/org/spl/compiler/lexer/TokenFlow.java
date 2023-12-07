@@ -22,6 +22,11 @@ public class TokenFlow<T> implements Flow<T>, List<T> {
     off++;
   }
 
+  @Override
+  public void back() {
+    off--;
+  }
+
   public int getOff() {
     return off;
   }

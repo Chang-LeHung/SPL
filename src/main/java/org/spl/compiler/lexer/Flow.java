@@ -4,6 +4,8 @@ public interface Flow<T> {
 
   void next();
 
+  void back();
+
   T lookAhead();
 
   T lookAhead(int n);
