@@ -16,6 +16,7 @@ import org.spl.compiler.ir.exp.Pop;
 import org.spl.compiler.ir.stmt.assignstmt.*;
 import org.spl.compiler.ir.stmt.controlflow.*;
 import org.spl.compiler.ir.stmt.func.FuncDef;
+import org.spl.compiler.ir.stmt.returnstmt.Return;
 import org.spl.compiler.ir.unaryop.*;
 import org.spl.compiler.ir.vals.*;
 import org.spl.compiler.lexer.Lexer;
@@ -39,6 +40,8 @@ import java.util.List;
  *              | doWhile
  *              | forStmt
  *              | globalStmt
+ *              | returnStmt
+ * returnStmt   : 'return' expression?
  * globalStmt   : 'global' IDENTIFIER (',' IDENTIFIER)*
  * funcDef      : 'def' funcName '(' paramList? ')' block
  * forStmt      : 'for' '(' expression? ';' expression? ';' expression? ')' block
@@ -174,6 +177,8 @@ public class SPLParser extends AbstractSyntaxParser {
     try {
       if (tokenFlow.peek().isIF()) {
         return ifStatement();
+      } else if (tokenFlow.peek().isReturn()) {
+        return returnStatement();
       } else if (tokenFlow.peek().isGlobal()) {
         return globalStatement();
       } else if (tokenFlow.peek().isDef()) {
@@ -203,6 +208,16 @@ public class SPLParser extends AbstractSyntaxParser {
     }
     return null;
   }
+
+  public IRNode<Instruction> returnStatement() throws SPLSyntaxError {
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RETURN, "require 'return' instead of \"" + tokenFlow.peek().getValueAsString());
+    Lexer.Token token = tokenFlow.peek();
+    IRNode<Instruction> expression = expression();
+    Return ret = new Return(expression);
+    setSourceCodeInfo(ret, token);
+    return ret;
+  }
+
 
   public IRNode<Instruction> globalStatement() throws SPLSyntaxError {
     tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.GLOBAL, "require 'global' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
@@ -251,7 +266,7 @@ public class SPLParser extends AbstractSyntaxParser {
         tokenFlow.back();
         while (tokenFlow.peek().isIDENTIFIER()) {
           tokenFlow.next();
-          tokenAssertion(tokenFlow.peek(),  Lexer.TOKEN_TYPE.ASSIGN, "require '=' instead of \"" + tokenFlow.peek().getValueAsString());
+          tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.ASSIGN, "require '=' instead of \"" + tokenFlow.peek().getValueAsString());
           tokenFlow.next();
           if (tokenFlow.peek().isConstant()) {
             token = tokenFlow.peek();
