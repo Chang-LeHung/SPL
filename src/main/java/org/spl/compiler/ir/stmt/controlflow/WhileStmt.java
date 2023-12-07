@@ -88,4 +88,9 @@ public class WhileStmt extends AbstractIR<Instruction> {
     }
     return false;
   }
+
+  @Override
+  public boolean isStatement() {
+    return true;
+  }
 }

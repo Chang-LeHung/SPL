@@ -3,6 +3,7 @@ package org.spl.compiler.parser;
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.exceptions.SPLException;
 import org.spl.compiler.exceptions.SPLSyntaxError;
+import org.spl.compiler.ir.AbstractIR;
 import org.spl.compiler.ir.BuiltinNames;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.Scope;
@@ -149,7 +150,7 @@ public class SPLParser extends AbstractSyntaxParser {
       }
       IRNode<Instruction> node = statement();
       block.addIRNode(node);
-      if (node instanceof FuncCallExp || node instanceof MethodCall) {
+      if (node instanceof AbstractIR<Instruction> abIR && !abIR.isStatement()) {
         Lexer.Token token = tokenFlow.peek();
         Pop pop = new Pop();
         setSourceCodeInfo(pop, token);
@@ -264,7 +265,7 @@ public class SPLParser extends AbstractSyntaxParser {
       while (!tokenFlow.peek().isRBRACE()) {
         IRNode<Instruction> stmt = statement();
         codeBlock.addIRNode(stmt);
-        if (stmt instanceof FuncCallExp || stmt instanceof MethodCall) {
+        if (stmt instanceof AbstractIR<Instruction> abIR && !abIR.isStatement()) {
           Lexer.Token token = tokenFlow.peek();
           Pop pop = new Pop();
           setSourceCodeInfo(pop, token);

@@ -38,4 +38,9 @@ public class Break extends AbstractIR<Instruction> {
   public String toString() {
     return "break";
   }
+
+  @Override
+  public boolean isStatement() {
+    return true;
+  }
 }

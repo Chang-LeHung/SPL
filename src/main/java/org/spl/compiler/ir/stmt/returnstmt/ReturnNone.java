@@ -19,4 +19,9 @@ public class ReturnNone extends AbstractIR<Instruction> {
   public List<IRNode<Instruction>> getChildren() {
     return List.of();
   }
+
+  @Override
+  public boolean isStatement() {
+    return true;
+  }
 }

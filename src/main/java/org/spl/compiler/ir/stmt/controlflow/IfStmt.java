@@ -52,4 +52,9 @@ public class IfStmt extends AbstractIR<Instruction> {
       children = List.of(condition);
     return children;
   }
+
+  @Override
+  public boolean isStatement() {
+    return true;
+  }
 }

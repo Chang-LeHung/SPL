@@ -64,4 +64,8 @@ public class AssignStmt extends AbstractIR<Instruction> {
     return lhs.toString() + " = " + rhs.toString();
   }
 
+  @Override
+  public boolean isStatement() {
+    return true;
+  }
 }

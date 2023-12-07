@@ -44,4 +44,8 @@ public abstract class AbstractIR<E> implements IRNode<E> {
   public void setColumnNo(int columnNo) {
     this.columnNo = columnNo;
   }
+
+  public boolean isStatement() {
+    return false;
+  }
 }

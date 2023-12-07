@@ -39,4 +39,9 @@ public class Continue extends AbstractIR<Instruction> {
   public String toString() {
     return "continue";
   }
+
+  @Override
+  public boolean isStatement() {
+    return true;
+  }
 }

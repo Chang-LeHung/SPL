@@ -91,4 +91,10 @@ public class AbstractAssignStmt extends AbstractIR<Instruction> {
   public Op getOperator() {
     return op;
   }
+
+
+  @Override
+  public boolean isStatement() {
+    return true;
+  }
 }

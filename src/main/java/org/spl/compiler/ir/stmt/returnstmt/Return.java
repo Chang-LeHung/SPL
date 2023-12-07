@@ -30,4 +30,9 @@ public class Return extends AbstractIR<Instruction> {
     }
     return children;
   }
+
+  @Override
+  public boolean isStatement() {
+    return true;
+  }
 }
