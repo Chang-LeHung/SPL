@@ -5,6 +5,7 @@ import org.spl.compiler.SPLCompiler;
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.context.ASTContext;
+import org.spl.compiler.lexer.Lexer;
 import org.spl.compiler.tree.InsVisitor;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.internal.objs.SPLCodeObject;
@@ -118,5 +119,30 @@ public class TestCompiler {
     System.out.println(Arrays.toString(eval.getConstants()));
     Dissembler dissembler = new Dissembler(((SPLFuncObject) eval.getConstants()[1]));
     dissembler.prettyPrint();
+  }
+
+  @Test
+  public void testFunctionDefaultArg() throws SPLInternalException, SPLSyntaxError, IOException {
+    DefaultEval eval = run("function/defaultArg.spl");
+    System.out.println(Arrays.toString(eval.getConstants()));
+    Dissembler dissembler = new Dissembler(((SPLFuncObject) eval.getConstants()[1]));
+    dissembler.prettyPrint();
+  }
+
+  @Test
+  public void testFunctionDefaultArg02() throws SPLInternalException, SPLSyntaxError, IOException {
+    try {
+      DefaultEval eval = run("function/defaultArg02.spl");
+    }catch (SPLSyntaxError e) {
+      System.err.println(e.getMessage());
+    }
+  }
+
+  @Test
+  public void testTokens() throws IOException, SPLSyntaxError {
+    String resource = getResource("function/defaultArg02.spl");
+    Lexer lexer = new Lexer(resource);
+    lexer.doParse();
+    System.out.println(lexer.getTokens());
   }
 }

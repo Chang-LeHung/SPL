@@ -1,0 +1,14 @@
+
+words = "***💗***"
+
+def hello(a, b, c, d, e="I am F") {
+    global words
+    print("Hello World")
+    print(a, b, c, d)
+    print(e)
+    print(words)
+}
+
+print("Hello World")
+print("===========")
+hello(1, 2, 3, 4)

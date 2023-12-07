@@ -1,7 +1,7 @@
 
 words = "***💗***"
 
-def hello(a, b, c, d, e="I am F") {
+def hello(a, b, c, d, e=words) {
     global words
     print("Hello World")
     print(a, b, c, d)
