@@ -3,37 +3,28 @@ package org.spl.vm.interpreter;
 import org.spl.vm.builtin.Builtin;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.internal.objs.SPLCodeObject;
+import org.spl.vm.internal.objs.SPLFrameObject;
 import org.spl.vm.objects.SPLBoolObject;
 import org.spl.vm.objects.SPLNoneObject;
 import org.spl.vm.objects.SPLObject;
 
-import java.util.HashMap;
 import java.util.Map;
 
-public class DefaultEval implements Evaluation {
 
-  private final Map<SPLObject, SPLObject> locals;
-  private final Map<SPLObject, SPLObject> globals;
-  private final byte[] code;
-  private int pc;
-  private final SPLObject[] evalStack;
-  private final SPLObject[] constants;
-  private int top;
+public class DefaultEval extends SPLFrameObject implements Evaluation {
 
-  private long insNumExecuted;
 
   public DefaultEval(SPLCodeObject codeObj) throws SPLInternalException {
+    super(codeObj);
     if (codeObj.getArgs() != 0) {
       throw new SPLInternalException("SPLCodeObject's args must be zero");
     }
     Evaluation.init();
-    pc = 0;
-    evalStack = new SPLObject[codeObj.getMaxStackSize()];
-    code = codeObj.getCode();
-    locals = new HashMap<>();
-    globals = locals;
-    insNumExecuted = 0;
-    constants = codeObj.getConstants();
+  }
+
+  public DefaultEval(Map<SPLObject, SPLObject> locals, Map<SPLObject, SPLObject> globals, SPLCodeObject codeObj) {
+    super(locals, globals, codeObj);
+    Evaluation.init();
   }
 
   @Override
