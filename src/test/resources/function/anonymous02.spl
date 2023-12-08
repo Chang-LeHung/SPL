@@ -1,0 +1,6 @@
+
+
+
+name = def (x) -> x**2
+
+print(name(2))

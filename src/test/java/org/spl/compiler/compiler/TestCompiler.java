@@ -170,4 +170,12 @@ public class TestCompiler {
     Dissembler dissembler = new Dissembler(((SPLFuncObject) eval.getConstants()[0]));
     dissembler.prettyPrint();
   }
+
+  @Test
+  public void testAnonymous02() throws SPLInternalException, SPLSyntaxError, IOException {
+    DefaultEval eval = run("function/anonymous02.spl");
+    System.out.println(Arrays.toString(eval.getConstants()));
+    Dissembler dissembler = new Dissembler(((SPLFuncObject) eval.getConstants()[0]));
+    dissembler.prettyPrint();
+  }
 }
