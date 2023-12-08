@@ -10,7 +10,6 @@ import org.spl.vm.objects.SPLNoneObject;
 import org.spl.vm.objects.SPLObject;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 
@@ -130,7 +129,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               globals.put(name, globals.get(name).lshift(rhs));
               continue;
             }
-            throw new SPLInternalException("InternalError: not found " + name.str());
+            throw new SPLInternalException("not found " + name.str());
           }
           case RSHIFT_ASSIGN  -> { // RSHIFT_ASSIGN
             int oparg = getOparg();
@@ -144,7 +143,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               globals.put(name, globals.get(name).rshift(rhs));
               continue;
             }
-            throw new SPLInternalException("InternalError: not found " + name.str());
+            throw new SPLInternalException("not found " + name.str());
           }
           case U_RSHIFT_ASSIGN -> { // U_RSHIFT_ASSIGN
             int oparg = getOparg();
@@ -158,7 +157,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               globals.put(name, globals.get(name).URshift(rhs));
               continue;
             }
-            throw new SPLInternalException("InternalError: not found " + name.str());
+            throw new SPLInternalException("not found " + name.str());
           }
           case AND_ASSIGN -> { // AND_ASSIGN
             int oparg = getOparg();
@@ -172,7 +171,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               globals.put(name, globals.get(name).and(rhs));
               continue;
             }
-            throw new SPLInternalException("InternalError: not found " + name.str());
+            throw new SPLInternalException("not found " + name.str());
           }
           case OR_ASSIGN -> { // OR_ASSIGN
             int oparg = getOparg();
@@ -186,7 +185,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               globals.put(name, globals.get(name).or(rhs));
               continue;
             }
-            throw new SPLInternalException("InternalError: not found " + name.str());
+            throw new SPLInternalException("not found " + name.str());
           }
           case XOR_ASSIGN -> { // XOR_ASSIGN
             int oparg = getOparg();
@@ -200,7 +199,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               globals.put(name, globals.get(name).xor(rhs));
               continue;
             }
-            throw new SPLInternalException("InternalError: not found " + name.str());
+            throw new SPLInternalException("not found " + name.str());
           }
           case ADD_ASSIGN -> { // ADD_ASSIGN
             int oparg = getOparg();
@@ -214,7 +213,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               globals.put(name, globals.get(name).add(rhs));
               continue;
             }
-            throw new SPLInternalException("InternalError: not found " + name.str());
+            throw new SPLInternalException("not found " + name.str());
           }
           case SUB_ASSIGN -> { // SUB_ASSIGN
             int oparg = getOparg();
@@ -228,7 +227,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               globals.put(name, globals.get(name).sub(rhs));
               continue;
             }
-            throw new SPLInternalException("InternalError: not found " + name.str());
+            throw new SPLInternalException("not found " + name.str());
           }
           case MUL_ASSIGN -> { // MUL_ASSIGN
             int oparg = getOparg();
@@ -242,7 +241,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               globals.put(name, globals.get(name).mul(rhs));
               continue;
             }
-            throw new SPLInternalException("InternalError: not found " + name.str());
+            throw new SPLInternalException("not found " + name.str());
           }
           case DIV_ASSIGN -> { // DIV_ASSIGN
             int oparg = getOparg();
@@ -256,7 +255,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               globals.put(name, globals.get(name).div(rhs));
               continue;
             }
-            throw new SPLInternalException("InternalError: not found " + name.str());
+            throw new SPLInternalException("not found " + name.str());
           }
           case MOD_ASSIGN -> { // MOD_ASSIGN
             int oparg = getOparg();
@@ -270,7 +269,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               globals.put(name, globals.get(name).mod(rhs));
               continue;
             }
-            throw new SPLInternalException("InternalError: not found " + name.str());
+            throw new SPLInternalException("not found " + name.str());
           }
           case POWER_ASSIGN -> { // POWER_ASSIGN
             int oparg = getOparg();
@@ -284,7 +283,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               globals.put(name, globals.get(name).pow(rhs));
               continue;
             }
-            throw new SPLInternalException("InternalError: not found " + name.str());
+            throw new SPLInternalException("not found " + name.str());
           }
           case LT -> { // LT
             pc++;
@@ -395,7 +394,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               evalStack[top++] = locals.get(varnames[oparg]);
               continue;
             }
-            throw new SPLInternalException("InternalError: LOAD_LOCAL failed, " + varnames[oparg].str() + " is not defined");
+            throw new SPLInternalException("LOAD_LOCAL failed, " + varnames[oparg].str() + " is not defined");
           }
           case STORE_GLOBAL -> { // STORE_GLOBAL
             int oparg = code[pc++];
@@ -408,7 +407,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               evalStack[top++] = globals.get(varnames[oparg]);
               continue;
             }
-            throw new SPLInternalException("InternalError: not found, " + varnames[oparg].str() + " is not defined");
+            throw new SPLInternalException("not found, " + varnames[oparg].str() + " is not defined");
           }
           case LOAD_NAME -> { // LOAD_NAME
             int oparg = code[pc++];
@@ -425,7 +424,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
                 continue;
               }
             }
-            throw new SPLInternalException("InternalError: LOAD_NAME failed, " + varnames[oparg].str() + " is not defined");
+            throw new SPLInternalException("LOAD_NAME failed, " + varnames[oparg].str() + " is not defined");
           }
           case LOAD_METHOD -> { // LOAD_METHOD
           }
@@ -508,7 +507,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             return SPLNoneObject.getInstance();
           }
           default -> {
-            throw new SPLInternalException("InternalError: unknown opcode " + code[--pc]);
+            throw new SPLInternalException("unknown opcode " + code[--pc]);
           }
         }
 
