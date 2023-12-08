@@ -4,23 +4,27 @@ import org.spl.vm.builtin.Builtin;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.internal.objs.SPLCodeObject;
 import org.spl.vm.internal.objs.SPLFrameObject;
+import org.spl.vm.internal.objs.SPLFuncObject;
 import org.spl.vm.objects.SPLBoolObject;
 import org.spl.vm.objects.SPLNoneObject;
 import org.spl.vm.objects.SPLObject;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 
 public class DefaultEval extends SPLFrameObject implements Evaluation {
 
 
-  private String name;
+  private final String name;
 
   public DefaultEval(SPLCodeObject codeObj) throws SPLInternalException {
     super(codeObj);
     if (codeObj.getArgs() != 0) {
       throw new SPLInternalException("SPLCodeObject's args must be zero");
     }
+    name = "anonymous";
     Evaluation.init();
   }
 
@@ -427,6 +431,18 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
           }
           case CALL_METHOD -> { // CALL_METHOD
           }
+          case MAKE_FUNCTION -> {
+            int arg = getOparg();
+            var defaults = new ArrayList<SPLObject>();
+            SPLObject func = evalStack[--top];
+            assert func instanceof SPLFuncObject;
+            for (int i = 0; i < arg; i++) {
+              defaults.add(evalStack[--top]);
+            }
+            func.setGlobals(globals);
+            ((SPLFuncObject)func).setDefaults(defaults);
+            evalStack[top++] = func;
+          }
           case STORE -> { // STORE
           }
           case LOAD -> { // LOAD
@@ -438,7 +454,6 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             for (int i = 0; i < oparg; i++) {
               args[i] = evalStack[--top];
             }
-            callable.setGlobals(globals);
             evalStack[top++] = callable.call(args);
           }
           case LOAD_CONST -> { // LOAD_CONST

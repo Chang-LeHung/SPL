@@ -125,7 +125,7 @@ public class TestCompiler {
   public void testFunctionDefaultArg() throws SPLInternalException, SPLSyntaxError, IOException {
     DefaultEval eval = run("function/defaultArg.spl");
     System.out.println(Arrays.toString(eval.getConstants()));
-    Dissembler dissembler = new Dissembler(((SPLFuncObject) eval.getConstants()[1]));
+    Dissembler dissembler = new Dissembler(((SPLFuncObject) eval.getConstants()[2]));
     dissembler.prettyPrint();
   }
 
@@ -135,6 +135,7 @@ public class TestCompiler {
       DefaultEval eval = run("function/defaultArg02.spl");
     }catch (SPLSyntaxError e) {
       System.err.println(e.getMessage());
+      e.printStackTrace();
     }
   }
 

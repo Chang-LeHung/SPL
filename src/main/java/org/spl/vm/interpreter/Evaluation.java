@@ -70,6 +70,7 @@ public interface Evaluation {
     opcode[OpCode.JUMP_BACK.val] = OpCode.JUMP_BACK;
     opcode[OpCode.JUMP_ABSOLUTE.val] = OpCode.JUMP_ABSOLUTE;
     opcode[OpCode.JUMP_BACK_TRUE.val] = OpCode.JUMP_BACK_TRUE;
+    opcode[OpCode.MAKE_FUNCTION.val] = OpCode.MAKE_FUNCTION;
   }
 
   SPLObject evalFrame() throws SPLInternalException;

@@ -7,6 +7,8 @@ import org.spl.compiler.ir.AbstractIR;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.context.ASTContext;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class FuncDef extends AbstractIR<Instruction> {
@@ -14,11 +16,14 @@ public class FuncDef extends AbstractIR<Instruction> {
   private final String funcName;
   private final int idxInConstants;
   private final int idxInVarNames;
+  private final List<IRNode<Instruction>> defaults;
+  private List<IRNode<Instruction>> children;
 
-  public FuncDef(String funcName, int idxInConstants, int idxInVarNames) {
+  public FuncDef(String funcName, int idxInConstants, int idxInVarNames, List<IRNode<Instruction>> defaults) {
     this.funcName = funcName;
     this.idxInConstants = idxInConstants;
     this.idxInVarNames = idxInVarNames;
+    this.defaults = defaults;
   }
 
   public String getFuncName() {
@@ -36,12 +41,17 @@ public class FuncDef extends AbstractIR<Instruction> {
   @Override
   public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
     context.addInstruction(new Instruction(OpCode.LOAD_CONST, idxInConstants), getLineNo(), getColumnNo(), getLen());
+    context.addInstruction(new Instruction(OpCode.MAKE_FUNCTION, defaults.size()), getLineNo(), getColumnNo(), getLen());
     context.addInstruction(new Instruction(OpCode.STORE_LOCAL, idxInVarNames), getLineNo(), getColumnNo(), getLen());
   }
 
   @Override
   public List<IRNode<Instruction>> getChildren() {
-    return List.of();
+    if (children == null) {
+      children = new ArrayList<>(defaults);
+      Collections.reverse(children);
+    }
+    return children;
   }
 
   @Override

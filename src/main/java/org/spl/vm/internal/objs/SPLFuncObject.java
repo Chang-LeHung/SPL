@@ -13,16 +13,15 @@ import java.util.Map;
 public class SPLFuncObject extends SPLObject {
   private final List<String> parameters;
   private Map<SPLObject, SPLObject> globals;
-  private final List<SPLObject> defaults;
+  private List<SPLObject> defaults;
   private final String name;
   private final SPLCodeObject codeObject;
 
-  public SPLFuncObject(List<String> parameters, List<SPLObject> defaults, String name, SPLCodeObject codeObject) {
+  public SPLFuncObject(List<String> parameters, String name, SPLCodeObject codeObject) {
     super(SPLFuncType.getInstance());
     this.parameters = parameters;
     this.name = name;
     this.codeObject = codeObject;
-    this.defaults = defaults;
   }
 
   public List<String> getParameters() {
@@ -31,6 +30,14 @@ public class SPLFuncObject extends SPLObject {
 
   public String getName() {
     return name;
+  }
+
+  public List<SPLObject> getDefaults() {
+    return defaults;
+  }
+
+  public void setDefaults(List<SPLObject> defaults) {
+    this.defaults = defaults;
   }
 
   public SPLCodeObject getCodeObject() {

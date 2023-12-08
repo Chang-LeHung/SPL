@@ -58,7 +58,8 @@ public enum OpCode {
   TRUE_DIV,
   NEG,
   RETURN,
-  RETURN_NONE;
+  RETURN_NONE,
+  MAKE_FUNCTION;
   public final byte val;
 
   OpCode() {

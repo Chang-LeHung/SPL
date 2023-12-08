@@ -197,6 +197,9 @@ public class Dissembler {
         case LOAD_CONST -> {
           ins = new Instruction(OpCode.LOAD_CONST, getOparg());
         }
+        case MAKE_FUNCTION -> {
+          ins = new Instruction(OpCode.MAKE_FUNCTION, getOparg());
+        }
         case STORE_GLOBAL -> {
           ins = new Instruction(OpCode.STORE_GLOBAL, getOparg());
         }

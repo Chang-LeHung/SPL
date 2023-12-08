@@ -259,7 +259,7 @@ public class SPLParser extends AbstractSyntaxParser {
     var funcContext = new DefaultASTContext<>(filename);
     funcContext.setFirstLineNo(token.getLineNo());
     List<String> parameters = new ArrayList<>();
-    List<SPLObject> defaults = new ArrayList<>();
+    List<IRNode<Instruction>> defaultParams = new ArrayList<>();
     while (tokenFlow.peek().isIDENTIFIER()) {
       parameters.add(tokenFlow.peek().getValueAsString());
       context.addSymbol(tokenFlow.peek().getValueAsString());
@@ -271,23 +271,7 @@ public class SPLParser extends AbstractSyntaxParser {
           tokenFlow.next();
           tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.ASSIGN, "require '=' instead of \"" + tokenFlow.peek().getValueAsString());
           tokenFlow.next();
-          if (tokenFlow.peek().isConstant()) {
-            token = tokenFlow.peek();
-            switch (token.token) {
-              case INT -> {
-                defaults.add(SPLCodeObject.getSPL(token.getInt()));
-              }
-              case FLOAT -> {
-                defaults.add(SPLCodeObject.getSPL(token.getFloat()));
-              }
-              case STRING -> {
-                defaults.add(SPLCodeObject.getSPL(token.getValueAsString()));
-              }
-            }
-          } else {
-            throwSyntaxError("require a constant instead of \"" + tokenFlow.peek().getValueAsString() + "\"", tokenFlow.peek());
-          }
-          tokenFlow.next();
+          defaultParams.add(expression());
           if (tokenFlow.peek().isComma()) {
             tokenFlow.next();
           }
@@ -323,13 +307,13 @@ public class SPLParser extends AbstractSyntaxParser {
     context = oldState;
     funcContext.generateByteCodes(block);
     SPLCodeObject code = SPLCodeObjectBuilder.build(funcContext);
-    SPLFuncObject func = new SPLFuncObject(parameters, defaults, funcName, code);
+    SPLFuncObject func = new SPLFuncObject(parameters, funcName, code);
     context.addConstantObject(func);
     InsVisitor insVisitor = new InsVisitor(funcContext.getVarnames(), funcContext.getConstantMap());
     funcContext.getInstructions().forEach(insVisitor::visit);
     System.out.println(insVisitor);
     int idxInConstants = context.getConstantObjectIndex(func);
-    FuncDef funcDef = new FuncDef(funcName, idxInConstants, idxInVar);
+    FuncDef funcDef = new FuncDef(funcName, idxInConstants, idxInVar, defaultParams);
     setSourceCodeInfo(funcDef, token);
     return funcDef;
   }
