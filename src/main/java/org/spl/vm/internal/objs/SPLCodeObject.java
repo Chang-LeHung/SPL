@@ -79,6 +79,7 @@ public class SPLCodeObject extends SPLObject {
         ",\ndebugInfo=" + Arrays.toString(debugInfo) +
         ",\nconstants=" + Arrays.toString(constants) +
         ",\nvarnames=" + Arrays.toString(varnames) +
+        ",\nmaxStackSize=" + maxStackSize +
         '\n' + '}';
   }
 

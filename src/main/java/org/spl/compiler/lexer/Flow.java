@@ -8,6 +8,10 @@ public interface Flow<T> {
 
   T lookAhead();
 
+  T lookBack();
+
+  T lookBack(int n);
+
   T lookAhead(int n);
 
   int getCursor();

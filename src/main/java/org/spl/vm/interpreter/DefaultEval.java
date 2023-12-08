@@ -410,7 +410,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             throw new SPLInternalException("not found, " + varnames[oparg].str() + " is not defined");
           }
           case LOAD_NAME -> { // LOAD_NAME
-            int oparg = code[pc++];
+            int oparg = getOparg();
             if (locals.containsKey(varnames[oparg])) {
               evalStack[top++] = locals.get(varnames[oparg]);
               continue;

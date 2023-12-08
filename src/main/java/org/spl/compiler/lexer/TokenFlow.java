@@ -176,13 +176,23 @@ public class TokenFlow<T> implements Flow<T>, List<T> {
   }
 
   @Override
+  public T lookBack() {
+    return lookBack(1);
+  }
+
+  @Override
+  public T lookBack(int n) {
+    return tokens.get(off - n);
+  }
+
+  @Override
   public T lookAhead(int n) {
     return tokens.get(off + n);
   }
 
   @Override
   public int getCursor() {
-   return getOff();
+    return getOff();
   }
 
   @Override
