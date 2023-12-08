@@ -21,6 +21,7 @@ import org.spl.compiler.ir.stmt.returnstmt.ReturnNone;
 import org.spl.compiler.ir.unaryop.*;
 import org.spl.compiler.ir.vals.*;
 import org.spl.compiler.lexer.Lexer;
+import org.spl.compiler.tree.InsVisitor;
 import org.spl.vm.internal.SPLCodeObjectBuilder;
 import org.spl.vm.internal.objs.SPLCodeObject;
 import org.spl.vm.internal.objs.SPLFuncObject;
@@ -735,7 +736,10 @@ public class SPLParser extends AbstractSyntaxParser {
       BoolLiteral boolLiteral = new BoolLiteral(idx);
       setSourceCodeInfo(boolLiteral, token);
       return boolLiteral;
-    } else if (token.isTRUE()) {
+    } else if (token.isDef()) {
+      return anonymousFunction();
+    }
+    else if (token.isTRUE()) {
       tokenFlow.next();
       SPLBoolObject o = SPLBoolObject.getTrue();
       context.addConstantObject(o);
@@ -791,6 +795,51 @@ public class SPLParser extends AbstractSyntaxParser {
     }
     throwSyntaxError("Expected an expression instead of \"" + token.getValueAsString() + "\"", token);
     return null;
+  }
+
+  private IRNode<Instruction> anonymousFunction() throws SPLSyntaxError {
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.DEF,
+        "Expected 'def' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+    tokenFlow.next();
+    tokenAssertion(tokenFlow.peek(),  Lexer.TOKEN_TYPE.LEFT_PARENTHESES, "Expected '(' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+    tokenFlow.next();
+    var params = new ArrayList<String>();
+    DefaultASTContext<Instruction> auxContex = new DefaultASTContext<>(filename);
+    var oldContex = context;
+    context = auxContex;
+    while (!tokenFlow.peek().isRIGHT_PARENTHESES()) {
+      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.IDENTIFIER, "Expected an identifier instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+      params.add(tokenFlow.peek().getIdentifier());
+      context.addVarName(tokenFlow.peek().getIdentifier());
+      context.addSymbol(tokenFlow.peek().getIdentifier());
+      tokenFlow.next();
+      if (tokenFlow.peek().isComma()) {
+        tokenFlow.next();
+      } else {
+        tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RIGHT_PARENTHESES, "Expected ')' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+      }
+    }
+    tokenFlow.next();
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LBRACE, "Expected '{' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+    var block = (ProgramBlock) block();
+    IRNode<Instruction> last = block.getLast();
+    if (!(last instanceof Return || last instanceof ReturnNone)) {
+      ReturnNone returnNone = new ReturnNone();
+      setSourceCodeInfo(returnNone, tokenFlow.lookBack());
+      block.addIRNode(returnNone);
+    }
+    context = oldContex;
+    auxContex.generateByteCodes(block);
+    SPLCodeObject codeObject = SPLCodeObjectBuilder.build(auxContex);
+    SPLFuncObject func = new SPLFuncObject(params, codeObject);
+    context.addConstantObject(func);
+    int idx = context.getConstantObjectIndex(func);
+    FuncDef funcDef = new FuncDef(idx, func.getName());
+    setSourceCodeInfo(funcDef, tokenFlow.lookBack());
+//    InsVisitor insVisitor = new InsVisitor(auxContex.getVarnames(), auxContex.getConstantMap());
+//    auxContex.getInstructions().forEach(insVisitor::visit);
+//    System.out.println(insVisitor);
+    return funcDef;
   }
 
 
