@@ -73,6 +73,8 @@ public interface Evaluation {
     opcode[OpCode.MAKE_FUNCTION.val] = OpCode.MAKE_FUNCTION;
     opcode[OpCode.LOAD_ATTR.val] = OpCode.LOAD_ATTR;
     opcode[OpCode.STORE_ATTR.val] = OpCode.STORE_ATTR;
+    opcode[OpCode.LOAD.val] = OpCode.LOAD;
+    opcode[OpCode.LOAD_NAME.val] = OpCode.LOAD_NAME;
   }
 
   SPLObject evalFrame() throws SPLInternalException;

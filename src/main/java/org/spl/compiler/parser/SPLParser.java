@@ -786,6 +786,7 @@ public class SPLParser extends AbstractSyntaxParser {
           int idx = context.addVarName(name);
           context.addSymbol(name);
           ret = new LoadAttr(ret, idx);
+          tokenFlow.next();
         } else {
           List<IRNode<Instruction>> args = new ArrayList<>();
           tokenFlow.next();

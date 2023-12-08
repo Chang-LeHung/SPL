@@ -134,7 +134,6 @@ public class Lexer {
           builder.delete(0, builder.length());
         }
         case DOT -> {
-          nextChar(builder);
           Token token = new Token(TOKEN_TYPE.DOT, ".");
           injectTokensAndClearBuilder(token, builder);
           tokens.add(token);

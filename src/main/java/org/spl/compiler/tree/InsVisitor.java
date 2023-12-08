@@ -29,6 +29,8 @@ public class InsVisitor implements Visitor<Instruction> {
     loadStoreInstructions.add(OpCode.LOAD_GLOBAL);
     loadStoreInstructions.add(OpCode.STORE_GLOBAL);
     loadStoreInstructions.add(OpCode.LOAD_LOCAL);
+    loadStoreInstructions.add(OpCode.LOAD_ATTR);
+    loadStoreInstructions.add(OpCode.LOAD);
     loadStoreInstructions.add(OpCode.STORE_LOCAL);
     loadStoreInstructions.add(OpCode.LOAD_METHOD);
     loadStoreInstructions.add(OpCode.LOAD_NAME);
