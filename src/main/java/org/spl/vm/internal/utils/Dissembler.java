@@ -92,52 +92,52 @@ public class Dissembler {
           ins = new Instruction(OpCode.U_RSHIFT, 0);
           pc++;
         }
-        case LSHIFT_ASSIGN -> {
-          ins = new Instruction(OpCode.LSHIFT_ASSIGN, 0);
+        case INPLACE_LSHIFT -> {
+          ins = new Instruction(OpCode.INPLACE_LSHIFT, 0);
           pc++;
         }
-        case RSHIFT_ASSIGN -> {
-          ins = new Instruction(OpCode.RSHIFT_ASSIGN, 0);
+        case INPLACE_RSHIFT -> {
+          ins = new Instruction(OpCode.INPLACE_RSHIFT, 0);
           pc++;
         }
-        case U_RSHIFT_ASSIGN -> {
-          ins = new Instruction(OpCode.U_RSHIFT_ASSIGN, 0);
+        case INPLACE_U_RSHIFT -> {
+          ins = new Instruction(OpCode.INPLACE_U_RSHIFT, 0);
           pc++;
         }
-        case AND_ASSIGN -> {
-          ins = new Instruction(OpCode.AND_ASSIGN, 0);
+        case INPLACE_AND -> {
+          ins = new Instruction(OpCode.INPLACE_AND, 0);
           pc++;
         }
-        case OR_ASSIGN -> {
-          ins = new Instruction(OpCode.OR_ASSIGN, 0);
+        case INPLACE_OR -> {
+          ins = new Instruction(OpCode.INPLACE_OR, 0);
           pc++;
         }
-        case XOR_ASSIGN -> {
-          ins = new Instruction(OpCode.XOR_ASSIGN, 0);
+        case INPLACE_XOR -> {
+          ins = new Instruction(OpCode.INPLACE_XOR, 0);
           pc++;
         }
-        case ADD_ASSIGN -> {
-          ins = new Instruction(OpCode.ADD_ASSIGN, 0);
+        case INPLACE_ADD -> {
+          ins = new Instruction(OpCode.INPLACE_ADD, 0);
           pc++;
         }
-        case SUB_ASSIGN -> {
-          ins = new Instruction(OpCode.SUB_ASSIGN, 0);
+        case INPLACE_SUB -> {
+          ins = new Instruction(OpCode.INPLACE_SUB, 0);
           pc++;
         }
-        case MUL_ASSIGN -> {
-          ins = new Instruction(OpCode.MUL_ASSIGN, 0);
+        case INPLACE_MUL -> {
+          ins = new Instruction(OpCode.INPLACE_MUL, 0);
           pc++;
         }
-        case DIV_ASSIGN -> {
-          ins = new Instruction(OpCode.DIV_ASSIGN, 0);
+        case INPLACE_DIV -> {
+          ins = new Instruction(OpCode.INPLACE_DIV, 0);
           pc++;
         }
-        case MOD_ASSIGN -> {
-          ins = new Instruction(OpCode.MOD_ASSIGN, 0);
+        case INPLACE_MOD -> {
+          ins = new Instruction(OpCode.INPLACE_MOD, 0);
           pc++;
         }
-        case POWER_ASSIGN -> {
-          ins = new Instruction(OpCode.POWER_ASSIGN, 0);
+        case INPLACE_POWER -> {
+          ins = new Instruction(OpCode.INPLACE_POWER, 0);
           pc++;
         }
         case LT -> {

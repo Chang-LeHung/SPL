@@ -117,7 +117,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             SPLObject lhs = evalStack[--top];
             evalStack[top++] = lhs.URshift(rhs);
           }
-          case LSHIFT_ASSIGN -> { // LSHIFT_ASSIGN
+          case INPLACE_LSHIFT -> { // LSHIFT_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject name = varnames[oparg];
@@ -131,7 +131,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             }
             throw new SPLInternalException("not found " + name.str());
           }
-          case RSHIFT_ASSIGN  -> { // RSHIFT_ASSIGN
+          case INPLACE_RSHIFT -> { // RSHIFT_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject name = varnames[oparg];
@@ -145,7 +145,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             }
             throw new SPLInternalException("not found " + name.str());
           }
-          case U_RSHIFT_ASSIGN -> { // U_RSHIFT_ASSIGN
+          case INPLACE_U_RSHIFT -> { // U_RSHIFT_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject name = varnames[oparg];
@@ -159,7 +159,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             }
             throw new SPLInternalException("not found " + name.str());
           }
-          case AND_ASSIGN -> { // AND_ASSIGN
+          case INPLACE_AND -> { // AND_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject name = varnames[oparg];
@@ -173,7 +173,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             }
             throw new SPLInternalException("not found " + name.str());
           }
-          case OR_ASSIGN -> { // OR_ASSIGN
+          case INPLACE_OR -> { // OR_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject name = varnames[oparg];
@@ -187,7 +187,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             }
             throw new SPLInternalException("not found " + name.str());
           }
-          case XOR_ASSIGN -> { // XOR_ASSIGN
+          case INPLACE_XOR -> { // XOR_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject name = varnames[oparg];
@@ -201,7 +201,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             }
             throw new SPLInternalException("not found " + name.str());
           }
-          case ADD_ASSIGN -> { // ADD_ASSIGN
+          case INPLACE_ADD -> { // ADD_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject name = varnames[oparg];
@@ -215,7 +215,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             }
             throw new SPLInternalException("not found " + name.str());
           }
-          case SUB_ASSIGN -> { // SUB_ASSIGN
+          case INPLACE_SUB -> { // SUB_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject name = varnames[oparg];
@@ -229,7 +229,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             }
             throw new SPLInternalException("not found " + name.str());
           }
-          case MUL_ASSIGN -> { // MUL_ASSIGN
+          case INPLACE_MUL -> { // MUL_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject name = varnames[oparg];
@@ -243,7 +243,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             }
             throw new SPLInternalException("not found " + name.str());
           }
-          case DIV_ASSIGN -> { // DIV_ASSIGN
+          case INPLACE_DIV -> { // DIV_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject name = varnames[oparg];
@@ -257,7 +257,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             }
             throw new SPLInternalException("not found " + name.str());
           }
-          case MOD_ASSIGN -> { // MOD_ASSIGN
+          case INPLACE_MOD -> { // MOD_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject name = varnames[oparg];
@@ -271,7 +271,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             }
             throw new SPLInternalException("not found " + name.str());
           }
-          case POWER_ASSIGN -> { // POWER_ASSIGN
+          case INPLACE_POWER -> { // POWER_ASSIGN
             int oparg = getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject name = varnames[oparg];

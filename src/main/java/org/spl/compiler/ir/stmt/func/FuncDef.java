@@ -13,6 +13,7 @@ import java.util.List;
 
 public class FuncDef extends AbstractIR<Instruction> {
 
+  static int n = 0;
   private final String funcName;
   private final int idxInConstants;
   private final int idxInVarNames;
@@ -24,6 +25,18 @@ public class FuncDef extends AbstractIR<Instruction> {
     this.idxInConstants = idxInConstants;
     this.idxInVarNames = idxInVarNames;
     this.defaults = defaults;
+  }
+
+  /**
+   * lambda expression
+   * @param idxInConstants idx of function in constant table
+   */
+  public FuncDef(int idxInConstants) {
+    this.funcName = "Anonymous-" + n++;
+    this.idxInConstants = idxInConstants;
+    this.idxInVarNames = -1;
+    this.defaults = List.of();
+    this.children = defaults;
   }
 
   public String getFuncName() {
@@ -42,7 +55,8 @@ public class FuncDef extends AbstractIR<Instruction> {
   public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
     context.addInstruction(new Instruction(OpCode.LOAD_CONST, idxInConstants), getLineNo(), getColumnNo(), getLen());
     context.addInstruction(new Instruction(OpCode.MAKE_FUNCTION, defaults.size()), getLineNo(), getColumnNo(), getLen());
-    context.addInstruction(new Instruction(OpCode.STORE_LOCAL, idxInVarNames), getLineNo(), getColumnNo(), getLen());
+    if (idxInVarNames != -1)
+      context.addInstruction(new Instruction(OpCode.STORE_LOCAL, idxInVarNames), getLineNo(), getColumnNo(), getLen());
   }
 
   @Override

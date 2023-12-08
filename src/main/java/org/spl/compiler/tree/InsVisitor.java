@@ -33,18 +33,18 @@ public class InsVisitor implements Visitor<Instruction> {
     loadStoreInstructions.add(OpCode.LOAD_METHOD);
     loadStoreInstructions.add(OpCode.LOAD_NAME);
     loadStoreInstructions.add(OpCode.STORE);
-    loadStoreInstructions.add(OpCode.ADD_ASSIGN);
-    loadStoreInstructions.add(OpCode.SUB_ASSIGN);
-    loadStoreInstructions.add(OpCode.MUL_ASSIGN);
-    loadStoreInstructions.add(OpCode.DIV_ASSIGN);
-    loadStoreInstructions.add(OpCode.MOD_ASSIGN);
-    loadStoreInstructions.add(OpCode.POWER_ASSIGN);
-    loadStoreInstructions.add(OpCode.AND_ASSIGN);
-    loadStoreInstructions.add(OpCode.OR_ASSIGN);
-    loadStoreInstructions.add(OpCode.XOR_ASSIGN);
-    loadStoreInstructions.add(OpCode.LSHIFT_ASSIGN);
-    loadStoreInstructions.add(OpCode.RSHIFT_ASSIGN);
-    loadStoreInstructions.add(OpCode.U_RSHIFT_ASSIGN);
+    loadStoreInstructions.add(OpCode.INPLACE_ADD);
+    loadStoreInstructions.add(OpCode.INPLACE_SUB);
+    loadStoreInstructions.add(OpCode.INPLACE_MUL);
+    loadStoreInstructions.add(OpCode.INPLACE_DIV);
+    loadStoreInstructions.add(OpCode.INPLACE_MOD);
+    loadStoreInstructions.add(OpCode.INPLACE_POWER);
+    loadStoreInstructions.add(OpCode.INPLACE_AND);
+    loadStoreInstructions.add(OpCode.INPLACE_OR);
+    loadStoreInstructions.add(OpCode.INPLACE_XOR);
+    loadStoreInstructions.add(OpCode.INPLACE_LSHIFT);
+    loadStoreInstructions.add(OpCode.INPLACE_RSHIFT);
+    loadStoreInstructions.add(OpCode.INPLACE_U_RSHIFT);
   }
 
   public InsVisitor(Map<?, Integer> varMap, Map<SPLObject, Integer> constants) {
