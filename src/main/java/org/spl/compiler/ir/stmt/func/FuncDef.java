@@ -13,7 +13,6 @@ import java.util.List;
 
 public class FuncDef extends AbstractIR<Instruction> {
 
-  static int n = 0;
   private final String funcName;
   private final int idxInConstants;
   private final int idxInVarNames;
@@ -31,8 +30,8 @@ public class FuncDef extends AbstractIR<Instruction> {
    * lambda expression
    * @param idxInConstants idx of function in constant table
    */
-  public FuncDef(int idxInConstants) {
-    this.funcName = "Anonymous-" + n++;
+  public FuncDef(int idxInConstants, String name) {
+    this.funcName = name;
     this.idxInConstants = idxInConstants;
     this.idxInVarNames = -1;
     this.defaults = List.of();
@@ -57,6 +56,16 @@ public class FuncDef extends AbstractIR<Instruction> {
     context.addInstruction(new Instruction(OpCode.MAKE_FUNCTION, defaults.size()), getLineNo(), getColumnNo(), getLen());
     if (idxInVarNames != -1)
       context.addInstruction(new Instruction(OpCode.STORE_LOCAL, idxInVarNames), getLineNo(), getColumnNo(), getLen());
+  }
+
+  @Override
+  public void preVisiting(ASTContext<Instruction> context) {
+    context.increaseStackSize();
+    context.decreaseStackSize();
+    context.decreaseStackSize(defaults.size());
+    context.increaseStackSize();
+    if (idxInVarNames!= -1)
+      context.decreaseStackSize();
   }
 
   @Override
