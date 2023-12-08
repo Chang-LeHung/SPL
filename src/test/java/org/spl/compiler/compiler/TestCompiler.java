@@ -4,10 +4,14 @@ import org.junit.jupiter.api.Test;
 import org.spl.compiler.SPLCompiler;
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.exceptions.SPLSyntaxError;
+import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.context.ASTContext;
+import org.spl.compiler.ir.context.DefaultASTContext;
 import org.spl.compiler.lexer.Lexer;
+import org.spl.compiler.parser.SPLParser;
 import org.spl.compiler.tree.InsVisitor;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
+import org.spl.vm.internal.SPLCodeObjectBuilder;
 import org.spl.vm.internal.objs.SPLCodeObject;
 import org.spl.vm.internal.objs.SPLFuncObject;
 import org.spl.vm.internal.utils.Dissembler;
@@ -176,6 +180,18 @@ public class TestCompiler {
     DefaultEval eval = run("function/anonymous02.spl");
     System.out.println(Arrays.toString(eval.getConstants()));
     Dissembler dissembler = new Dissembler(((SPLFuncObject) eval.getConstants()[0]));
+    dissembler.prettyPrint();
+  }
+
+  @Test
+  public void testAttr01() throws SPLInternalException, SPLSyntaxError, IOException {
+    Evaluation.init();
+    SPLParser parser = new SPLParser(getResource("attr/demo01.spl"));
+    IRNode<Instruction> ir = parser.buildAST();
+    DefaultASTContext<Instruction> context = parser.getContext();
+    context.generateByteCodes(ir);
+    SPLCodeObject code = SPLCodeObjectBuilder.build(context);
+    Dissembler dissembler = new Dissembler(code);
     dissembler.prettyPrint();
   }
 }

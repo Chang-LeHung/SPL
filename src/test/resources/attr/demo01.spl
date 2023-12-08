@@ -1,0 +1,4 @@
+
+
+print(a.name)
+a.b().c.d()
