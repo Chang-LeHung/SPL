@@ -154,4 +154,12 @@ public class TestCompiler {
     Dissembler dissembler = new Dissembler(((SPLFuncObject) eval.getConstants()[0]));
     dissembler.prettyPrint();
   }
+
+  @Test
+  public void testDefault03() throws SPLInternalException, SPLSyntaxError, IOException {
+    DefaultEval eval = run("function/default03.spl");
+    System.out.println(Arrays.toString(eval.getConstants()));
+    Dissembler dissembler = new Dissembler(((SPLFuncObject) eval.getConstants()[2]));
+    dissembler.prettyPrint();
+  }
 }

@@ -309,9 +309,9 @@ public class SPLParser extends AbstractSyntaxParser {
     SPLCodeObject code = SPLCodeObjectBuilder.build(funcContext);
     SPLFuncObject func = new SPLFuncObject(parameters, funcName, code);
     context.addConstantObject(func);
-    InsVisitor insVisitor = new InsVisitor(funcContext.getVarnames(), funcContext.getConstantMap());
-    funcContext.getInstructions().forEach(insVisitor::visit);
-    System.out.println(insVisitor);
+//    InsVisitor insVisitor = new InsVisitor(funcContext.getVarnames(), funcContext.getConstantMap());
+//    funcContext.getInstructions().forEach(insVisitor::visit);
+//    System.out.println(insVisitor);
     int idxInConstants = context.getConstantObjectIndex(func);
     FuncDef funcDef = new FuncDef(funcName, idxInConstants, idxInVar, defaultParams);
     setSourceCodeInfo(funcDef, token);
