@@ -123,10 +123,10 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs != null) {
-              locals.put(name, lhs.lshift(rhs));
+              locals.put(name, lhs.inplaceLshift(rhs));
               continue;
             } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).lshift(rhs));
+              globals.put(name, globals.get(name).inplaceLshift(rhs));
               continue;
             }
             throw new SPLInternalException("not found " + name.str());
@@ -137,10 +137,10 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs != null) {
-              locals.put(name, lhs.rshift(rhs));
+              locals.put(name, lhs.inplaceRshift(rhs));
               continue;
             } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).rshift(rhs));
+              globals.put(name, globals.get(name).inplaceRshift(rhs));
               continue;
             }
             throw new SPLInternalException("not found " + name.str());
@@ -151,10 +151,10 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs != null) {
-              locals.put(name, lhs.URshift(rhs));
+              locals.put(name, lhs.inplaceURshift(rhs));
               continue;
             } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).URshift(rhs));
+              globals.put(name, globals.get(name).inplaceURshift(rhs));
               continue;
             }
             throw new SPLInternalException("not found " + name.str());
@@ -165,10 +165,10 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs != null) {
-              locals.put(name, lhs.and(rhs));
+              locals.put(name, lhs.inplaceAnd(rhs));
               continue;
             } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).and(rhs));
+              globals.put(name, globals.get(name).inplaceAnd(rhs));
               continue;
             }
             throw new SPLInternalException("not found " + name.str());
@@ -179,10 +179,10 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs != null) {
-              locals.put(name, lhs.or(rhs));
+              locals.put(name, lhs.inplaceOr(rhs));
               continue;
             } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).or(rhs));
+              globals.put(name, globals.get(name).inplaceOr(rhs));
               continue;
             }
             throw new SPLInternalException("not found " + name.str());
@@ -193,10 +193,10 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs != null) {
-              locals.put(name, lhs.xor(rhs));
+              locals.put(name, lhs.inplaceXor(rhs));
               continue;
             } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).xor(rhs));
+              globals.put(name, globals.get(name).inplaceXor(rhs));
               continue;
             }
             throw new SPLInternalException("not found " + name.str());
@@ -207,10 +207,10 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs != null) {
-              locals.put(name, lhs.add(rhs));
+              locals.put(name, lhs.inplaceAdd(rhs));
               continue;
             } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).add(rhs));
+              globals.put(name, globals.get(name).inplaceAdd(rhs));
               continue;
             }
             throw new SPLInternalException("not found " + name.str());
@@ -221,10 +221,10 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs != null) {
-              locals.put(name, lhs.sub(rhs));
+              locals.put(name, lhs.inplaceSub(rhs));
               continue;
             } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).sub(rhs));
+              globals.put(name, globals.get(name).inplaceSub(rhs));
               continue;
             }
             throw new SPLInternalException("not found " + name.str());
@@ -235,10 +235,10 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs!= null) {
-              locals.put(name, lhs.mul(rhs));
+              locals.put(name, lhs.inplaceMul(rhs));
               continue;
             } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).mul(rhs));
+              globals.put(name, globals.get(name).inplaceMul(rhs));
               continue;
             }
             throw new SPLInternalException("not found " + name.str());
@@ -249,10 +249,10 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs!= null) {
-              locals.put(name, lhs.div(rhs));
+              locals.put(name, lhs.inplaceDiv(rhs));
               continue;
             } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).div(rhs));
+              globals.put(name, globals.get(name).inplaceDiv(rhs));
               continue;
             }
             throw new SPLInternalException("not found " + name.str());
@@ -263,10 +263,10 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs!= null) {
-              locals.put(name, lhs.mod(rhs));
+              locals.put(name, lhs.inplaceMod(rhs));
               continue;
             } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).mod(rhs));
+              globals.put(name, globals.get(name).inplaceMod(rhs));
               continue;
             }
             throw new SPLInternalException("not found " + name.str());
@@ -277,10 +277,10 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             SPLObject name = varnames[oparg];
             SPLObject lhs = locals.get(name);
             if (lhs!= null) {
-              locals.put(name, lhs.pow(rhs));
+              locals.put(name, lhs.inplacePow(rhs));
               continue;
             } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).pow(rhs));
+              globals.put(name, globals.get(name).inplacePow(rhs));
               continue;
             }
             throw new SPLInternalException("not found " + name.str());
