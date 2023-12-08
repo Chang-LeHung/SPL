@@ -11,8 +11,12 @@ import java.util.List;
 import java.util.Map;
 
 public class SPLFuncObject extends SPLObject {
+  public static int anonymousCount = 0;
   private final List<String> parameters;
   private Map<SPLObject, SPLObject> globals;
+  /**
+   * defaults will be set in runtime (in instruction MAKE_FUNCTION)
+   */
   private List<SPLObject> defaults;
   private final String name;
   private final SPLCodeObject codeObject;
@@ -21,6 +25,13 @@ public class SPLFuncObject extends SPLObject {
     super(SPLFuncType.getInstance());
     this.parameters = parameters;
     this.name = name;
+    this.codeObject = codeObject;
+  }
+
+  public SPLFuncObject(List<String> parameters, SPLCodeObject codeObject) {
+    super(SPLFuncType.getInstance());
+    this.parameters = parameters;
+    this.name = "Anonymous-" + ++anonymousCount;
     this.codeObject = codeObject;
   }
 
