@@ -11,6 +11,7 @@ import org.spl.compiler.ir.binaryop.*;
 import org.spl.compiler.ir.block.ProgramBlock;
 import org.spl.compiler.ir.context.DefaultASTContext;
 import org.spl.compiler.ir.exp.FuncCallExp;
+import org.spl.compiler.ir.exp.LoadAttr;
 import org.spl.compiler.ir.exp.MethodCall;
 import org.spl.compiler.ir.exp.Pop;
 import org.spl.compiler.ir.stmt.assignstmt.*;
@@ -100,7 +101,7 @@ import java.util.List;
  * primary      : atom primary'
  * primary'     : '.' IDENTIFIER primary'*
  *              | '(' args ')' primary'*
- * atom         : IDENTIFIER
+ * atom         : IDENTIFIER (('.' NAME) | ('(' paramList? ')'))*
  *              | 'true'
  *              | 'false'
  *              | 'none'
@@ -293,8 +294,8 @@ public class SPLParser extends AbstractSyntaxParser {
     parameters.forEach(funcContext::addSymbol);
     parameters.forEach(funcContext::addVarName);
     context = funcContext;
-    funcContext.addVarName(funcName);
-    funcContext.addSymbol(funcName);
+//    funcContext.addVarName(funcName);
+//    funcContext.addSymbol(funcName);
     IRNode<Instruction> block = block();
     assert block instanceof ProgramBlock;
     var pb = (ProgramBlock) block;
@@ -747,41 +748,54 @@ public class SPLParser extends AbstractSyntaxParser {
       BoolLiteral boolLiteral = new BoolLiteral(idx);
       setSourceCodeInfo(boolLiteral, token);
       return boolLiteral;
-    } else if (token.isIDENTIFIER() &&
-        tokenFlow.lookAhead().token == Lexer.TOKEN_TYPE.LEFT_PARENTHESES) {
-      context.addVarName(token.getIdentifier());
-      return functionCall();
+    }
+//    else if (token.isIDENTIFIER() &&
+//        tokenFlow.lookAhead().token == Lexer.TOKEN_TYPE.LEFT_PARENTHESES) {
+//      context.addVarName(token.getIdentifier());
+//      return functionCall();
+//    } else if (token.isIDENTIFIER() &&
+//        tokenFlow.lookAhead(1).token == Lexer.TOKEN_TYPE.DOT &&
+//        tokenFlow.lookAhead(2).token == Lexer.TOKEN_TYPE.IDENTIFIER &&
+//        tokenFlow.lookAhead(3).token == Lexer.TOKEN_TYPE.LEFT_PARENTHESES) {
 //      if (context.containSymbol(token.getIdentifier()) ||
 //          BuiltinNames.contain(token.getIdentifier())) {
 //        context.addVarName(token.getIdentifier());
-//        return functionCall();
+//        return methodCall();
 //      }
-//      throwSyntaxError("Unknown(Undefined) variable " + token.getIdentifier(), token);
-    } else if (token.isIDENTIFIER() &&
-        tokenFlow.lookAhead(1).token == Lexer.TOKEN_TYPE.DOT &&
-        tokenFlow.lookAhead(2).token == Lexer.TOKEN_TYPE.IDENTIFIER &&
-        tokenFlow.lookAhead(3).token == Lexer.TOKEN_TYPE.LEFT_PARENTHESES) {
-      if (context.containSymbol(token.getIdentifier()) ||
-          BuiltinNames.contain(token.getIdentifier())) {
-        context.addVarName(token.getIdentifier());
-        return methodCall();
+//    }
+    else if (token.isIDENTIFIER()) {
+      tokenFlow.next();
+      context.addVarName(token.getIdentifier());
+      IRNode<Instruction> ret;
+      Scope scope;
+      if (context.isGlobal(token.getIdentifier())) {
+        scope = Scope.GLOBAL;
+      } else if (context.containSymbol(token.getIdentifier())){
+        scope = Scope.LOCAL;
+      } else {
+        scope = Scope.OTHERS;
       }
-    } else if (token.isIDENTIFIER()) {
-      if (context.containSymbol(token.getIdentifier()) ||
-          BuiltinNames.contain(token.getIdentifier())) {
-        tokenFlow.next();
-        context.addVarName(token.getIdentifier());
-        Scope scope;
-        if (context.isGlobal(token.getIdentifier())) {
-          scope = Scope.GLOBAL;
+      ret = new Variable(scope, token.getIdentifier());
+      setSourceCodeInfo(ret, token);
+      while (tokenFlow.peek().isDOT() || tokenFlow.peek().isLEFT_PARENTHESES()) {
+        if (tokenFlow.peek().isDOT()) {
+          tokenFlow.next();
+          tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.IDENTIFIER,
+              "Expected identifier after '.'");
+          String name = tokenFlow.peek().getIdentifier();
+          int idx = context.addVarName(name);
+          context.addSymbol(name);
+          ret = new LoadAttr(ret, idx);
         } else {
-          scope = Scope.LOCAL;
+          List<IRNode<Instruction>> args = new ArrayList<>();
+          tokenFlow.next();
+          extractArgs(args);
+          FuncCallExp funcCallExp = new FuncCallExp(ret, args);
+          setSourceCodeInfo(funcCallExp, token);
+          ret = funcCallExp;
         }
-        Variable variable = new Variable(scope, token.getIdentifier());
-        setSourceCodeInfo(variable, token);
-        return variable;
       }
-      throwSyntaxError("Unknown(Undefined) variable " + token.getIdentifier(), token);
+      return ret;
     } else if (token.isLPAREN()) {
       tokenFlow.next();
       IRNode<Instruction> expression = expression();
@@ -962,22 +976,6 @@ public class SPLParser extends AbstractSyntaxParser {
         return uLshiftAssignStmt;
       }
     }
-    return null;
-  }
-
-  private IRNode<Instruction> functionCall() throws SPLSyntaxError {
-    Lexer.Token token = tokenFlow.peek();
-    tokenFlow.next();
-    if (token.isIDENTIFIER()) {
-      String name = token.getIdentifier();
-      List<IRNode<Instruction>> args = new ArrayList<>();
-      tokenFlow.next();
-      extractArgs(args);
-      FuncCallExp funcCallExp = new FuncCallExp(name, args);
-      setSourceCodeInfo(funcCallExp, token);
-      return funcCallExp;
-    }
-    throwSyntaxError("Expected an function name instead of \"" + token.getValueAsString() + "\"", token);
     return null;
   }
 

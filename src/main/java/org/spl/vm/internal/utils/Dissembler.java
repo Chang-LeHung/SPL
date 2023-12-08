@@ -212,6 +212,12 @@ public class Dissembler {
         case CALL -> {
           ins = new Instruction(OpCode.CALL, getOparg());
         }
+        case LOAD_ATTR -> {
+          ins = new Instruction(OpCode.LOAD_ATTR, getOparg());
+        }
+        case STORE_ATTR -> {
+          ins = new Instruction(OpCode.STORE_ATTR, getOparg());
+        }
         case POP -> {
           ins = new Instruction(OpCode.POP, 0);
           pc++;

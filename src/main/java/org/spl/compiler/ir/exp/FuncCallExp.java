@@ -14,18 +14,17 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class FuncCallExp extends AbstractIR<Instruction> {
-  private final String funcName;
   private final List<IRNode<Instruction>> args;
   private List<IRNode<Instruction>> children;
+  private IRNode<Instruction> lhs;
 
-  public FuncCallExp(String funcName, List<IRNode<Instruction>> args) {
-    this.funcName = funcName;
+  public FuncCallExp(IRNode<Instruction> lhs, List<IRNode<Instruction>> args) {
     this.args = args;
+    this.lhs = lhs;
   }
 
   @Override
   public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
-    context.addInstruction(new Instruction(OpCode.LOAD_NAME, context.getVarNameIndex(funcName)), getLineNo(), getColumnNo(), getLen());
     context.addInstruction(new Instruction(OpCode.CALL, args.size()), getLineNo(), getColumnNo(), getLen());
   }
 
@@ -36,7 +35,7 @@ public class FuncCallExp extends AbstractIR<Instruction> {
 
   @Override
   public String toString() {
-    return funcName + "(" +
+    return ".(" +
         args.stream().map(Object::toString).collect(Collectors.joining(", ")) +
         ")";
   }
@@ -54,6 +53,7 @@ public class FuncCallExp extends AbstractIR<Instruction> {
     if (children == null) {
       children = new ArrayList<>(args);
       Collections.reverse(children);
+      children.add(lhs);
     }
     return children;
   }

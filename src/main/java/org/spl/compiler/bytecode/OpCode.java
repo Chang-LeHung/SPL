@@ -48,6 +48,8 @@ public enum OpCode {
   LOAD,
   CALL,
   LOAD_CONST,
+  LOAD_ATTR,
+  STORE_ATTR,
   POP,
   JUMP_FALSE,
   JMP_TRUE_NO_POP,

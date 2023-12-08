@@ -59,6 +59,8 @@ public class Lexer {
             state = CHAR_TYPE.MINUS;
           } else if (c == '*') {
             state = CHAR_TYPE.MUL;
+          } else if (c == '#') {
+            state = CHAR_TYPE.HASH;
           } else if (c == '/') {
             state = CHAR_TYPE.DIV;
           } else if (c == '%') {
@@ -105,6 +107,12 @@ public class Lexer {
               throw new SPLSyntaxError("Illegal  character '" + c + "'");
             }
           }
+        }
+        case HASH -> {
+          while (c != '\n') {
+            c = nextChar(builder);
+          }
+          builder.delete(0, builder.length());
         }
         case COMMA -> {
           Token token = new Token(TOKEN_TYPE.COMMA, ",");
@@ -237,8 +245,7 @@ public class Lexer {
           } else if (c == '>') {
             token = new Token(TOKEN_TYPE.ARROW, "->");
             c = nextChar(builder);
-          }
-          else {
+          } else {
             token = new Token(TOKEN_TYPE.MINUS, "-");
           }
           injectTokensAndClearBuilder(token, builder);
@@ -514,7 +521,7 @@ public class Lexer {
   }
 
   private enum CHAR_TYPE {
-    INIT, DOT, NEWLINE, COMMA, IDENTIFIER, NUMBER, QUOTATION, PLUS, MINUS, MUL, DIV, MOD, ASSIGN, LT, GT, NE, AND, OR, XOR, NOT, POWER, INVERT, LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE, SEMICOLON
+    INIT, DOT, NEWLINE, COMMA, IDENTIFIER, NUMBER, QUOTATION, PLUS, MINUS, MUL, DIV, MOD, ASSIGN, HASH, LT, GT, NE, AND, OR, XOR, NOT, POWER, INVERT, LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE, SEMICOLON
   }
 
   public enum TOKEN_TYPE {
@@ -772,6 +779,7 @@ public class Lexer {
     public boolean isLBRACE() {
       return token == TOKEN_TYPE.LBRACE;
     }
+
     public boolean isRPAREN() {
       return token == TOKEN_TYPE.RIGHT_PARENTHESES;
     }

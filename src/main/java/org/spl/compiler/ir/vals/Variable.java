@@ -43,7 +43,7 @@ public class Variable extends AbstractIR<Instruction> implements RValue<Instruct
         context.add(new Instruction(OpCode.LOAD_GLOBAL, idx), getLineNo(), getColumnNo(), getLen());
       }
       case OTHERS -> {
-        context.add(new Instruction(OpCode.LOAD, idx), getLineNo(), getColumnNo(), getLen());
+        context.add(new Instruction(OpCode.LOAD_NAME, idx), getLineNo(), getColumnNo(), getLen());
       }
     }
   }
