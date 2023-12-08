@@ -1,0 +1,7 @@
+
+
+name = def (x) {
+    print(x)
+}
+
+name("hello")
