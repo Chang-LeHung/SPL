@@ -21,7 +21,6 @@ import org.spl.compiler.ir.stmt.returnstmt.ReturnNone;
 import org.spl.compiler.ir.unaryop.*;
 import org.spl.compiler.ir.vals.*;
 import org.spl.compiler.lexer.Lexer;
-import org.spl.compiler.tree.InsVisitor;
 import org.spl.vm.internal.SPLCodeObjectBuilder;
 import org.spl.vm.internal.objs.SPLCodeObject;
 import org.spl.vm.internal.objs.SPLFuncObject;
@@ -109,6 +108,7 @@ import java.util.List;
  *              | number
  *              | '(' expression ')'
  *              | 'def' '(' paramList? ')' block'
+ *              | 'def' '(' paramList? ')' '->' expression
  *
  */
 public class SPLParser extends AbstractSyntaxParser {
@@ -649,6 +649,7 @@ public class SPLParser extends AbstractSyntaxParser {
     IRNode<Instruction> res = primary();
     if (tokenFlow.peek().isPower()) {
       Lexer.Token token = tokenFlow.peek();
+      tokenFlow.next();
       res = new Power(res, factor());
       setSourceCodeInfo(res, token);
     }
@@ -738,8 +739,7 @@ public class SPLParser extends AbstractSyntaxParser {
       return boolLiteral;
     } else if (token.isDef()) {
       return anonymousFunction();
-    }
-    else if (token.isTRUE()) {
+    } else if (token.isTRUE()) {
       tokenFlow.next();
       SPLBoolObject o = SPLBoolObject.getTrue();
       context.addConstantObject(o);
@@ -801,7 +801,7 @@ public class SPLParser extends AbstractSyntaxParser {
     tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.DEF,
         "Expected 'def' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
     tokenFlow.next();
-    tokenAssertion(tokenFlow.peek(),  Lexer.TOKEN_TYPE.LEFT_PARENTHESES, "Expected '(' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LEFT_PARENTHESES, "Expected '(' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
     tokenFlow.next();
     var params = new ArrayList<String>();
     DefaultASTContext<Instruction> auxContex = new DefaultASTContext<>(filename);
@@ -819,9 +819,17 @@ public class SPLParser extends AbstractSyntaxParser {
         tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RIGHT_PARENTHESES, "Expected ')' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
       }
     }
+    ProgramBlock block;
     tokenFlow.next();
-    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LBRACE, "Expected '{' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
-    var block = (ProgramBlock) block();
+    if (tokenFlow.peek().isArrow()) {
+      tokenFlow.next();
+      block = new ProgramBlock();
+      Return ret = new Return(expression());
+      block.addIRNode(ret);
+    } else {
+      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LBRACE, "Expected '{' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+      block = (ProgramBlock) block();
+    }
     IRNode<Instruction> last = block.getLast();
     if (!(last instanceof Return || last instanceof ReturnNone)) {
       ReturnNone returnNone = new ReturnNone();

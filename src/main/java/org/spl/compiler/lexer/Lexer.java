@@ -234,7 +234,11 @@ public class Lexer {
           if (c == '=') {
             token = new Token(TOKEN_TYPE.ASSIGN_SUB, "-=");
             c = nextChar(builder);
-          } else {
+          } else if (c == '>') {
+            token = new Token(TOKEN_TYPE.ARROW, "->");
+            c = nextChar(builder);
+          }
+          else {
             token = new Token(TOKEN_TYPE.MINUS, "-");
           }
           injectTokensAndClearBuilder(token, builder);
@@ -516,7 +520,7 @@ public class Lexer {
   public enum TOKEN_TYPE {
     EOF, NEWLINE, STARTER, // used only in the function doParse()
     COMMA, IDENTIFIER, TRUE, FALSE, IMPORT, INT, FLOAT, STRING, SEMICOLON, LEFT_PARENTHESES, RIGHT_PARENTHESES, PLUS, MINUS, MUL, DIV, TRUE_DIV, MOD, LSHIFT, RSHIFT, U_RSHIFT, // unconditional left shift
-    ASSIGN, EQ, LT, GT, GE, LE, NE, AND, CONDITIONAL_AND, OR, CONDITIONAL_OR, POWER, XOR, NOT, INVERT, CONDITIONAL_NOT, ASSIGN_ADD, ASSIGN_SUB, ASSIGN_MUL, ASSIGN_DIV, ASSIGN_POWER, ASSIGN_MOD, ASSIGN_INVERT, ASSIGN_LSHIFT, ASSIGN_RSHIFT, ASSIGN_U_RSHIFT, ASSIGN_AND, ASSIGN_OR, ASSIGN_XOR, IF, ELSE, DO, WHILE, FOR, BREAK, CONTINUE, RETURN, DOT, LBRACE, RBRACE, IN, CLASS, DEF, GLOBAL, NONE,
+    ASSIGN, EQ, LT, GT, GE, LE, NE, AND, CONDITIONAL_AND, OR, CONDITIONAL_OR, POWER, XOR, NOT, INVERT, CONDITIONAL_NOT, ASSIGN_ADD, ARROW, ASSIGN_SUB, ASSIGN_MUL, ASSIGN_DIV, ASSIGN_POWER, ASSIGN_MOD, ASSIGN_INVERT, ASSIGN_LSHIFT, ASSIGN_RSHIFT, ASSIGN_U_RSHIFT, ASSIGN_AND, ASSIGN_OR, ASSIGN_XOR, IF, ELSE, DO, WHILE, FOR, BREAK, CONTINUE, RETURN, DOT, LBRACE, RBRACE, IN, CLASS, DEF, GLOBAL, NONE,
   }
 
   public static class Token {
@@ -712,6 +716,10 @@ public class Lexer {
 
     public boolean isGlobal() {
       return token == TOKEN_TYPE.GLOBAL;
+    }
+
+    public boolean isArrow() {
+      return token == TOKEN_TYPE.ARROW;
     }
 
     public boolean isASSIGN() {
