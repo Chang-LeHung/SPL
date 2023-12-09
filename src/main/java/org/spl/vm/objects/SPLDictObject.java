@@ -15,11 +15,13 @@ public class SPLDictObject extends SPLObject {
   public SPLDictObject() {
     super(SPLDictType.getInstance());
     dict = new HashMap<>();
+    attrs = dict;
   }
 
   public SPLDictObject(Map<SPLObject, SPLObject> dict) {
     super(SPLDictType.getInstance());
     this.dict = dict;
+    attrs = dict;
   }
 
   @Override

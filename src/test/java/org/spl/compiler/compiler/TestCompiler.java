@@ -248,4 +248,9 @@ public class TestCompiler {
   public void testSubscribe() throws SPLInternalException, SPLSyntaxError, IOException {
     run("attr/subs.spl");
   }
+
+  @Test
+  public void testDictSubscribe() throws SPLInternalException, SPLSyntaxError, IOException {
+    run("attr/dict.spl");
+  }
 }

@@ -15,9 +15,9 @@ import java.util.Map;
 
 public class SPLObject implements SPLInterface {
 
-  private final SPLCommonType type;
-  private Map<SPLObject, Method> methods;
-  private Map<SPLObject, SPLObject> attrs;
+  protected final SPLCommonType type;
+  protected Map<SPLObject, Method> methods;
+  protected Map<SPLObject, SPLObject> attrs;
 
   public SPLObject(SPLCommonType type) {
     this.type = type;
