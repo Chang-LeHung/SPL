@@ -109,6 +109,7 @@ import java.util.List;
  *              | 'def' '(' paramList? ')' block'
  *              | 'def' '(' paramList? ')' '->' expression
  *              | '{' ((IDENTIFIER | STRING ) ':' expression ',')* (((IDENTIFIER | STRING ) ':' expression))?'}'
+ *              | '{' (expression ',')+ expression'}'
  *
  */
 public class SPLParser extends AbstractSyntaxParser {

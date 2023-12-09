@@ -20,7 +20,7 @@ public class SPLCallObject extends SPLObject {
   }
 
   @Override
-  public SPLObject call(SPLObject... args) throws SPLInternalException {
+  public SPLObject __call__(SPLObject... args) throws SPLInternalException {
     try {
       if (isStatic) {
         return (SPLObject) method.invoke(null, (Object) args);

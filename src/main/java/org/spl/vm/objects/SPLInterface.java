@@ -10,115 +10,115 @@ public interface SPLInterface {
 
   SPLCommonType getType();
 
-  SPLObject add(SPLObject rhs) throws SPLInternalException;
-  default SPLObject inplaceAdd(SPLObject rhs) throws SPLInternalException {
-    return add(rhs);
+  SPLObject __add__(SPLObject rhs) throws SPLInternalException;
+  default SPLObject __inplaceAdd__(SPLObject rhs) throws SPLInternalException {
+    return __add__(rhs);
   }
 
-  SPLObject sub(SPLObject rhs) throws SPLInternalException;
+  SPLObject __sub__(SPLObject rhs) throws SPLInternalException;
 
   default SPLObject inplaceSub(SPLObject rhs) throws SPLInternalException {
-    return sub(rhs);
+    return __sub__(rhs);
   }
 
   SPLObject mul(SPLObject rhs) throws SPLInternalException;
 
-  default SPLObject inplaceMul(SPLObject rhs) throws SPLInternalException {
+  default SPLObject __inplaceMul__(SPLObject rhs) throws SPLInternalException {
     return mul(rhs);
   }
 
-  SPLObject div(SPLObject rhs) throws SPLInternalException;
-  SPLObject trueDiv(SPLObject rhs) throws SPLInternalException;
+  SPLObject __div__(SPLObject rhs) throws SPLInternalException;
+  SPLObject __trueDiv__(SPLObject rhs) throws SPLInternalException;
 
-  default SPLObject inplaceDiv(SPLObject rhs) throws SPLInternalException {
-    return div(rhs);
+  default SPLObject __inplaceDiv__(SPLObject rhs) throws SPLInternalException {
+    return __div__(rhs);
   }
 
-  default SPLObject inplaceTrueDiv(SPLObject rhs) throws SPLInternalException {
-    return trueDiv(rhs);
+  default SPLObject __inplaceTrueDiv__(SPLObject rhs) throws SPLInternalException {
+    return __trueDiv__(rhs);
   }
 
-  SPLObject mod(SPLObject rhs) throws SPLInternalException;
+  SPLObject __mod__(SPLObject rhs) throws SPLInternalException;
 
-  default SPLObject inplaceMod(SPLObject rhs) throws SPLInternalException {
-    return mod(rhs);
+  default SPLObject __inplaceMod__(SPLObject rhs) throws SPLInternalException {
+    return __mod__(rhs);
   }
 
-  SPLObject pow(SPLObject rhs) throws SPLInternalException;
+  SPLObject __pow__(SPLObject rhs) throws SPLInternalException;
 
-  default SPLObject inplacePow(SPLObject rhs) throws SPLInternalException {
-    return pow(rhs);
+  default SPLObject __inplacePow__(SPLObject rhs) throws SPLInternalException {
+    return __pow__(rhs);
   }
 
-  SPLObject lshift(SPLObject rhs) throws SPLInternalException;
+  SPLObject __lshift__(SPLObject rhs) throws SPLInternalException;
 
-  default SPLObject inplaceLshift(SPLObject rhs) throws SPLInternalException {
-    return lshift(rhs);
+  default SPLObject __inplaceLshift__(SPLObject rhs) throws SPLInternalException {
+    return __lshift__(rhs);
   }
 
-  SPLObject rshift(SPLObject rhs) throws SPLInternalException;
+  SPLObject __rshift__(SPLObject rhs) throws SPLInternalException;
 
-  default SPLObject inplaceRshift(SPLObject rhs) throws SPLInternalException {
-    return rshift(rhs);
+  default SPLObject __inplaceRshift__(SPLObject rhs) throws SPLInternalException {
+    return __rshift__(rhs);
   }
 
-  SPLObject URshift(SPLObject rhs) throws SPLInternalException;
+  SPLObject __URshift__(SPLObject rhs) throws SPLInternalException;
 
-  default SPLObject inplaceURshift(SPLObject rhs) throws SPLInternalException {
-    return URshift(rhs);
+  default SPLObject __inplaceURshift__(SPLObject rhs) throws SPLInternalException {
+    return __URshift__(rhs);
   }
 
-  SPLObject and(SPLObject rhs) throws SPLInternalException;
+  SPLObject __and__(SPLObject rhs) throws SPLInternalException;
 
-  default SPLObject inplaceAnd(SPLObject rhs) throws SPLInternalException {
-    return and(rhs);
+  default SPLObject __inplaceAnd__(SPLObject rhs) throws SPLInternalException {
+    return __and__(rhs);
   }
 
-  SPLObject or(SPLObject rhs) throws SPLInternalException;
+  SPLObject __or__(SPLObject rhs) throws SPLInternalException;
 
-  default SPLObject inplaceOr(SPLObject rhs) throws SPLInternalException {
-    return or(rhs);
+  default SPLObject __inplaceOr__(SPLObject rhs) throws SPLInternalException {
+    return __or__(rhs);
   }
 
   SPLObject xor(SPLObject rhs) throws SPLInternalException;
 
-  default SPLObject inplaceXor(SPLObject rhs) throws SPLInternalException {
+  default SPLObject __inplaceXor__(SPLObject rhs) throws SPLInternalException {
     return xor(rhs);
   }
 
-  SPLObject not() throws SPLInternalException;
+  SPLObject __not__() throws SPLInternalException;
 
-  SPLObject neg() throws SPLInternalException;
+  SPLObject __neg__() throws SPLInternalException;
 
-  SPLObject eq(SPLObject rhs) throws SPLInternalException;
+  SPLObject __eq__(SPLObject rhs) throws SPLInternalException;
 
-  SPLObject ne(SPLObject rhs) throws SPLInternalException;
+  SPLObject __ne__(SPLObject rhs) throws SPLInternalException;
 
-  SPLObject lt(SPLObject rhs) throws SPLInternalException;
+  SPLObject __lt__(SPLObject rhs) throws SPLInternalException;
 
-  SPLObject gt(SPLObject rhs) throws SPLInternalException;
+  SPLObject __gt__(SPLObject rhs) throws SPLInternalException;
 
-  SPLObject le(SPLObject rhs) throws SPLInternalException;
+  SPLObject __le__(SPLObject rhs) throws SPLInternalException;
 
-  SPLObject ge(SPLObject rhs) throws SPLInternalException;
+  SPLObject __ge__(SPLObject rhs) throws SPLInternalException;
 
-  SPLObject conditionalAnd(SPLObject rhs) throws SPLInternalException;
+  SPLObject __conditionalAnd__(SPLObject rhs) throws SPLInternalException;
 
-  default SPLObject inplaceConditionalAnd(SPLObject rhs) throws SPLInternalException {
-    return conditionalAnd(rhs);
+  default SPLObject __inplaceConditionalAnd__(SPLObject rhs) throws SPLInternalException {
+    return __conditionalAnd__(rhs);
   }
 
-  SPLObject conditionalOr(SPLObject rhs) throws SPLInternalException;
+  SPLObject __conditionalOr__(SPLObject rhs) throws SPLInternalException;
 
-  default SPLObject inplaceConditionalOr(SPLObject rhs) throws SPLInternalException {
-    return conditionalOr(rhs);
+  default SPLObject __inplaceConditionalOr__(SPLObject rhs) throws SPLInternalException {
+    return __conditionalOr__(rhs);
   }
 
-  SPLObject invert() throws SPLInternalException;
+  SPLObject __invert__() throws SPLInternalException;
 
-  SPLObject call(SPLObject... args) throws SPLInternalException;
+  SPLObject __call__(SPLObject... args) throws SPLInternalException;
 
-  SPLObject str();
+  SPLObject __str__();
 
   default Map<SPLObject, SPLObject> getGlobals() {
     return null;

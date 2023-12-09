@@ -48,7 +48,7 @@ public class Builtin {
 
   public static SPLObject print(SPLObject... args) {
     for (SPLObject arg : args) {
-      System.out.print(arg.str());
+      System.out.print(arg.__str__());
     }
     System.out.println();
     return SPLNoneObject.getInstance();
@@ -57,7 +57,7 @@ public class Builtin {
   public static SPLObject max(SPLObject... args) throws SPLInternalException {
     SPLObject max = args[0];
     for (int i = 1; i < args.length; i++) {
-      if (args[i].gt(max) == SPLBoolObject.getTrue()) {
+      if (args[i].__gt__(max) == SPLBoolObject.getTrue()) {
         max = args[i];
       }
     }
@@ -67,7 +67,7 @@ public class Builtin {
   public static SPLObject min(SPLObject... args) throws SPLInternalException {
     SPLObject min = args[0];
     for (int i = 1; i < args.length; i++) {
-      if (args[i].lt(min) == SPLBoolObject.getTrue()) {
+      if (args[i].__lt__(min) == SPLBoolObject.getTrue()) {
         min = args[i];
       }
     }

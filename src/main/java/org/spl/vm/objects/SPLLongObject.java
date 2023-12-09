@@ -34,7 +34,7 @@ public class SPLLongObject extends SPLObject {
   }
 
   @Override
-  public SPLObject add(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __add__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLLongObject l) {
       return create(val + l.val);
     } else if (rhs instanceof SPLFloatObject f) {
@@ -47,7 +47,7 @@ public class SPLLongObject extends SPLObject {
   }
 
   @Override
-  public SPLObject sub(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __sub__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLLongObject l) {
       return create(val - l.val);
     } else if (rhs instanceof SPLFloatObject f) {
@@ -67,7 +67,7 @@ public class SPLLongObject extends SPLObject {
   }
 
   @Override
-  public SPLObject div(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __div__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLLongObject l) {
       return create(val / l.val);
     } else if (rhs instanceof SPLFloatObject f) {
@@ -77,7 +77,7 @@ public class SPLLongObject extends SPLObject {
   }
 
   @Override
-  public SPLObject mod(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __mod__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLLongObject l) {
       return create(val % l.val);
     } else if (rhs instanceof SPLFloatObject f) {
@@ -87,7 +87,7 @@ public class SPLLongObject extends SPLObject {
   }
 
   @Override
-  public SPLObject pow(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __pow__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLLongObject l) {
       return create((long) Math.pow(getVal(), l.getVal()));
     } else if (rhs instanceof SPLFloatObject f) {
@@ -97,7 +97,7 @@ public class SPLLongObject extends SPLObject {
   }
 
   @Override
-  public SPLObject lshift(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __lshift__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLLongObject l) {
       return create(val << l.val);
     }
@@ -105,7 +105,7 @@ public class SPLLongObject extends SPLObject {
   }
 
   @Override
-  public SPLObject rshift(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __rshift__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLLongObject l) {
       return create(val >> l.val);
     }
@@ -113,7 +113,7 @@ public class SPLLongObject extends SPLObject {
   }
 
   @Override
-  public SPLObject URshift(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __URshift__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLLongObject l) {
       return create(val >>> l.val);
     }
@@ -121,7 +121,7 @@ public class SPLLongObject extends SPLObject {
   }
 
   @Override
-  public SPLObject and(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __and__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLLongObject l) {
       return create(val & l.val);
     }
@@ -129,7 +129,7 @@ public class SPLLongObject extends SPLObject {
   }
 
   @Override
-  public SPLObject or(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __or__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLLongObject l) {
       return create(val | l.val);
     }
@@ -146,27 +146,27 @@ public class SPLLongObject extends SPLObject {
   }
 
   @Override
-  public SPLObject neg() {
+  public SPLObject __neg__() {
     return create(-getVal());
   }
 
   @Override
-  public SPLObject invert() {
+  public SPLObject __invert__() {
     return create(~getVal());
   }
 
   @Override
-  public SPLObject str() {
+  public SPLObject __str__() {
     return new SPLStringObject(String.valueOf(getVal()));
   }
 
   @Override
-  public SPLObject not() throws SPLInternalException {
-    return super.not();
+  public SPLObject __not__() throws SPLInternalException {
+    return super.__not__();
   }
 
   @Override
-  public SPLObject eq(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __eq__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLLongObject l) {
       if (l.getVal() == getVal()) {
         return SPLBoolObject.getTrue();
@@ -180,7 +180,7 @@ public class SPLLongObject extends SPLObject {
   }
 
   @Override
-  public SPLObject ne(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __ne__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLLongObject l) {
       if (l.getVal() != getVal()) {
         return SPLBoolObject.getTrue();
@@ -194,7 +194,7 @@ public class SPLLongObject extends SPLObject {
   }
 
   @Override
-  public SPLObject lt(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __lt__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLLongObject l) {
       return getVal() < l.getVal() ? SPLBoolObject.getTrue() : SPLBoolObject.getFalse();
     } else if (rhs instanceof SPLFloatObject f) {
@@ -204,7 +204,7 @@ public class SPLLongObject extends SPLObject {
   }
 
   @Override
-  public SPLObject gt(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __gt__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLLongObject l) {
       return getVal() > l.getVal() ? SPLBoolObject.getTrue() : SPLBoolObject.getFalse();
     } else if (rhs instanceof SPLFloatObject f) {
@@ -214,7 +214,7 @@ public class SPLLongObject extends SPLObject {
   }
 
   @Override
-  public SPLObject le(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __le__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLLongObject l) {
       return getVal() <= l.getVal() ? SPLBoolObject.getTrue() : SPLBoolObject.getFalse();
     } else if (rhs instanceof SPLFloatObject f) {
@@ -224,7 +224,7 @@ public class SPLLongObject extends SPLObject {
   }
 
   @Override
-  public SPLObject ge(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __ge__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLLongObject l) {
       return getVal() >= l.getVal() ? SPLBoolObject.getTrue() : SPLBoolObject.getFalse();
     } else if (rhs instanceof SPLFloatObject f) {
@@ -235,13 +235,13 @@ public class SPLLongObject extends SPLObject {
   }
 
   @Override
-  public SPLObject conditionalAnd(SPLObject rhs) throws SPLInternalException {
-    return super.conditionalAnd(rhs);
+  public SPLObject __conditionalAnd__(SPLObject rhs) throws SPLInternalException {
+    return super.__conditionalAnd__(rhs);
   }
 
   @Override
-  public SPLObject conditionalOr(SPLObject rhs) throws SPLInternalException {
-    return super.conditionalOr(rhs);
+  public SPLObject __conditionalOr__(SPLObject rhs) throws SPLInternalException {
+    return super.__conditionalOr__(rhs);
   }
 
   @Override
@@ -257,7 +257,7 @@ public class SPLLongObject extends SPLObject {
   }
 
   @Override
-  public SPLObject trueDiv(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __trueDiv__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLLongObject l) {
       return create((int) val / l.val);
     } else if (rhs instanceof SPLFloatObject f) {

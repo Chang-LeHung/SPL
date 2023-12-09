@@ -49,45 +49,45 @@ public class SPLBoolObject extends SPLObject {
   }
 
   @Override
-  public SPLObject not() throws SPLInternalException {
+  public SPLObject __not__() throws SPLInternalException {
     if (this == getTrue())
       return getFalse();
     return getTrue();
   }
 
   @Override
-  public SPLObject neg() throws SPLInternalException {
+  public SPLObject __neg__() throws SPLInternalException {
     if (this == getTrue())
       return getFalse();
     return getTrue();
   }
 
   @Override
-  public SPLObject eq(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __eq__(SPLObject rhs) throws SPLInternalException {
     return this == rhs ? getTrue() : getFalse();
   }
 
   @Override
-  public SPLObject ne(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __ne__(SPLObject rhs) throws SPLInternalException {
     return this == rhs ? getFalse() : getTrue();
   }
 
   @Override
-  public SPLObject conditionalAnd(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __conditionalAnd__(SPLObject rhs) throws SPLInternalException {
     if (this == getFalse() || rhs == getFalse())
       return getFalse();
     return getTrue();
   }
 
   @Override
-  public SPLObject conditionalOr(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __conditionalOr__(SPLObject rhs) throws SPLInternalException {
     if (this == getTrue() || rhs == getTrue())
       return getTrue();
     return getFalse();
   }
 
   @Override
-  public SPLObject str() {
+  public SPLObject __str__() {
     return getTrue() == this? SelfHolder.True : SelfHolder.False;
   }
 }

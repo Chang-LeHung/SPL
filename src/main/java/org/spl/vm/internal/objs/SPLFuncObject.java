@@ -71,7 +71,7 @@ public class SPLFuncObject extends SPLObject {
   }
 
   @Override
-  public SPLObject call(SPLObject... args) throws SPLInternalException {
+  public SPLObject __call__(SPLObject... args) throws SPLInternalException {
     if (args.length + defaults.size() < parameters.size()) {
       throw new SPLInternalException(
           String.format("Invalid number of arguments, request %d parameters but only found %d arguments",

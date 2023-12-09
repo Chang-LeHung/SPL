@@ -19,7 +19,7 @@ public class SPLFloatObject extends SPLObject {
   }
 
   @Override
-  public SPLObject add(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __add__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLFloatObject f) {
       return new SPLFloatObject(val + f.getVal());
     } else if (rhs instanceof SPLLongObject l) {
@@ -31,7 +31,7 @@ public class SPLFloatObject extends SPLObject {
   }
 
   @Override
-  public SPLObject sub(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __sub__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLFloatObject f) {
       return new SPLFloatObject(val - f.getVal());
     } else if (rhs instanceof SPLLongObject l) {
@@ -52,7 +52,7 @@ public class SPLFloatObject extends SPLObject {
   }
 
   @Override
-  public SPLObject div(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __div__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLFloatObject f) {
       return new SPLFloatObject(val / f.getVal());
     } else if (rhs instanceof SPLLongObject l) {
@@ -63,7 +63,7 @@ public class SPLFloatObject extends SPLObject {
   }
 
   @Override
-  public SPLObject mod(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __mod__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLFloatObject f) {
       return new SPLFloatObject((int) (val % f.getVal()));
     } else if (rhs instanceof SPLLongObject l) {
@@ -73,7 +73,7 @@ public class SPLFloatObject extends SPLObject {
   }
 
   @Override
-  public SPLObject pow(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __pow__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLFloatObject f) {
       return new SPLFloatObject(Math.pow(val, f.getVal()));
     } else if (rhs instanceof SPLLongObject l) {
@@ -84,23 +84,23 @@ public class SPLFloatObject extends SPLObject {
   }
 
   @Override
-  public SPLObject lshift(SPLObject rhs) throws SPLInternalException {
-    return super.lshift(rhs);
+  public SPLObject __lshift__(SPLObject rhs) throws SPLInternalException {
+    return super.__lshift__(rhs);
   }
 
   @Override
-  public SPLObject rshift(SPLObject rhs) throws SPLInternalException {
-    return super.rshift(rhs);
+  public SPLObject __rshift__(SPLObject rhs) throws SPLInternalException {
+    return super.__rshift__(rhs);
   }
 
   @Override
-  public SPLObject and(SPLObject rhs) throws SPLInternalException {
-    return super.and(rhs);
+  public SPLObject __and__(SPLObject rhs) throws SPLInternalException {
+    return super.__and__(rhs);
   }
 
   @Override
-  public SPLObject or(SPLObject rhs) throws SPLInternalException {
-    return super.or(rhs);
+  public SPLObject __or__(SPLObject rhs) throws SPLInternalException {
+    return super.__or__(rhs);
   }
 
   @Override
@@ -109,17 +109,17 @@ public class SPLFloatObject extends SPLObject {
   }
 
   @Override
-  public SPLObject not() throws SPLInternalException {
-    return super.not();
+  public SPLObject __not__() throws SPLInternalException {
+    return super.__not__();
   }
 
   @Override
-  public SPLObject neg() throws SPLInternalException {
+  public SPLObject __neg__() throws SPLInternalException {
     return new SPLFloatObject(-val);
   }
 
   @Override
-  public SPLObject eq(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __eq__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLFloatObject f) {
       return val == f.getVal() ? SPLBoolObject.getTrue() : SPLBoolObject.getFalse();
     } else if (rhs instanceof SPLLongObject l) {
@@ -129,7 +129,7 @@ public class SPLFloatObject extends SPLObject {
   }
 
   @Override
-  public SPLObject ne(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __ne__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLFloatObject f) {
       return val != f.getVal() ? SPLBoolObject.getTrue() : SPLBoolObject.getFalse();
     } else if (rhs instanceof SPLLongObject l) {
@@ -139,7 +139,7 @@ public class SPLFloatObject extends SPLObject {
   }
 
   @Override
-  public SPLObject lt(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __lt__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLFloatObject f) {
       return val < f.getVal() ? SPLBoolObject.getTrue() : SPLBoolObject.getFalse();
     } else if (rhs instanceof SPLLongObject l) {
@@ -149,7 +149,7 @@ public class SPLFloatObject extends SPLObject {
   }
 
   @Override
-  public SPLObject gt(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __gt__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLFloatObject f) {
       return val > f.getVal() ? SPLBoolObject.getTrue() : SPLBoolObject.getFalse();
     } else if (rhs instanceof SPLLongObject l) {
@@ -159,7 +159,7 @@ public class SPLFloatObject extends SPLObject {
   }
 
   @Override
-  public SPLObject le(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __le__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLFloatObject f) {
       return val <= f.getVal() ? SPLBoolObject.getTrue() : SPLBoolObject.getFalse();
     } else if (rhs instanceof SPLLongObject l) {
@@ -169,7 +169,7 @@ public class SPLFloatObject extends SPLObject {
   }
 
   @Override
-  public SPLObject ge(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __ge__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLFloatObject f) {
       return val >= f.getVal() ? SPLBoolObject.getTrue() : SPLBoolObject.getFalse();
     } else if (rhs instanceof SPLLongObject l) {
@@ -179,27 +179,27 @@ public class SPLFloatObject extends SPLObject {
   }
 
   @Override
-  public SPLObject conditionalAnd(SPLObject rhs) throws SPLInternalException {
-    return super.conditionalAnd(rhs);
+  public SPLObject __conditionalAnd__(SPLObject rhs) throws SPLInternalException {
+    return super.__conditionalAnd__(rhs);
   }
 
   @Override
-  public SPLObject conditionalOr(SPLObject rhs) throws SPLInternalException {
-    return super.conditionalOr(rhs);
+  public SPLObject __conditionalOr__(SPLObject rhs) throws SPLInternalException {
+    return super.__conditionalOr__(rhs);
   }
 
   @Override
-  public SPLObject invert() throws SPLInternalException {
-    return super.invert();
+  public SPLObject __invert__() throws SPLInternalException {
+    return super.__invert__();
   }
 
   @Override
-  public SPLObject call(SPLObject... args) throws SPLInternalException {
-    return super.call(args);
+  public SPLObject __call__(SPLObject... args) throws SPLInternalException {
+    return super.__call__(args);
   }
 
   @Override
-  public SPLObject str() {
+  public SPLObject __str__() {
     return new SPLStringObject(String.valueOf(val));
   }
 

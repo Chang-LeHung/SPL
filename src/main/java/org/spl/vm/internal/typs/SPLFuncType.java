@@ -1,10 +1,11 @@
 package org.spl.vm.internal.typs;
 
 import org.spl.vm.internal.objs.SPLFuncObject;
+import org.spl.vm.objects.SPLObject;
 import org.spl.vm.types.SPLCommonType;
 
 public class SPLFuncType extends SPLCommonType {
-  private SPLFuncType(SPLCommonType type, String name, Class<?> clazz) {
+  private SPLFuncType(SPLCommonType type, String name, Class<? extends SPLObject> clazz) {
     super(type, name, clazz);
   }
 

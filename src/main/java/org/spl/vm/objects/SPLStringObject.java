@@ -20,7 +20,7 @@ public class SPLStringObject extends SPLObject {
   }
 
   @Override
-  public SPLObject add(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __add__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLStringObject s) {
       return new SPLStringObject(msg + s.getVal());
     }
@@ -36,7 +36,7 @@ public class SPLStringObject extends SPLObject {
   }
 
   @Override
-  public SPLObject eq(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __eq__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLStringObject s) {
       return msg.equals(s.getVal()) ? SPLBoolObject.getTrue() : SPLBoolObject.getFalse();
     }
@@ -44,7 +44,7 @@ public class SPLStringObject extends SPLObject {
   }
 
   @Override
-  public SPLObject ne(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __ne__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLStringObject s) {
       return !msg.equals(s.getVal()) ? SPLBoolObject.getFalse() : SPLBoolObject.getTrue();
     }
@@ -52,7 +52,7 @@ public class SPLStringObject extends SPLObject {
   }
 
   @Override
-  public SPLObject lt(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __lt__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLStringObject s) {
       return msg.compareTo(s.getVal()) < 0 ? SPLBoolObject.getTrue() : SPLBoolObject.getFalse();
     }
@@ -60,7 +60,7 @@ public class SPLStringObject extends SPLObject {
   }
 
   @Override
-  public SPLObject gt(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __gt__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLStringObject s) {
       return msg.compareTo(s.getVal()) > 0 ? SPLBoolObject.getTrue() : SPLBoolObject.getFalse();
     }
@@ -68,7 +68,7 @@ public class SPLStringObject extends SPLObject {
   }
 
   @Override
-  public SPLObject le(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __le__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLStringObject s) {
       return msg.compareTo(s.getVal()) <= 0 ? SPLBoolObject.getTrue() : SPLBoolObject.getFalse();
     }
@@ -76,7 +76,7 @@ public class SPLStringObject extends SPLObject {
   }
 
   @Override
-  public SPLObject ge(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __ge__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLStringObject s) {
       return msg.compareTo(s.getVal()) >= 0 ? SPLBoolObject.getTrue() : SPLBoolObject.getFalse();
     }
@@ -84,7 +84,7 @@ public class SPLStringObject extends SPLObject {
   }
 
   @Override
-  public SPLObject str() {
+  public SPLObject __str__() {
     return this;
   }
 

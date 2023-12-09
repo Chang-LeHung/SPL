@@ -50,13 +50,13 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.add(rhs);
+            evalStack[top++] = lhs.__add__(rhs);
           }
           case SUB -> { // SUB
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.sub(rhs);
+            evalStack[top++] = lhs.__sub__(rhs);
           }
           case MUL -> { // MUL
             pc++;
@@ -68,30 +68,30 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.div(rhs);
+            evalStack[top++] = lhs.__div__(rhs);
           }
           case TRUE_DIV -> {
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.trueDiv(rhs);
+            evalStack[top++] = lhs.__trueDiv__(rhs);
           }
           case NEG -> {
             pc++;
-            SPLObject o = evalStack[--top].neg();
+            SPLObject o = evalStack[--top].__neg__();
             evalStack[top++] = o;
           }
           case MOD -> { // MOD
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.mod(rhs);
+            evalStack[top++] = lhs.__mod__(rhs);
           }
           case POWER -> { // POWER
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.pow(rhs);
+            evalStack[top++] = lhs.__pow__(rhs);
           }
           case XOR -> { // XOR
             pc++;
@@ -103,67 +103,67 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.lshift(rhs);
+            evalStack[top++] = lhs.__lshift__(rhs);
           }
           case RSHIFT -> { // RSHIFT
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.rshift(rhs);
+            evalStack[top++] = lhs.__rshift__(rhs);
           }
           case U_RSHIFT -> { // U_RSHIFT
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.URshift(rhs);
+            evalStack[top++] = lhs.__URshift__(rhs);
           }
           case INPLACE_LSHIFT -> { // LSHIFT_ASSIGN
             getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.inplaceLshift(rhs);
+            evalStack[top++] = lhs.__inplaceLshift__(rhs);
           }
           case INPLACE_RSHIFT -> { // RSHIFT_ASSIGN
             getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.inplaceRshift(rhs);
+            evalStack[top++] = lhs.__inplaceRshift__(rhs);
           }
           case INPLACE_TRUE_DIV -> {
             getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.inplaceTrueDiv(rhs);
+            evalStack[top++] = lhs.__inplaceTrueDiv__(rhs);
           }
           case INPLACE_U_RSHIFT -> { // U_RSHIFT_ASSIGN
             getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.inplaceURshift(rhs);
+            evalStack[top++] = lhs.__inplaceURshift__(rhs);
           }
           case INPLACE_AND -> { // AND_ASSIGN
             getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.inplaceAnd(rhs);
+            evalStack[top++] = lhs.__inplaceAnd__(rhs);
           }
           case INPLACE_OR -> { // OR_ASSIGN
             getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.inplaceOr(rhs);
+            evalStack[top++] = lhs.__inplaceOr__(rhs);
           }
           case INPLACE_XOR -> { // XOR_ASSIGN
             getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.inplaceXor(rhs);
+            evalStack[top++] = lhs.__inplaceXor__(rhs);
           }
           case INPLACE_ADD -> { // ADD_ASSIGN
             getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.inplaceAdd(rhs);
+            evalStack[top++] = lhs.__inplaceAdd__(rhs);
           }
           case INPLACE_SUB -> { // SUB_ASSIGN
             getOparg();
@@ -175,31 +175,31 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.inplaceMul(rhs);
+            evalStack[top++] = lhs.__inplaceMul__(rhs);
           }
           case INPLACE_DIV -> { // DIV_ASSIGN
             getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.inplaceDiv(rhs);
+            evalStack[top++] = lhs.__inplaceDiv__(rhs);
           }
           case INPLACE_MOD -> { // MOD_ASSIGN
             getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.inplaceMod(rhs);
+            evalStack[top++] = lhs.__inplaceMod__(rhs);
           }
           case INPLACE_POWER -> { // POWER_ASSIGN
             getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.inplacePow(rhs);
+            evalStack[top++] = lhs.__inplacePow__(rhs);
           }
           case LT -> { // LT
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            if (lhs.lt(rhs) == SPLBoolObject.getTrue()) {
+            if (lhs.__lt__(rhs) == SPLBoolObject.getTrue()) {
               evalStack[top++] = SPLBoolObject.getTrue();
             } else {
               evalStack[top++] = SPLBoolObject.getFalse();
@@ -209,7 +209,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            if (lhs.gt(rhs) == SPLBoolObject.getTrue()) {
+            if (lhs.__gt__(rhs) == SPLBoolObject.getTrue()) {
               evalStack[top++] = SPLBoolObject.getTrue();
             } else {
               evalStack[top++] = SPLBoolObject.getFalse();
@@ -219,7 +219,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            if (lhs.eq(rhs) == SPLBoolObject.getTrue()) {
+            if (lhs.__eq__(rhs) == SPLBoolObject.getTrue()) {
               evalStack[top++] = SPLBoolObject.getTrue();
             } else {
               evalStack[top++] = SPLBoolObject.getFalse();
@@ -229,7 +229,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            if (lhs.ne(rhs) == SPLBoolObject.getTrue()) {
+            if (lhs.__ne__(rhs) == SPLBoolObject.getTrue()) {
               evalStack[top++] = SPLBoolObject.getTrue();
             } else {
               evalStack[top++] = SPLBoolObject.getFalse();
@@ -239,7 +239,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            if (lhs.le(rhs) == SPLBoolObject.getTrue()) {
+            if (lhs.__le__(rhs) == SPLBoolObject.getTrue()) {
               evalStack[top++] = SPLBoolObject.getTrue();
             } else {
               evalStack[top++] = SPLBoolObject.getFalse();
@@ -249,7 +249,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            if (lhs.ge(rhs) == SPLBoolObject.getTrue()) {
+            if (lhs.__ge__(rhs) == SPLBoolObject.getTrue()) {
               evalStack[top++] = SPLBoolObject.getTrue();
             } else {
               evalStack[top++] = SPLBoolObject.getFalse();
@@ -259,22 +259,22 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.and(rhs);
+            evalStack[top++] = lhs.__and__(rhs);
           }
           case OR -> { // OR
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.or(rhs);
+            evalStack[top++] = lhs.__or__(rhs);
           }
           case INVERT -> { // INVERT
             pc++;
-            SPLObject o = evalStack[--top].invert();
+            SPLObject o = evalStack[--top].__invert__();
             evalStack[top++] = o;
           }
           case CONDITIONAL_AND -> { // CONDITIONAL_AND
             pc++;
-            if (evalStack[--top].conditionalAnd(evalStack[--top]) == SPLBoolObject.getTrue()) {
+            if (evalStack[--top].__conditionalAnd__(evalStack[--top]) == SPLBoolObject.getTrue()) {
               evalStack[top++] = SPLBoolObject.getTrue();
             } else {
               evalStack[top++] = SPLBoolObject.getFalse();
@@ -282,7 +282,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
           }
           case CONDITIONAL_OR -> { // CONDITIONAL_OR
             pc++;
-            if (evalStack[--top].conditionalOr(evalStack[--top]) == SPLBoolObject.getTrue()) {
+            if (evalStack[--top].__conditionalOr__(evalStack[--top]) == SPLBoolObject.getTrue()) {
               evalStack[top++] = SPLBoolObject.getTrue();
             } else {
               evalStack[top++] = SPLBoolObject.getFalse();
@@ -290,7 +290,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
           }
           case NOT -> { // NOT
             pc++;
-            evalStack[top++] = evalStack[--top].not();
+            evalStack[top++] = evalStack[--top].__not__();
           }
           case STORE_LOCAL -> { // STORE_LOCAL
             int oparg = getOparg();
@@ -304,7 +304,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               evalStack[top++] = locals.get(varnames[oparg]);
               continue;
             }
-            throw new SPLInternalException("LOAD_LOCAL failed, " + varnames[oparg].str() + " is not defined");
+            throw new SPLInternalException("LOAD_LOCAL failed, " + varnames[oparg].__str__() + " is not defined");
           }
           case STORE_GLOBAL -> { // STORE_GLOBAL
             int oparg = code[pc++];
@@ -317,7 +317,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               evalStack[top++] = globals.get(varnames[oparg]);
               continue;
             }
-            throw new SPLInternalException("not found, " + varnames[oparg].str() + " is not defined");
+            throw new SPLInternalException("not found, " + varnames[oparg].__str__() + " is not defined");
           }
           case LOAD_NAME, LOAD -> { // LOAD_NAME
             int oparg = getOparg();
@@ -334,7 +334,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
                 continue;
               }
             }
-            throw new SPLInternalException("LOAD_NAME failed, " + varnames[oparg].str() + " is not defined");
+            throw new SPLInternalException("LOAD_NAME failed, " + varnames[oparg].__str__() + " is not defined");
           }
           case LOAD_METHOD -> { // LOAD_METHOD
           }
@@ -361,7 +361,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             for (int i = 0; i < oparg; i++) {
               args[i] = evalStack[--top];
             }
-            evalStack[top++] = callable.call(args);
+            evalStack[top++] = callable.__call__(args);
           }
           case LOAD_CONST -> { // LOAD_CONST
             int oparg = getOparg();
