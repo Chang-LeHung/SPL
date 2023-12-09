@@ -47,66 +47,47 @@ public class Lexer {
       switch (state) {
         // starting branch
         case INIT -> {
-          if (Character.isAlphabetic(c)) {
-            state = CHAR_TYPE.IDENTIFIER; // means identifier branch
-          } else if (Character.isDigit(c)) {
-            state = CHAR_TYPE.NUMBER; // means number(int/float) branch
-          } else if (c == '"') {
-            state = CHAR_TYPE.QUOTATION;
-          } else if (c == '+') {
-            state = CHAR_TYPE.PLUS;
-          } else if (c == '-') {
-            state = CHAR_TYPE.MINUS;
-          } else if (c == '*') {
-            state = CHAR_TYPE.MUL;
-          } else if (c == '#') {
-            state = CHAR_TYPE.HASH;
-          } else if (c == '/') {
-            state = CHAR_TYPE.DIV;
-          } else if (c == '%') {
-            state = CHAR_TYPE.MOD;
-          } else if (c == '=') {
-            state = CHAR_TYPE.ASSIGN;
-          } else if (c == '>') {
-            state = CHAR_TYPE.GT;
-          } else if (c == '<') {
-            state = CHAR_TYPE.LT;
-          } else if (c == '&') {
-            state = CHAR_TYPE.AND;
-          } else if (c == '|') {
-            state = CHAR_TYPE.OR;
-          } else if (c == '!') {
-            state = CHAR_TYPE.NOT;
-          } else if (c == '~') {
-            state = CHAR_TYPE.INVERT;
-          } else if (c == '(') {
-            state = CHAR_TYPE.LPAREN;
-          } else if (c == ')') {
-            state = CHAR_TYPE.RPAREN;
-          } else if (c == '^') {
-            state = CHAR_TYPE.POWER;
-          } else if (c == '{') {
-            state = CHAR_TYPE.LBRACE;
-          } else if (c == '}') {
-            state = CHAR_TYPE.RBRACE;
-          } else if (c == ';') {
-            state = CHAR_TYPE.SEMICOLON;
-          } else if (c == '.') {
-            state = CHAR_TYPE.DOT;
-          } else if (c == '\n') {
-            state = CHAR_TYPE.NEWLINE;
-          } else if (c == ',') {
-            state = CHAR_TYPE.COMMA;
-          } else {
-            // white space characters
-            if (c == ' ' || c == '\t' || c == '\r') {
-              updateLineAndColumn();
-              c = nextChar(builder);
-              builder.delete(0, builder.length());
-            } else {
-              throw new SPLSyntaxError("Illegal  character '" + c + "'");
+          switch (c) {
+            case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> state = CHAR_TYPE.NUMBER;
+            case 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+                'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+                'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' -> state = CHAR_TYPE.IDENTIFIER;
+            case '"', '\'' -> state = CHAR_TYPE.QUOTATION;
+            case '+' -> state = CHAR_TYPE.PLUS;
+            case '-' -> state = CHAR_TYPE.MINUS;
+            case '*' -> state = CHAR_TYPE.MUL;
+            case '#' -> state = CHAR_TYPE.HASH;
+            case '/' -> state = CHAR_TYPE.DIV;
+            case '%' -> state = CHAR_TYPE.MOD;
+            case '=' -> state = CHAR_TYPE.ASSIGN;
+            case '>' -> state = CHAR_TYPE.GT;
+            case '<' -> state = CHAR_TYPE.LT;
+            case '&' -> state = CHAR_TYPE.AND;
+            case '|' -> state = CHAR_TYPE.OR;
+            case '!' -> state = CHAR_TYPE.NOT;
+            case '~' -> state = CHAR_TYPE.INVERT;
+            case '(' -> state = CHAR_TYPE.LPAREN;
+            case ')' -> state = CHAR_TYPE.RPAREN;
+            case '^' -> state = CHAR_TYPE.POWER;
+            case '{' -> state = CHAR_TYPE.LBRACE;
+            case '}' -> state = CHAR_TYPE.RBRACE;
+            case ';' -> state = CHAR_TYPE.SEMICOLON;
+            case '.' -> state = CHAR_TYPE.DOT;
+            case '\n' -> state = CHAR_TYPE.NEWLINE;
+            case ',' -> state = CHAR_TYPE.COMMA;
+            case ':' -> state = CHAR_TYPE.COLON;
+            default -> {
+              if (Character.isWhitespace(c)) {
+                updateLineAndColumn();
+                c = nextChar(builder);
+                builder.delete(0, builder.length());
+              } else {
+                throw new SPLSyntaxError("Illegal character '" + c + "'");
+              }
             }
           }
+
         }
         case HASH -> {
           while (c != '\n') {
@@ -116,6 +97,16 @@ public class Lexer {
         }
         case COMMA -> {
           Token token = new Token(TOKEN_TYPE.COMMA, ",");
+          tokens.add(token);
+          injectTokensAndClearBuilder(token, builder);
+          // must call updateLineAndColumn before nextChar, or `columnNo--`
+          updateLineAndColumn();
+          c = nextChar(builder);
+          state = CHAR_TYPE.INIT;
+          builder.delete(0, builder.length());
+        }
+        case COLON -> {
+          Token token = new Token(TOKEN_TYPE.COLON, ":");
           tokens.add(token);
           injectTokensAndClearBuilder(token, builder);
           // must call updateLineAndColumn before nextChar, or `columnNo--`
@@ -189,8 +180,9 @@ public class Lexer {
         }
         case QUOTATION -> {
           // string branch
+          char t = c;
           c = nextChar(builder);
-          while (c != '"') {
+          while (c != t) {
             if (c == 0) break;
             c = nextChar(builder);
           }
@@ -524,12 +516,12 @@ public class Lexer {
   }
 
   private enum CHAR_TYPE {
-    INIT, DOT, NEWLINE, COMMA, IDENTIFIER, NUMBER, QUOTATION, PLUS, MINUS, MUL, DIV, MOD, ASSIGN, HASH, LT, GT, NE, AND, OR, XOR, NOT, POWER, INVERT, LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE, SEMICOLON
+    INIT, DOT, NEWLINE, COLON, COMMA, IDENTIFIER, NUMBER, QUOTATION, PLUS, MINUS, MUL, DIV, MOD, ASSIGN, HASH, LT, GT, NE, AND, OR, XOR, NOT, POWER, INVERT, LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE, SEMICOLON
   }
 
   public enum TOKEN_TYPE {
     EOF, NEWLINE, STARTER, // used only in the function doParse()
-    COMMA, IDENTIFIER, TRUE, FALSE, IMPORT, INT, FLOAT, STRING, SEMICOLON, LEFT_PARENTHESES, RIGHT_PARENTHESES, PLUS, MINUS, MUL, DIV, TRUE_DIV, MOD, LSHIFT, RSHIFT, U_RSHIFT, // unconditional left shift
+    COMMA, IDENTIFIER, TRUE, FALSE, COLON, IMPORT, INT, FLOAT, STRING, SEMICOLON, LEFT_PARENTHESES, RIGHT_PARENTHESES, PLUS, MINUS, MUL, DIV, TRUE_DIV, MOD, LSHIFT, RSHIFT, U_RSHIFT, // unconditional left shift
     ASSIGN, ASSIGN_TRUE_DIV, EQ, LT, GT, GE, LE, NE, AND, CONDITIONAL_AND, OR, CONDITIONAL_OR, POWER, XOR, NOT, INVERT, CONDITIONAL_NOT, ASSIGN_ADD, ARROW, ASSIGN_SUB, ASSIGN_MUL, ASSIGN_DIV, ASSIGN_POWER, ASSIGN_MOD, ASSIGN_INVERT, ASSIGN_LSHIFT, ASSIGN_RSHIFT, ASSIGN_U_RSHIFT, ASSIGN_AND, ASSIGN_OR, ASSIGN_XOR, IF, ELSE, DO, WHILE, FOR, BREAK, CONTINUE, RETURN, DOT, LBRACE, RBRACE, IN, CLASS, DEF, GLOBAL, NONE,
   }
 
