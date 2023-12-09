@@ -77,6 +77,9 @@ public interface Evaluation {
     opcode[OpCode.LOAD.val] = OpCode.LOAD;
     opcode[OpCode.LOAD_NAME.val] = OpCode.LOAD_NAME;
     opcode[OpCode.DUP.val] = OpCode.DUP;
+    opcode[OpCode.BUILD_MAP.val] = OpCode.BUILD_MAP;
+    opcode[OpCode.BUILD_LIST.val] = OpCode.BUILD_LIST;
+    opcode[OpCode.BUILD_SET.val] = OpCode.BUILD_SET;
   }
 
   SPLObject evalFrame() throws SPLInternalException;

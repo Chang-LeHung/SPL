@@ -29,7 +29,7 @@ public class SPLObject implements SPLInterface {
   }
 
   @Override
-  public SPLObject mul(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __mul__(SPLObject rhs) throws SPLInternalException {
     return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation '*' not implemented"));
   }
 

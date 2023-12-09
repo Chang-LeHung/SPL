@@ -5,12 +5,9 @@ import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.internal.objs.SPLCodeObject;
 import org.spl.vm.internal.objs.SPLFrameObject;
 import org.spl.vm.internal.objs.SPLFuncObject;
-import org.spl.vm.objects.SPLBoolObject;
-import org.spl.vm.objects.SPLNoneObject;
-import org.spl.vm.objects.SPLObject;
+import org.spl.vm.objects.*;
 
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.*;
 
 
 public class DefaultEval extends SPLFrameObject implements Evaluation {
@@ -62,7 +59,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.mul(rhs);
+            evalStack[top++] = lhs.__mul__(rhs);
           }
           case DIV -> { // DIV
             pc++;
@@ -417,6 +414,27 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
           case DUP -> {
             SPLObject t = evalStack[top - 1];
             evalStack[top++] = t;
+          }
+          case BUILD_LIST -> {
+            int arg = getOparg();
+            top -= arg;
+            ArrayList<SPLObject> params = new ArrayList<>(Arrays.asList(evalStack).subList(top, arg + top));
+            evalStack[top++] = new SPLListObject(params);
+          }
+          case BUILD_MAP -> {
+            int arg = getOparg();
+            HashMap<SPLObject, SPLObject> params = new HashMap<>();
+            top -= arg;
+            for (int i = 0; i < arg; i += 2) {
+              params.put(evalStack[top + i], evalStack[top + i + 1]);
+            }
+            evalStack[top++] = new SPLDictObject(params);
+          }
+          case BUILD_SET -> {
+            int arg = getOparg();
+            top -= arg;
+            HashSet<SPLObject> params = new HashSet<>(Arrays.asList(evalStack).subList(top, arg + top));
+            evalStack[top++] = new SPLSetObject(params);
           }
           default -> {
             throw new SPLInternalException("unknown opcode " + code[--pc]);

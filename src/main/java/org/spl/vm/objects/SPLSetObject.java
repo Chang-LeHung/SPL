@@ -107,9 +107,9 @@ public class SPLSetObject extends SPLObject {
     builder.append("{");
     for (SPLObject o : set) {
       builder.append(o.__str__());
-      builder.append(",");
+      builder.append(", ");
     }
-    builder.delete(builder.length() - 1, builder.length());
+    builder.delete(builder.length() - 2, builder.length());
     builder.append("}");
     return new SPLStringObject(builder.toString());
   }

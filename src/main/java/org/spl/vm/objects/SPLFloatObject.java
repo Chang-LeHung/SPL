@@ -41,7 +41,7 @@ public class SPLFloatObject extends SPLObject {
   }
 
   @Override
-  public SPLObject mul(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __mul__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLFloatObject f) {
       return new SPLFloatObject(val * f.getVal());
     } else if (rhs instanceof SPLLongObject l) {

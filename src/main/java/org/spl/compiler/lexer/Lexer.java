@@ -77,6 +77,8 @@ public class Lexer {
             case '\n' -> state = CHAR_TYPE.NEWLINE;
             case ',' -> state = CHAR_TYPE.COMMA;
             case ':' -> state = CHAR_TYPE.COLON;
+            case '[' -> state = CHAR_TYPE.LBRACKET;
+            case ']' -> state = CHAR_TYPE.RBRACKET;
             default -> {
               if (Character.isWhitespace(c)) {
                 updateLineAndColumn();
@@ -93,6 +95,26 @@ public class Lexer {
           while (c != '\n') {
             c = nextChar(builder);
           }
+          builder.delete(0, builder.length());
+        }
+        case LBRACKET -> {
+          Token token = new Token(TOKEN_TYPE.LBRACKET, "[");
+          tokens.add(token);
+          injectTokensAndClearBuilder(token, builder);
+          // must call updateLineAndColumn before nextChar, or `columnNo--`
+          updateLineAndColumn();
+          c = nextChar(builder);
+          state = CHAR_TYPE.INIT;
+          builder.delete(0, builder.length());
+        }
+        case RBRACKET -> {
+          Token token = new Token(TOKEN_TYPE.RBRACKET, "]");
+          tokens.add(token);
+          injectTokensAndClearBuilder(token, builder);
+          // must call updateLineAndColumn before nextChar, or `columnNo--`
+          updateLineAndColumn();
+          c = nextChar(builder);
+          state = CHAR_TYPE.INIT;
           builder.delete(0, builder.length());
         }
         case COMMA -> {
@@ -494,6 +516,7 @@ public class Lexer {
           updateLineAndColumn();
           tokens.add(token);
           c = nextChar(builder);
+          builder.delete(0, builder.length());
           state = CHAR_TYPE.INIT;
         }
         case RBRACE -> {
@@ -502,6 +525,7 @@ public class Lexer {
           updateLineAndColumn();
           tokens.add(token);
           c = nextChar(builder);
+          builder.delete(0, builder.length());
           state = CHAR_TYPE.INIT;
         }
       }
@@ -516,12 +540,12 @@ public class Lexer {
   }
 
   private enum CHAR_TYPE {
-    INIT, DOT, NEWLINE, COLON, COMMA, IDENTIFIER, NUMBER, QUOTATION, PLUS, MINUS, MUL, DIV, MOD, ASSIGN, HASH, LT, GT, NE, AND, OR, XOR, NOT, POWER, INVERT, LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE, SEMICOLON
+    INIT, DOT, NEWLINE, COLON, BRACKET, COMMA, IDENTIFIER, NUMBER, QUOTATION, PLUS, MINUS, MUL, DIV, MOD, ASSIGN, HASH, LT, GT, NE, AND, OR, XOR, NOT, POWER, INVERT, LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE, SEMICOLON
   }
 
   public enum TOKEN_TYPE {
     EOF, NEWLINE, STARTER, // used only in the function doParse()
-    COMMA, IDENTIFIER, TRUE, FALSE, COLON, IMPORT, INT, FLOAT, STRING, SEMICOLON, LEFT_PARENTHESES, RIGHT_PARENTHESES, PLUS, MINUS, MUL, DIV, TRUE_DIV, MOD, LSHIFT, RSHIFT, U_RSHIFT, // unconditional left shift
+    COMMA, IDENTIFIER, LBRACKET, RBRACKET, TRUE, FALSE, COLON, IMPORT, INT, FLOAT, STRING, SEMICOLON, LEFT_PARENTHESES, RIGHT_PARENTHESES, PLUS, MINUS, MUL, DIV, TRUE_DIV, MOD, LSHIFT, RSHIFT, U_RSHIFT, // unconditional left shift
     ASSIGN, ASSIGN_TRUE_DIV, EQ, LT, GT, GE, LE, NE, AND, CONDITIONAL_AND, OR, CONDITIONAL_OR, POWER, XOR, NOT, INVERT, CONDITIONAL_NOT, ASSIGN_ADD, ARROW, ASSIGN_SUB, ASSIGN_MUL, ASSIGN_DIV, ASSIGN_POWER, ASSIGN_MOD, ASSIGN_INVERT, ASSIGN_LSHIFT, ASSIGN_RSHIFT, ASSIGN_U_RSHIFT, ASSIGN_AND, ASSIGN_OR, ASSIGN_XOR, IF, ELSE, DO, WHILE, FOR, BREAK, CONTINUE, RETURN, DOT, LBRACE, RBRACE, IN, CLASS, DEF, GLOBAL, NONE,
   }
 
@@ -628,6 +652,9 @@ public class Lexer {
       return token == TOKEN_TYPE.COMMA;
     }
 
+    public boolean isColon() {
+      return token == TOKEN_TYPE.COLON;
+    }
     public String getIdentifier() {
       return (String) (value);
     }
@@ -773,6 +800,14 @@ public class Lexer {
 
     public boolean isLBRACE() {
       return token == TOKEN_TYPE.LBRACE;
+    }
+
+    public boolean isRBRACKET() {
+      return token == TOKEN_TYPE.RBRACKET;
+    }
+
+    public boolean isLBRACKET() {
+      return token == TOKEN_TYPE.LBRACKET;
     }
 
     public boolean isRPAREN() {

@@ -28,7 +28,7 @@ public class SPLStringObject extends SPLObject {
   }
 
   @Override
-  public SPLObject mul(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __mul__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLLongObject l) {
       return new SPLStringObject(msg.repeat((int) l.getVal()));
     }

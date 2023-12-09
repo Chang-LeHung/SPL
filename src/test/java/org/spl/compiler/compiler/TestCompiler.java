@@ -214,4 +214,22 @@ public class TestCompiler {
     DefaultEval eval = run("attr/demo03.spl");
     System.out.println(Arrays.toString(eval.getConstants()));
   }
+
+  @Test
+  public void testList() throws SPLInternalException, SPLSyntaxError, IOException {
+    DefaultEval eval = run("datastruct/list.spl");
+    System.out.println(Arrays.toString(eval.getConstants()));
+  }
+
+  @Test
+  public void testSet() throws SPLInternalException, SPLSyntaxError, IOException {
+    DefaultEval eval = run("datastruct/set.spl");
+    System.out.println(Arrays.toString(eval.getConstants()));
+  }
+
+  @Test
+  public void testDict() throws SPLInternalException, SPLSyntaxError, IOException {
+    DefaultEval eval = run("datastruct/dict.spl");
+    System.out.println(Arrays.toString(eval.getConstants()));
+  }
 }

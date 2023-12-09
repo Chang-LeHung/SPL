@@ -72,6 +72,15 @@ public class Dissembler {
           ins = new Instruction(OpCode.MOD, 0);
           pc++;
         }
+        case BUILD_LIST -> {
+          ins = new Instruction(OpCode.BUILD_LIST, getOparg());
+        }
+        case BUILD_MAP -> {
+          ins = new Instruction(OpCode.BUILD_MAP, getOparg());
+        }
+        case BUILD_SET -> {
+          ins = new Instruction(OpCode.BUILD_SET, getOparg());
+        }
         case POWER -> {
           ins = new Instruction(OpCode.POWER, 0);
           pc++;

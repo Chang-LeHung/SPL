@@ -110,6 +110,7 @@ import java.util.List;
  *              | 'def' '(' paramList? ')' '->' expression
  *              | '{' ((IDENTIFIER | STRING ) ':' expression ',')* (((IDENTIFIER | STRING ) ':' expression))?'}'
  *              | '{' (expression ',')+ expression'}'
+ *              | '[' (expression ',')* (expression)? ']'
  *
  */
 public class SPLParser extends AbstractSyntaxParser {
@@ -982,6 +983,8 @@ public class SPLParser extends AbstractSyntaxParser {
       BoolLiteral boolLiteral = new BoolLiteral(idx);
       setSourceCodeInfo(boolLiteral, token);
       return boolLiteral;
+    } else if (token.isLBRACE()) {
+      return dictOrSet();
     } else if (token.isDef()) {
       return anonymousFunction();
     } else if (token.isTRUE()) {
@@ -992,6 +995,8 @@ public class SPLParser extends AbstractSyntaxParser {
       BoolLiteral boolLiteral = new BoolLiteral(idx);
       setSourceCodeInfo(boolLiteral, token);
       return boolLiteral;
+    } else if (token.isLBRACKET()) {
+      return list();
     } else if (token.isIDENTIFIER()) {
       tokenFlow.next();
       context.addVarName(token.getIdentifier());
@@ -1042,6 +1047,93 @@ public class SPLParser extends AbstractSyntaxParser {
       }
     }
     throwSyntaxError("Expected an expression instead of \"" + token.getValueAsString() + "\"", token);
+    return null;
+  }
+
+  private IRNode<Instruction> list() throws SPLSyntaxError {
+    ArrayList<IRNode<Instruction>> data = new ArrayList<>();
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LBRACKET, "Expected '[' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+    tokenFlow.next();
+    while (!tokenFlow.peek().isRBRACKET()) {
+      iterateToEffectiveToken();
+      data.add(expression());
+      iterateToEffectiveToken();
+      if (tokenFlow.peek().isComma()) {
+        tokenFlow.next();
+      } else if (tokenFlow.peek().isRBRACKET()) {
+        break;
+      } else {
+        throwSyntaxError("Expected ',' or ']' instead of \"" + tokenFlow.peek().getValueAsString() + "\"", tokenFlow.peek());
+      }
+    }
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RBRACKET, "Expected ']' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+    tokenFlow.next();
+    BuildList list = new BuildList();
+    list.setChildren(data);
+    return list;
+  }
+
+  private IRNode<Instruction> dictOrSet() throws SPLSyntaxError {
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LBRACE, "Expected '{' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+    tokenFlow.next();
+    iterateToEffectiveToken();
+    if (tokenFlow.peek().isRBRACE()) {
+      BuildSet set = new BuildSet();
+      setSourceCodeInfo(set, tokenFlow.peek());
+      tokenFlow.next();
+      return set;
+    }
+    ArrayList<IRNode<Instruction>> data = new ArrayList<>();
+    iterateToEffectiveToken();
+    IRNode<Instruction> key = expression();
+    iterateToEffectiveToken();
+    data.add(key);
+    if (tokenFlow.peek().isColon()) {
+      tokenFlow.next();
+      iterateToEffectiveToken();
+      data.add(expression());
+      iterateToEffectiveToken();
+      while (true) {
+        if (tokenFlow.peek().isRBRACE()) {
+          tokenFlow.next();
+          BuildMap map = new BuildMap();
+          map.setChildren(data);
+          return map;
+        } else if (tokenFlow.peek().isComma()) {
+          tokenFlow.next();
+          iterateToEffectiveToken();
+          data.add(expression());
+          iterateToEffectiveToken();
+          tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.COLON, "Expected ',' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+          tokenFlow.next();
+          iterateToEffectiveToken();
+          data.add(expression());
+          iterateToEffectiveToken();
+        }
+      }
+    } else if (tokenFlow.peek().isComma()) {
+      tokenFlow.next();
+      while (true) {
+        iterateToEffectiveToken();
+        data.add(expression());
+        iterateToEffectiveToken();
+        if (tokenFlow.peek().isRBRACE()) {
+          tokenFlow.next();
+          BuildSet set = new BuildSet();
+          set.setChildren(data);
+          return set;
+        } else if (tokenFlow.peek().isComma()) {
+          tokenFlow.next();
+        } else {
+          throwSyntaxError("Expected  ',' or '}", tokenFlow.peek());
+        }
+      }
+    } else if (tokenFlow.peek().isRBRACE()) {
+      BuildSet set = new BuildSet();
+      set.setChildren(data);
+      return set;
+    }
+    throwSyntaxError("Expected ':' or ',' or '}' instead of \"" + tokenFlow.peek().getValueAsString() + "\"", tokenFlow.peek());
     return null;
   }
 

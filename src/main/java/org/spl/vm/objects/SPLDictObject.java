@@ -125,9 +125,10 @@ public class SPLDictObject extends SPLObject {
       builder.append(x)
           .append(":")
           .append(y)
-          .append(",");
+          .append(", ");
     });
-    builder.delete(builder.length() - 1, builder.length());
+    builder.delete(builder.length() - 2, builder.length());
+    builder.append("}");
     return new SPLStringObject(builder.toString());
   }
 }

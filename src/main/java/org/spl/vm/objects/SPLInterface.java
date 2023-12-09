@@ -21,10 +21,10 @@ public interface SPLInterface {
     return __sub__(rhs);
   }
 
-  SPLObject mul(SPLObject rhs) throws SPLInternalException;
+  SPLObject __mul__(SPLObject rhs) throws SPLInternalException;
 
   default SPLObject __inplaceMul__(SPLObject rhs) throws SPLInternalException {
-    return mul(rhs);
+    return __mul__(rhs);
   }
 
   SPLObject __div__(SPLObject rhs) throws SPLInternalException;
