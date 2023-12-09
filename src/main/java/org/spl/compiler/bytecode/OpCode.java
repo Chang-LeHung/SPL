@@ -66,7 +66,8 @@ public enum OpCode {
   NEG,
   RETURN,
   RETURN_NONE,
-  MAKE_FUNCTION;
+  MAKE_FUNCTION,
+  SUBSCRIBE;
   public final byte val;
 
   OpCode() {

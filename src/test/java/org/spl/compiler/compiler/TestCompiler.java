@@ -243,4 +243,9 @@ public class TestCompiler {
   public void testAttr() throws SPLInternalException, SPLSyntaxError, IOException {
     run("attr/load_store.spl");
   }
+
+  @Test
+  public void testSubscribe() throws SPLInternalException, SPLSyntaxError, IOException {
+    run("attr/subs.spl");
+  }
 }

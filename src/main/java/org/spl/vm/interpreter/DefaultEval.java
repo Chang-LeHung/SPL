@@ -450,6 +450,12 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             HashSet<SPLObject> params = new HashSet<>(Arrays.asList(evalStack).subList(top, arg + top));
             evalStack[top++] = new SPLSetObject(params);
           }
+          case SUBSCRIBE -> {
+            pc++;
+            SPLObject param = evalStack[--top];
+            SPLObject o = evalStack[--top];
+            evalStack[top++] = o.__subscribe__(param);
+          }
           default -> {
             throw new SPLInternalException("unknown opcode " + code[--pc]);
           }

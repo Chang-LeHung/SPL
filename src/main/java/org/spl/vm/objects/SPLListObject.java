@@ -3,6 +3,7 @@ package org.spl.vm.objects;
 import org.spl.vm.annotations.SPLExportMethod;
 import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
+import org.spl.vm.exceptions.splexceptions.SPLOutOfBoundException;
 import org.spl.vm.exceptions.splexceptions.SPLTypeError;
 import org.spl.vm.types.SPLListType;
 
@@ -84,5 +85,17 @@ public class SPLListObject extends SPLObject {
       return SPLNoneObject.getInstance();
     }
     return SPLErrorUtils.splErrorFormat(new SPLTypeError("append() takes exactly one argument"));
+  }
+
+  @Override
+  public SPLObject __subscribe__(SPLObject args) throws SPLInternalException {
+    if (args instanceof SPLLongObject o) {
+      int idx = (int) o.getVal();
+      if (idx < container.size())
+        return container.get(idx);
+      return SPLErrorUtils.splErrorFormat(new SPLOutOfBoundException(
+          String.format("Index %d out of bound %d", idx, container.size())));
+    }
+    return SPLErrorUtils.splErrorFormat(new SPLTypeError("Index must be integer"));
   }
 }

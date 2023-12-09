@@ -185,6 +185,11 @@ public class SPLObject implements SPLInterface {
   }
 
   @Override
+  public SPLObject __subscribe__(SPLObject args) throws SPLInternalException {
+    return __getAttr__(args);
+  }
+
+  @Override
   public SPLObject __getMethod__(SPLObject name) throws SPLInternalException {
     if (attrs != null && attrs.containsKey(name)) {
       SPLObject res = attrs.get(name);

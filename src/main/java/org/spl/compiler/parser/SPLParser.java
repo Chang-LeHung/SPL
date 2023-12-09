@@ -97,7 +97,7 @@ import java.util.List;
  * power        : primary
  *              | primary ** factor
  * primary      : atom
- * atom         : IDENTIFIER (('.' NAME) | ('(' paramList? ')'))*
+ * atom         : IDENTIFIER (('.' NAME) | ('(' paramList? ')') | '[' expression ']')*
  *              | 'true'
  *              | 'false'
  *              | 'none'
@@ -1011,8 +1011,9 @@ public class SPLParser extends AbstractSyntaxParser {
       }
       ret = new Variable(scope, token.getIdentifier());
       setSourceCodeInfo(ret, token);
-      while (tokenFlow.peek().isDOT() || tokenFlow.peek().isLEFT_PARENTHESES()) {
+      while (tokenFlow.peek().isDOT() || tokenFlow.peek().isLEFT_PARENTHESES() || tokenFlow.peek().isLBRACKET()) {
         if (tokenFlow.peek().isDOT()) {
+          Lexer.Token t = tokenFlow.peek();
           tokenFlow.next();
           tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.IDENTIFIER,
               "Expected identifier after '.'");
@@ -1024,14 +1025,25 @@ public class SPLParser extends AbstractSyntaxParser {
           } else {
             ret = new LoadAttr(ret, idx, name);
           }
+          setSourceCodeInfo(ret, t);
           tokenFlow.next();
+        } else if (tokenFlow.peek().isLBRACKET()) {
+          Lexer.Token t = tokenFlow.peek();
+          tokenFlow.next();
+          IRNode<Instruction> sub = expression();
+          tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RBRACKET, "Expected ']' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+          tokenFlow.next();
+          ret = new ArrayStyle(ret, sub);
+          setSourceCodeInfo(ret, t);
         } else {
+          Lexer.Token t = tokenFlow.peek();
           List<IRNode<Instruction>> args = new ArrayList<>();
           tokenFlow.next();
           extractArgs(args);
           FuncCallExp funcCallExp = new FuncCallExp(ret, args);
           setSourceCodeInfo(funcCallExp, token);
           ret = funcCallExp;
+          setSourceCodeInfo(ret, t);
         }
       }
       return ret;

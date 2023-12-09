@@ -64,6 +64,9 @@ public class Dissembler {
           ins = new Instruction(OpCode.TRUE_DIV, 0);
           pc++;
         }
+        case SUBSCRIBE -> {
+          ins = new Instruction(OpCode.SUBSCRIBE, 0);
+        }
         case NEG -> {
           ins = new Instruction(OpCode.NEG, 0);
           pc++;

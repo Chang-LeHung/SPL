@@ -80,6 +80,7 @@ public interface Evaluation {
     opcode[OpCode.BUILD_MAP.val] = OpCode.BUILD_MAP;
     opcode[OpCode.BUILD_LIST.val] = OpCode.BUILD_LIST;
     opcode[OpCode.BUILD_SET.val] = OpCode.BUILD_SET;
+    opcode[OpCode.SUBSCRIBE.val] = OpCode.SUBSCRIBE;
   }
 
   SPLObject evalFrame() throws SPLInternalException;
