@@ -53,6 +53,8 @@ public class ProgramBlock extends AbstractIR<Instruction> {
   }
 
   public IRNode<Instruction> getLast() {
+    if (statements.size() == 0)
+      return null;
     return statements.get(statements.size() - 1);
   }
 }
