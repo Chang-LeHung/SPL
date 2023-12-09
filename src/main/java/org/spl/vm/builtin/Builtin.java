@@ -33,7 +33,7 @@ public class Builtin {
   private static void register(String name) {
     try {
       Method method = Builtin.class.getMethod(name, SPLObject[].class);
-      SPLCallObject m = new SPLCallObject(method, true);
+      SPLCallObject m = new SPLCallObject(method, null, true);
       dict.put(new SPLStringObject(name), m);
     } catch (NoSuchMethodException ignore) {
     }

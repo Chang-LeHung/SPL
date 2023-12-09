@@ -12,9 +12,11 @@ public class SPLCallObject extends SPLObject {
 
   private final Method method;
   private final boolean isStatic;
+  private final SPLObject self;
 
-  public SPLCallObject(Method method, boolean isStatic) {
+  public SPLCallObject(Method method, SPLObject self, boolean isStatic) {
     super(SPLCallType.getInstance());
+    this.self = self;
     this.method = method;
     this.isStatic = isStatic;
   }
@@ -25,9 +27,7 @@ public class SPLCallObject extends SPLObject {
       if (isStatic) {
         return (SPLObject) method.invoke(null, (Object) args);
       } else {
-        SPLObject[] newArgs = new SPLObject[args.length - 1];
-        System.arraycopy(args, 1, newArgs, 0, newArgs.length);
-        return (SPLObject) method.invoke(args[0], (Object) newArgs);
+        return (SPLObject) method.invoke(self, (Object) args);
       }
     } catch (InvocationTargetException | IllegalAccessException e) {
       return SPLErrorUtils.splErrorFormat(new SPLException(e.getMessage()));

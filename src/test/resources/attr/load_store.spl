@@ -1,0 +1,9 @@
+
+
+
+a = 1
+
+a.hello = 2
+
+print(a.hello)
+print(a)

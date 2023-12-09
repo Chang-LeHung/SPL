@@ -1,18 +1,17 @@
 package org.spl.vm.exceptions.types;
 
-import org.spl.vm.objects.SPLObject;
 import org.spl.vm.types.SPLCommonType;
 
-public class SPLAttributeError extends SPLCommonType {
-  public SPLAttributeError() {
-    super(null, "AttributeError", SPLAttributeError.class);
+public class SPLAttributeErrorType extends SPLCommonType {
+  public SPLAttributeErrorType() {
+    super(null, "AttributeError", SPLAttributeErrorType.class);
   }
 
   private static class SelfHolder {
-    static SPLAttributeError instance = new SPLAttributeError();
+    static SPLAttributeErrorType instance = new SPLAttributeErrorType();
   }
 
-  public static SPLAttributeError getInstance() {
+  public static SPLAttributeErrorType getInstance() {
     return SelfHolder.instance;
   }
 }

@@ -232,4 +232,15 @@ public class TestCompiler {
     DefaultEval eval = run("datastruct/dict.spl");
     System.out.println(Arrays.toString(eval.getConstants()));
   }
+
+  @Test
+  public void testList02() throws SPLInternalException, SPLSyntaxError, IOException {
+    DefaultEval eval = run("datastruct/list02.spl");
+    System.out.println(Arrays.toString(eval.getConstants()));
+  }
+
+  @Test
+  public void testAttr() throws SPLInternalException, SPLSyntaxError, IOException {
+    run("attr/load_store.spl");
+  }
 }

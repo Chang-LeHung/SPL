@@ -128,5 +128,6 @@ public interface SPLInterface {
   }
 
   SPLObject __getAttr__(SPLObject name) throws SPLInternalException;
+  SPLObject __getMethod__(SPLObject name) throws SPLInternalException, NoSuchMethodException;
   SPLObject __setAttr__(SPLObject name, SPLObject value) throws SPLInternalException;
 }

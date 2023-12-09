@@ -1,5 +1,6 @@
 package org.spl.vm.objects;
 
+import org.spl.vm.annotations.SPLExportMethod;
 import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.exceptions.splexceptions.SPLTypeError;
@@ -74,5 +75,14 @@ public class SPLListObject extends SPLObject {
     builder.delete(builder.length() - 2, builder.length());
     builder.append("]");
     return new SPLStringObject(builder.toString());
+  }
+
+  @SPLExportMethod
+  public SPLObject append(SPLObject... args) throws SPLInternalException {
+    if (args.length == 1) {
+      container.add(args[0]);
+      return SPLNoneObject.getInstance();
+    }
+    return SPLErrorUtils.splErrorFormat(new SPLTypeError("append() takes exactly one argument"));
   }
 }

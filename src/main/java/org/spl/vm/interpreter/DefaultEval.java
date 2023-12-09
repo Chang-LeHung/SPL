@@ -334,8 +334,13 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             throw new SPLInternalException("LOAD_NAME failed, " + varnames[oparg].__str__() + " is not defined");
           }
           case LOAD_METHOD -> { // LOAD_METHOD
+            int arg = getOparg();
+            SPLObject o = evalStack[--top];
+            SPLObject callable = o.__getMethod__(varnames[arg]);
+            evalStack[top++] = callable;
           }
           case CALL_METHOD -> { // CALL_METHOD
+            // We do not use this instruction now
           }
           case MAKE_FUNCTION -> {
             int arg = getOparg();
@@ -346,10 +351,19 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               defaults.add(evalStack[--top]);
             }
             func.setGlobals(globals);
-            ((SPLFuncObject)func).setDefaults(defaults);
+            ((SPLFuncObject) func).setDefaults(defaults);
             evalStack[top++] = func;
           }
           case STORE -> { // STORE
+          }
+          case STORE_ATTR -> {
+            int arg = getOparg();
+            SPLObject o = evalStack[--top];
+            o.__setAttr__(varnames[arg], evalStack[--top]);
+          }
+          case LOAD_ATTR -> { // LOAD_ATTR
+            int arg = getOparg();
+            evalStack[top - 1] = evalStack[top - 1].__getAttr__(varnames[arg]);
           }
           case CALL -> { // CALL
             int oparg = code[pc++];
