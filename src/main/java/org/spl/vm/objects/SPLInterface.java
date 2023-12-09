@@ -125,6 +125,8 @@ public interface SPLInterface {
   }
 
   default void setGlobals(Map<SPLObject, SPLObject> globals) {
-    return;
   }
+
+  SPLObject __getAttr__(SPLObject name) throws SPLInternalException;
+  SPLObject __setAttr__(SPLObject name, SPLObject value) throws SPLInternalException;
 }

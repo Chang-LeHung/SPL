@@ -155,4 +155,15 @@ public class SPLObject implements SPLInterface {
   public SPLObject __str__() {
     return new SPLStringObject(this.toString());
   }
+
+  @Override
+  public SPLObject __getAttr__(SPLObject name) throws SPLInternalException {
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation 'getattr' not implemented"));
+  }
+
+  @Override
+  public SPLObject __setAttr__(SPLObject name, SPLObject value) throws SPLInternalException {
+    return SPLErrorUtils
+        .splErrorFormat(new SPLNotImplemented("operation 'setattr' not implemented"));
+  }
 }
