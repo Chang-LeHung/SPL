@@ -28,6 +28,7 @@ public class Builtin {
     register("log");
     register("log10");
     register("exp");
+    register("exit");
   }
 
   private static void register(String name) {
@@ -38,6 +39,7 @@ public class Builtin {
     } catch (NoSuchMethodException ignore) {
     }
   }
+
   public static SPLObject get(SPLObject key) {
     return dict.get(key);
   }
@@ -265,7 +267,9 @@ public class Builtin {
       if (arg[0] instanceof SPLLongObject l) {
         System.exit((int)l.getVal());
       }
+    } else if (arg.length == 0) {
+      System.exit(0);
     }
-    throw new SPLInternalException("exit() only takes one int argument");
+    throw new SPLInternalException("exit() only takes 0 or 1 int argument");
   }
 }
