@@ -94,7 +94,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             pc++;
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.xor(rhs);
+            evalStack[top++] = lhs.__xor__(rhs);
           }
           case LSHIFT -> { // LSHIFT
             pc++;

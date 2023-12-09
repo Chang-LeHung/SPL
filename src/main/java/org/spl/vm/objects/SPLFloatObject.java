@@ -104,8 +104,8 @@ public class SPLFloatObject extends SPLObject {
   }
 
   @Override
-  public SPLObject xor(SPLObject rhs) throws SPLInternalException {
-    return super.xor(rhs);
+  public SPLObject __xor__(SPLObject rhs) throws SPLInternalException {
+    return super.__xor__(rhs);
   }
 
   @Override

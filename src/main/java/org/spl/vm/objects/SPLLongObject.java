@@ -137,7 +137,7 @@ public class SPLLongObject extends SPLObject {
   }
 
   @Override
-  public SPLObject xor(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __xor__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLLongObject l) {
       return create(val ^ l.val);
 

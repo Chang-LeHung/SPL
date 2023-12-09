@@ -80,10 +80,10 @@ public interface SPLInterface {
     return __or__(rhs);
   }
 
-  SPLObject xor(SPLObject rhs) throws SPLInternalException;
+  SPLObject __xor__(SPLObject rhs) throws SPLInternalException;
 
   default SPLObject __inplaceXor__(SPLObject rhs) throws SPLInternalException {
-    return xor(rhs);
+    return __xor__(rhs);
   }
 
   SPLObject __not__() throws SPLInternalException;

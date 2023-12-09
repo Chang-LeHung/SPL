@@ -61,7 +61,7 @@ public class SPLSetObject extends SPLObject {
   }
 
   @Override
-  public SPLObject xor(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __xor__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLSetObject other) {
       HashSet<SPLObject> res = new HashSet<>();
       for (SPLObject o : set) {
