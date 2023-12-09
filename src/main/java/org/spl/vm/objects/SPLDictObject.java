@@ -89,7 +89,7 @@ public class SPLDictObject extends SPLObject {
   }
 
   @Override
-  public SPLObject inplaceSub(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __inplaceSub__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLDictObject other) {
       other.dict.keySet().forEach(dict::remove);
       return this;

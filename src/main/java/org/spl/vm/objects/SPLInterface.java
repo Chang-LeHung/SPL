@@ -17,7 +17,7 @@ public interface SPLInterface {
 
   SPLObject __sub__(SPLObject rhs) throws SPLInternalException;
 
-  default SPLObject inplaceSub(SPLObject rhs) throws SPLInternalException {
+  default SPLObject __inplaceSub__(SPLObject rhs) throws SPLInternalException {
     return __sub__(rhs);
   }
 

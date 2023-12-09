@@ -124,7 +124,7 @@ public class SPLSetObject extends SPLObject {
   }
 
   @Override
-  public SPLObject inplaceSub(SPLObject rhs) throws SPLInternalException {
+  public SPLObject __inplaceSub__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLSetObject o) {
       for (SPLObject o1 : o.set) {
         set.remove(o1);

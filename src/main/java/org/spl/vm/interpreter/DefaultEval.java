@@ -166,7 +166,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             getOparg();
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
-            evalStack[top++] = lhs.inplaceSub(rhs);
+            evalStack[top++] = lhs.__inplaceSub__(rhs);
           }
           case INPLACE_MUL -> { // MUL_ASSIGN
             getOparg();
