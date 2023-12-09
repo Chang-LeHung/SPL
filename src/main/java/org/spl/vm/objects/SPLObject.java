@@ -6,6 +6,7 @@ import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.exceptions.splexceptions.SPLAttributeError;
 import org.spl.vm.exceptions.splexceptions.SPLNotImplemented;
 import org.spl.vm.exceptions.splexceptions.SPLRuntimeException;
+import org.spl.vm.internal.objs.SPLFuncObject;
 import org.spl.vm.types.SPLCommonType;
 
 import java.lang.reflect.Method;
@@ -185,6 +186,12 @@ public class SPLObject implements SPLInterface {
 
   @Override
   public SPLObject __getMethod__(SPLObject name) throws SPLInternalException {
+    if (attrs != null && attrs.containsKey(name)) {
+      SPLObject res = attrs.get(name);
+      if (res instanceof SPLFuncObject) {
+        return res;
+      }
+    }
     if (methods != null && methods.containsKey(name)) {
       Method method = methods.get(name);
       return new SPLCallObject(method, this, false);
