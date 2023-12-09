@@ -20,4 +20,8 @@ public class Pop extends AbstractIR<Instruction> {
     return List.of();
   }
 
+  @Override
+  public void postVisiting(ASTContext<Instruction> context) {
+    context.decreaseStackSize();
+  }
 }

@@ -42,7 +42,6 @@ public class FuncCallExp extends AbstractIR<Instruction> {
 
   @Override
   public void postVisiting(ASTContext<Instruction> context) {
-    context.increaseStackSize();
     context.decreaseStackSize();
     context.decreaseStackSize(args.size());
     context.increaseStackSize(); // return val
