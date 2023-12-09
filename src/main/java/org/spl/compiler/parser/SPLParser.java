@@ -120,6 +120,10 @@ public class SPLParser extends AbstractSyntaxParser {
     super(filename);
   }
 
+  public SPLParser(String filename, String content) throws IOException, SPLSyntaxError {
+    super(filename, content);
+  }
+
 
   @Override
   public IRNode<Instruction> buildAST() throws SPLSyntaxError {
@@ -224,6 +228,7 @@ public class SPLParser extends AbstractSyntaxParser {
     } catch (IndexOutOfBoundsException e) {
       throwSyntaxError("Illegal statement, expected assignment or expression", tokenFlow.peek());
     }
+    throwSyntaxError("Illegal statement, expected assignment or expression", tokenFlow.peek());
     return null;
   }
 
@@ -1191,15 +1196,15 @@ public class SPLParser extends AbstractSyntaxParser {
     context = oldContex;
     auxContex.generateByteCodes(block);
     SPLCodeObject codeObject = SPLCodeObjectBuilder.build(auxContex);
+    codeObject.setArgs(params.size());
     SPLFuncObject func = new SPLFuncObject(params, codeObject);
     context.addConstantObject(func);
     int idx = context.getConstantObjectIndex(func);
     FuncDef funcDef = new FuncDef(idx, func.getName());
     setSourceCodeInfo(funcDef, tokenFlow.lookBack());
-    InsVisitor insVisitor = new InsVisitor(auxContex.getVarnames(), auxContex.getConstantMap());
-    auxContex.getInstructions().forEach(insVisitor::visit);
-    System.out.println(insVisitor);
-    System.out.println(codeObject);
+//    InsVisitor insVisitor = new InsVisitor(auxContex.getVarnames(), auxContex.getConstantMap());
+//    auxContex.getInstructions().forEach(insVisitor::visit);
+//    System.out.println(insVisitor);
     return funcDef;
   }
 

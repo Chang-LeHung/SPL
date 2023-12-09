@@ -3,6 +3,7 @@ package org.spl.compiler.lexer;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringReader;
 
 public class InputBuffer {
 
@@ -17,6 +18,18 @@ public class InputBuffer {
   public InputBuffer(String filename) throws IOException {
     fileName = filename;
     reader = new BufferedReader(new FileReader(fileName));
+    off = 0;
+    EOF = false;
+    buffer = new StringBuilder();
+    buffer.append(reader.readLine());
+    buffer.append('\n');
+    lineNo = 1;
+    columnNo = 0;
+  }
+
+  public InputBuffer(String filename, String content) throws IOException {
+    fileName = filename;
+    reader = new BufferedReader(new StringReader(content));
     off = 0;
     EOF = false;
     buffer = new StringBuilder();

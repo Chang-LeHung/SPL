@@ -20,6 +20,12 @@ public class Lexer {
     stream = new InputBuffer(filename);
   }
 
+  public Lexer(String filename, String content) throws IOException {
+    tokens = new ArrayList<>();
+    stream = new InputBuffer(filename, content);
+  }
+
+
   private void updateLineAndColumn() {
     lineNo = stream.getLineNo();
     columnNo = stream.getColumnNo();

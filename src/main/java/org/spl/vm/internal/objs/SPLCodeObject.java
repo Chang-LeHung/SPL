@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Map;
 
 public class SPLCodeObject extends SPLObject {
-  private final int args;
+  private int args;
   private final String filename;
   private final int firstLineNo;
   private final byte[] code;
@@ -58,6 +58,10 @@ public class SPLCodeObject extends SPLObject {
 
   public byte[] getCode() {
     return code;
+  }
+
+  public void setArgs(int args) {
+    this.args = args;
   }
 
   public byte[] getLenColumn() {

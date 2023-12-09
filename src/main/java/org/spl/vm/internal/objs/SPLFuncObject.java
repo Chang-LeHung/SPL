@@ -1,8 +1,11 @@
 package org.spl.vm.internal.objs;
 
+import org.spl.vm.annotations.SPLExportMethod;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.internal.typs.SPLFuncType;
+import org.spl.vm.internal.utils.Dissembler;
 import org.spl.vm.interpreter.DefaultEval;
+import org.spl.vm.objects.SPLNoneObject;
 import org.spl.vm.objects.SPLObject;
 import org.spl.vm.objects.SPLStringObject;
 
@@ -91,5 +94,12 @@ public class SPLFuncObject extends SPLObject {
     }
     assert globals != null;
     return new DefaultEval(name, locals, globals, codeObject).evalFrame();
+  }
+
+  @SPLExportMethod
+  public SPLObject dis(SPLObject... args) {
+    Dissembler dissembler = new Dissembler(codeObject);
+    dissembler.prettyPrint();
+    return SPLNoneObject.getInstance();
   }
 }

@@ -11,6 +11,7 @@ import org.spl.compiler.lexer.TokenFlow;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,6 +31,22 @@ public abstract class AbstractSyntaxParser implements ASTBuilder<Instruction> {
     tokenFlow = new TokenFlow<>(tokens);
     sourceCode = new ArrayList<>();
     BufferedReader reader = new BufferedReader(new FileReader(filename));
+    String line;
+    while ((line = reader.readLine()) != null) {
+      sourceCode.add(line);
+    }
+    context = new DefaultASTContext<>(filename);
+    reader.close();
+  }
+
+  public AbstractSyntaxParser(String filename, String content) throws IOException, SPLSyntaxError {
+    this.filename = filename;
+    Lexer lexer = new Lexer(filename, content);
+    lexer.doParse();
+    tokens = lexer.getTokens();
+    tokenFlow = new TokenFlow<>(tokens);
+    sourceCode = new ArrayList<>();
+    BufferedReader reader = new BufferedReader(new StringReader(content));
     String line;
     while ((line = reader.readLine()) != null) {
       sourceCode.add(line);

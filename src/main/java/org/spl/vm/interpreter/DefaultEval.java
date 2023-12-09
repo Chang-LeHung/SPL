@@ -463,7 +463,6 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
 
       }
     } catch (SPLInternalException e) {
-      e.printStackTrace();
       System.err.println("pc = " + pc);
       throw e;
     }
