@@ -16,7 +16,7 @@ public class InsVisitor implements Visitor<Instruction> {
   private final List<String> serializedInstructions;
   private final HashSet<OpCode> loadStoreInstructions;
 
-  public InsVisitor() {
+  private InsVisitor() {
     idx2Var = new HashMap<>();
     idx2Constant = new HashMap<>();
     offset = 0;
@@ -29,24 +29,13 @@ public class InsVisitor implements Visitor<Instruction> {
     loadStoreInstructions.add(OpCode.LOAD_GLOBAL);
     loadStoreInstructions.add(OpCode.STORE_GLOBAL);
     loadStoreInstructions.add(OpCode.LOAD_LOCAL);
-    loadStoreInstructions.add(OpCode.LOAD_ATTR);
     loadStoreInstructions.add(OpCode.LOAD);
     loadStoreInstructions.add(OpCode.STORE_LOCAL);
+    loadStoreInstructions.add(OpCode.LOAD_ATTR);
+    loadStoreInstructions.add(OpCode.STORE_ATTR);
     loadStoreInstructions.add(OpCode.LOAD_METHOD);
     loadStoreInstructions.add(OpCode.LOAD_NAME);
     loadStoreInstructions.add(OpCode.STORE);
-    loadStoreInstructions.add(OpCode.INPLACE_ADD);
-    loadStoreInstructions.add(OpCode.INPLACE_SUB);
-    loadStoreInstructions.add(OpCode.INPLACE_MUL);
-    loadStoreInstructions.add(OpCode.INPLACE_DIV);
-    loadStoreInstructions.add(OpCode.INPLACE_MOD);
-    loadStoreInstructions.add(OpCode.INPLACE_POWER);
-    loadStoreInstructions.add(OpCode.INPLACE_AND);
-    loadStoreInstructions.add(OpCode.INPLACE_OR);
-    loadStoreInstructions.add(OpCode.INPLACE_XOR);
-    loadStoreInstructions.add(OpCode.INPLACE_LSHIFT);
-    loadStoreInstructions.add(OpCode.INPLACE_RSHIFT);
-    loadStoreInstructions.add(OpCode.INPLACE_U_RSHIFT);
   }
 
   public InsVisitor(Map<?, Integer> varMap, Map<SPLObject, Integer> constants) {

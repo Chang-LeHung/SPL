@@ -194,7 +194,13 @@ public class Dissembler {
         case LOAD_LOCAL -> {
           ins = new Instruction(OpCode.LOAD_LOCAL, getOparg());
         }
-        case LOAD, LOAD_NAME -> {
+        case LOAD_METHOD -> {
+          ins = new Instruction(OpCode.LOAD_METHOD, getOparg());
+        }
+        case LOAD_NAME -> {
+          ins = new Instruction(OpCode.LOAD_NAME, getOparg());
+        }
+        case LOAD -> {
           ins = new Instruction(OpCode.LOAD, getOparg());
         }
         case LOAD_CONST -> {
@@ -205,6 +211,12 @@ public class Dissembler {
         }
         case STORE_GLOBAL -> {
           ins = new Instruction(OpCode.STORE_GLOBAL, getOparg());
+        }
+        case DUP -> {
+          ins = new Instruction(OpCode.DUP, getOparg());
+        }
+        case INPLACE_TRUE_DIV -> {
+          ins = new Instruction(OpCode.INPLACE_TRUE_DIV, 0);
         }
         case LOAD_GLOBAL -> {
           ins = new Instruction(OpCode.LOAD_GLOBAL, getOparg());

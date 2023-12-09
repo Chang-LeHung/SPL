@@ -118,172 +118,82 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             evalStack[top++] = lhs.URshift(rhs);
           }
           case INPLACE_LSHIFT -> { // LSHIFT_ASSIGN
-            int oparg = getOparg();
+            getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = varnames[oparg];
-            SPLObject lhs = locals.get(name);
-            if (lhs != null) {
-              locals.put(name, lhs.inplaceLshift(rhs));
-              continue;
-            } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).inplaceLshift(rhs));
-              continue;
-            }
-            throw new SPLInternalException("not found " + name.str());
+            SPLObject lhs = evalStack[--top];
+            evalStack[top++] = lhs.inplaceLshift(rhs);
           }
           case INPLACE_RSHIFT -> { // RSHIFT_ASSIGN
-            int oparg = getOparg();
+            getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = varnames[oparg];
-            SPLObject lhs = locals.get(name);
-            if (lhs != null) {
-              locals.put(name, lhs.inplaceRshift(rhs));
-              continue;
-            } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).inplaceRshift(rhs));
-              continue;
-            }
-            throw new SPLInternalException("not found " + name.str());
+            SPLObject lhs = evalStack[--top];
+            evalStack[top++] = lhs.inplaceRshift(rhs);
+          }
+          case INPLACE_TRUE_DIV -> {
+            getOparg();
+            SPLObject rhs = evalStack[--top];
+            SPLObject lhs = evalStack[--top];
+            evalStack[top++] = lhs.inplaceTrueDiv(rhs);
           }
           case INPLACE_U_RSHIFT -> { // U_RSHIFT_ASSIGN
-            int oparg = getOparg();
+            getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = varnames[oparg];
-            SPLObject lhs = locals.get(name);
-            if (lhs != null) {
-              locals.put(name, lhs.inplaceURshift(rhs));
-              continue;
-            } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).inplaceURshift(rhs));
-              continue;
-            }
-            throw new SPLInternalException("not found " + name.str());
+            SPLObject lhs = evalStack[--top];
+            evalStack[top++] = lhs.inplaceURshift(rhs);
           }
           case INPLACE_AND -> { // AND_ASSIGN
-            int oparg = getOparg();
+            getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = varnames[oparg];
-            SPLObject lhs = locals.get(name);
-            if (lhs != null) {
-              locals.put(name, lhs.inplaceAnd(rhs));
-              continue;
-            } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).inplaceAnd(rhs));
-              continue;
-            }
-            throw new SPLInternalException("not found " + name.str());
+            SPLObject lhs = evalStack[--top];
+            evalStack[top++] = lhs.inplaceAnd(rhs);
           }
           case INPLACE_OR -> { // OR_ASSIGN
-            int oparg = getOparg();
+            getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = varnames[oparg];
-            SPLObject lhs = locals.get(name);
-            if (lhs != null) {
-              locals.put(name, lhs.inplaceOr(rhs));
-              continue;
-            } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).inplaceOr(rhs));
-              continue;
-            }
-            throw new SPLInternalException("not found " + name.str());
+            SPLObject lhs = evalStack[--top];
+            evalStack[top++] = lhs.inplaceOr(rhs);
           }
           case INPLACE_XOR -> { // XOR_ASSIGN
-            int oparg = getOparg();
+            getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = varnames[oparg];
-            SPLObject lhs = locals.get(name);
-            if (lhs != null) {
-              locals.put(name, lhs.inplaceXor(rhs));
-              continue;
-            } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).inplaceXor(rhs));
-              continue;
-            }
-            throw new SPLInternalException("not found " + name.str());
+            SPLObject lhs = evalStack[--top];
+            evalStack[top++] = lhs.inplaceXor(rhs);
           }
           case INPLACE_ADD -> { // ADD_ASSIGN
-            int oparg = getOparg();
+            getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = varnames[oparg];
-            SPLObject lhs = locals.get(name);
-            if (lhs != null) {
-              locals.put(name, lhs.inplaceAdd(rhs));
-              continue;
-            } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).inplaceAdd(rhs));
-              continue;
-            }
-            throw new SPLInternalException("not found " + name.str());
+            SPLObject lhs = evalStack[--top];
+            evalStack[top++] = lhs.inplaceAdd(rhs);
           }
           case INPLACE_SUB -> { // SUB_ASSIGN
-            int oparg = getOparg();
+            getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = varnames[oparg];
-            SPLObject lhs = locals.get(name);
-            if (lhs != null) {
-              locals.put(name, lhs.inplaceSub(rhs));
-              continue;
-            } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).inplaceSub(rhs));
-              continue;
-            }
-            throw new SPLInternalException("not found " + name.str());
+            SPLObject lhs = evalStack[--top];
+            evalStack[top++] = lhs.inplaceSub(rhs);
           }
           case INPLACE_MUL -> { // MUL_ASSIGN
-            int oparg = getOparg();
+            getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = varnames[oparg];
-            SPLObject lhs = locals.get(name);
-            if (lhs!= null) {
-              locals.put(name, lhs.inplaceMul(rhs));
-              continue;
-            } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).inplaceMul(rhs));
-              continue;
-            }
-            throw new SPLInternalException("not found " + name.str());
+            SPLObject lhs = evalStack[--top];
+            evalStack[top++] = lhs.inplaceMul(rhs);
           }
           case INPLACE_DIV -> { // DIV_ASSIGN
-            int oparg = getOparg();
+            getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = varnames[oparg];
-            SPLObject lhs = locals.get(name);
-            if (lhs!= null) {
-              locals.put(name, lhs.inplaceDiv(rhs));
-              continue;
-            } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).inplaceDiv(rhs));
-              continue;
-            }
-            throw new SPLInternalException("not found " + name.str());
+            SPLObject lhs = evalStack[--top];
+            evalStack[top++] = lhs.inplaceDiv(rhs);
           }
           case INPLACE_MOD -> { // MOD_ASSIGN
-            int oparg = getOparg();
+            getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = varnames[oparg];
-            SPLObject lhs = locals.get(name);
-            if (lhs!= null) {
-              locals.put(name, lhs.inplaceMod(rhs));
-              continue;
-            } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).inplaceMod(rhs));
-              continue;
-            }
-            throw new SPLInternalException("not found " + name.str());
+            SPLObject lhs = evalStack[--top];
+            evalStack[top++] = lhs.inplaceMod(rhs);
           }
           case INPLACE_POWER -> { // POWER_ASSIGN
-            int oparg = getOparg();
+            getOparg();
             SPLObject rhs = evalStack[--top];
-            SPLObject name = varnames[oparg];
-            SPLObject lhs = locals.get(name);
-            if (lhs!= null) {
-              locals.put(name, lhs.inplacePow(rhs));
-              continue;
-            } else if (globals.containsKey(name)) {
-              globals.put(name, globals.get(name).inplacePow(rhs));
-              continue;
-            }
-            throw new SPLInternalException("not found " + name.str());
+            SPLObject lhs = evalStack[--top];
+            evalStack[top++] = lhs.inplacePow(rhs);
           }
           case LT -> { // LT
             pc++;
@@ -383,7 +293,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             evalStack[top++] = evalStack[--top].not();
           }
           case STORE_LOCAL -> { // STORE_LOCAL
-            int oparg = code[pc++];
+            int oparg = getOparg();
             SPLObject o = evalStack[--top];
             SPLObject key = varnames[oparg];
             locals.put(key, o);
@@ -503,6 +413,10 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
           case RETURN_NONE -> {
             pc++;
             return SPLNoneObject.getInstance();
+          }
+          case DUP -> {
+            SPLObject t = evalStack[top - 1];
+            evalStack[top++] = t;
           }
           default -> {
             throw new SPLInternalException("unknown opcode " + code[--pc]);

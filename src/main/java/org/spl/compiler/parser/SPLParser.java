@@ -4,16 +4,13 @@ import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.exceptions.SPLException;
 import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.AbstractIR;
-import org.spl.compiler.ir.BuiltinNames;
 import org.spl.compiler.ir.IRNode;
+import org.spl.compiler.ir.Op;
 import org.spl.compiler.ir.Scope;
 import org.spl.compiler.ir.binaryop.*;
 import org.spl.compiler.ir.block.ProgramBlock;
 import org.spl.compiler.ir.context.DefaultASTContext;
-import org.spl.compiler.ir.exp.FuncCallExp;
-import org.spl.compiler.ir.exp.LoadAttr;
-import org.spl.compiler.ir.exp.MethodCall;
-import org.spl.compiler.ir.exp.Pop;
+import org.spl.compiler.ir.exp.*;
 import org.spl.compiler.ir.stmt.assignstmt.*;
 import org.spl.compiler.ir.stmt.controlflow.*;
 import org.spl.compiler.ir.stmt.func.FuncDef;
@@ -22,6 +19,7 @@ import org.spl.compiler.ir.stmt.returnstmt.ReturnNone;
 import org.spl.compiler.ir.unaryop.*;
 import org.spl.compiler.ir.vals.*;
 import org.spl.compiler.lexer.Lexer;
+import org.spl.compiler.tree.InsVisitor;
 import org.spl.vm.internal.SPLCodeObjectBuilder;
 import org.spl.vm.internal.objs.SPLCodeObject;
 import org.spl.vm.internal.objs.SPLFuncObject;
@@ -50,20 +48,20 @@ import java.util.List;
  * doWhile      : 'do' block 'while' '(' expression ')'
  * ifStatement  : 'if' '(' expression  ') 'block ('else if' '(' expression  ') block)* ('else' block)*
  * whileStmt    : 'while' '(' expression ')' block
- * assign       : IDENTIFIER '=' expression
- *              | IDENTIFIER '+=' expression
- *              | IDENTIFIER '-=' expression
- *              | IDENTIFIER '*=' expression
- *              | IDENTIFIER '/=' expression
- *              | IDENTIFIER '//=' expression
- *              | IDENTIFIER '**=' expression
- *              | IDENTIFIER '%=' expression
- *              | IDENTIFIER '<<=' expression
- *              | IDENTIFIER '>>=' expression
- *              | IDENTIFIER '>>>=' expression
- *              | IDENTIFIER '&=' expression
- *              | IDENTIFIER '^=' expression
- *              | IDENTIFIER '|=' expression
+ * assign       : atom '=' expression
+ *              | atom '+=' expression
+ *              | atom '-=' expression
+ *              | atom '*=' expression
+ *              | atom '/=' expression
+ *              | atom '//=' expression
+ *              | atom '**=' expression
+ *              | atom '%=' expression
+ *              | atom '<<=' expression
+ *              | atom '>>=' expression
+ *              | atom '>>>=' expression
+ *              | atom '&=' expression
+ *              | atom '^=' expression
+ *              | atom '|=' expression
  * expression   : disjunction 'if' disjunction 'else' expression
  *              | disjunction
  * disjunction  : conjunction ('||' conjunction)+
@@ -98,15 +96,15 @@ import java.util.List;
  *              | power
  * power        : primary
  *              | primary ** factor
- * primary      : atom primary'
- * primary'     : '.' IDENTIFIER primary'*
- *              | '(' args ')' primary'*
+ * primary      : atom
  * atom         : IDENTIFIER (('.' NAME) | ('(' paramList? ')'))*
  *              | 'true'
  *              | 'false'
  *              | 'none'
  *              | string
  *              | number
+ *              | 'break'
+ *              | 'continue'
  *              | '(' expression ')'
  *              | 'def' '(' paramList? ')' block'
  *              | 'def' '(' paramList? ')' '->' expression
@@ -179,6 +177,7 @@ public class SPLParser extends AbstractSyntaxParser {
 
   private IRNode<Instruction> statement() throws SPLSyntaxError {
     try {
+      Lexer.Token token = tokenFlow.peek();
       if (tokenFlow.peek().isIF()) {
         return ifStatement();
       } else if (tokenFlow.peek().isReturn()) {
@@ -193,15 +192,27 @@ public class SPLParser extends AbstractSyntaxParser {
         return doWhileStatement();
       } else if (tokenFlow.peek().isFor()) {
         return forStatement();
-      } else if (tokenFlow.peek().isIDENTIFIER() && tokenFlow.lookAhead().isASSIGN()) {
-        return assignment();
-      } else {
-        // we will perfect this in the future
+      } else if (token.isBreak()) {
+        tokenFlow.next();
+        Break brk = new Break();
+        setSourceCodeInfo(brk, token);
+        return brk;
+      } else if (token.isSemiColon()) {
+        // tokenFlow.next() is prohibited here causing for-statement will consume this token
+        NOP nop = new NOP();
+        setSourceCodeInfo(nop, token);
+        return nop;
+      } else if (token.isContinue()) {
+        tokenFlow.next();
+        Continue cont = new Continue();
+        setSourceCodeInfo(cont, token);
+        return cont;
+      } else if (tokenFlow.peek().isIDENTIFIER()) {
         int cursor = tokenFlow.getCursor();
-        primary();
+        atom();
         if (tokenFlow.peek().isASSIGN()) {
           tokenFlow.setCursor(cursor);
-          return assignment();
+          return assignStatement();
         } else {
           tokenFlow.setCursor(cursor);
           return expression();
@@ -213,7 +224,238 @@ public class SPLParser extends AbstractSyntaxParser {
     return null;
   }
 
-  public IRNode<Instruction> returnStatement() throws SPLSyntaxError {
+  private IRNode<Instruction> assignStatement() throws SPLSyntaxError {
+    IRNode<Instruction> exp = atom();
+    if (exp instanceof Variable lhs) {
+      if (lhs.scope() == Scope.OTHERS) {
+        lhs.setScope(Scope.LOCAL);
+      }
+      Lexer.Token sign = tokenFlow.peek();
+      tokenFlow.next();
+      switch (sign.token) {
+        case ASSIGN -> {
+          context.addSymbol(lhs.getName());
+          context.addVarName(lhs.getName());
+          IRNode<Instruction> rhs = expression();
+          AssignStmt assignStmt = new AssignStmt(lhs, rhs);
+          setSourceCodeInfo(assignStmt, sign);
+          return assignStmt;
+        }
+        case ASSIGN_ADD -> {
+          IRNode<Instruction> rhs = expression();
+          AddAssignStmt addAssignStmt = new AddAssignStmt(lhs, rhs);
+          setSourceCodeInfo(addAssignStmt, sign);
+          return addAssignStmt;
+        }
+        case ASSIGN_TRUE_DIV -> {
+          IRNode<Instruction> rhs = expression();
+          TrueDivAssignStmt trueDivAssignStmt = new TrueDivAssignStmt(lhs, rhs);
+          setSourceCodeInfo(trueDivAssignStmt, sign);
+          return trueDivAssignStmt;
+        }
+        case ASSIGN_SUB -> {
+          IRNode<Instruction> rhs = expression();
+          SubAssignStmt subAssignStmt = new SubAssignStmt(lhs, rhs);
+          setSourceCodeInfo(subAssignStmt, sign);
+          return subAssignStmt;
+        }
+        case ASSIGN_MUL -> {
+          IRNode<Instruction> rhs = expression();
+          MulAssignStmt mulAssignStmt = new MulAssignStmt(lhs, rhs);
+          setSourceCodeInfo(mulAssignStmt, sign);
+          return mulAssignStmt;
+        }
+        case ASSIGN_DIV -> {
+          IRNode<Instruction> rhs = expression();
+          DivAssignStmt divAssignStmt = new DivAssignStmt(lhs, rhs);
+          setSourceCodeInfo(divAssignStmt, sign);
+          return divAssignStmt;
+        }
+        case ASSIGN_POWER -> {
+          IRNode<Instruction> rhs = expression();
+          PowerAssignStmt powerAssignStmt = new PowerAssignStmt(lhs, rhs);
+          setSourceCodeInfo(powerAssignStmt, sign);
+          return powerAssignStmt;
+        }
+        case ASSIGN_MOD -> {
+          IRNode<Instruction> rhs = expression();
+          ModAssignStmt modAssignStmt = new ModAssignStmt(lhs, rhs);
+          setSourceCodeInfo(modAssignStmt, sign);
+          return modAssignStmt;
+        }
+        case ASSIGN_OR -> {
+          IRNode<Instruction> rhs = expression();
+          OrAssignStmt orAssignStmt = new OrAssignStmt(lhs, rhs);
+          setSourceCodeInfo(orAssignStmt, sign);
+          return orAssignStmt;
+        }
+        case ASSIGN_AND -> {
+          IRNode<Instruction> rhs = expression();
+          AndAssignStmt andAssignStmt = new AndAssignStmt(lhs, rhs);
+          setSourceCodeInfo(andAssignStmt, sign);
+          return andAssignStmt;
+        }
+        case ASSIGN_XOR -> {
+          IRNode<Instruction> rhs = expression();
+          XorAssignStmt xorAssignStmt = new XorAssignStmt(lhs, rhs);
+          setSourceCodeInfo(xorAssignStmt, sign);
+          return xorAssignStmt;
+        }
+        case ASSIGN_LSHIFT -> {
+          IRNode<Instruction> rhs = expression();
+          LshiftAssignStmt lshiftAssignStmt = new LshiftAssignStmt(lhs, rhs);
+          setSourceCodeInfo(lshiftAssignStmt, sign);
+          return lshiftAssignStmt;
+        }
+        case ASSIGN_RSHIFT -> {
+          IRNode<Instruction> rhs = expression();
+          RshiftAssignStmt rshiftAssignStmt = new RshiftAssignStmt(lhs, rhs);
+          setSourceCodeInfo(rshiftAssignStmt, sign);
+          return rshiftAssignStmt;
+        }
+        case ASSIGN_U_RSHIFT -> {
+          IRNode<Instruction> rhs = expression();
+          ULshiftAssignStmt uLshiftAssignStmt = new ULshiftAssignStmt(lhs, rhs);
+          setSourceCodeInfo(uLshiftAssignStmt, sign);
+          return uLshiftAssignStmt;
+        }
+      }
+    } else if (exp instanceof LoadAttr lhs) {
+      Lexer.Token sign = tokenFlow.peek();
+      tokenFlow.next();
+      switch (sign.token) {
+        case ASSIGN -> {
+          IRNode<Instruction> rhs = expression();
+          // codeGen order: rhs lhs
+          StoreAttr storeAttr = new StoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName());
+          setSourceCodeInfo(storeAttr, sign);
+          return storeAttr;
+        }
+        case ASSIGN_ADD -> {
+          IRNode<Instruction> rhs = expression();
+          IRNode<Instruction> o = lhs.getLhs();
+          Dup newLhs = new Dup(o);
+          lhs.setLhs(newLhs);
+          InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_ADD);
+          setSourceCodeInfo(store, sign);
+          return store;
+        }
+        case ASSIGN_SUB -> {
+          IRNode<Instruction> rhs = expression();
+          IRNode<Instruction> o = lhs.getLhs();
+          Dup newLhs = new Dup(o);
+          lhs.setLhs(newLhs);
+          InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_SUB);
+          setSourceCodeInfo(store, sign);
+          return store;
+        }
+        case ASSIGN_MUL -> {
+          IRNode<Instruction> rhs = expression();
+          IRNode<Instruction> o = lhs.getLhs();
+          Dup newLhs = new Dup(o);
+          lhs.setLhs(newLhs);
+          InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_MUL);
+          setSourceCodeInfo(store, sign);
+          return store;
+        }
+        case ASSIGN_DIV -> {
+          IRNode<Instruction> rhs = expression();
+          IRNode<Instruction> o = lhs.getLhs();
+          Dup newLhs = new Dup(o);
+          lhs.setLhs(newLhs);
+          InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_DIV);
+          setSourceCodeInfo(store, sign);
+          return store;
+        }
+        case ASSIGN_TRUE_DIV -> {
+          IRNode<Instruction> rhs = expression();
+          IRNode<Instruction> o = lhs.getLhs();
+          Dup newLhs = new Dup(o);
+          lhs.setLhs(newLhs);
+          InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_TRUE_DIV);
+          setSourceCodeInfo(store, sign);
+          return store;
+        }
+        case ASSIGN_POWER -> {
+          IRNode<Instruction> rhs = expression();
+          IRNode<Instruction> o = lhs.getLhs();
+          Dup newLhs = new Dup(o);
+          lhs.setLhs(newLhs);
+          InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_POWER);
+          setSourceCodeInfo(store, sign);
+          return store;
+        }
+        case ASSIGN_MOD -> {
+          IRNode<Instruction> rhs = expression();
+          IRNode<Instruction> o = lhs.getLhs();
+          Dup newLhs = new Dup(o);
+          lhs.setLhs(newLhs);
+          InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_MOD);
+          setSourceCodeInfo(store, sign);
+          return store;
+        }
+        case ASSIGN_OR -> {
+          IRNode<Instruction> rhs = expression();
+          IRNode<Instruction> o = lhs.getLhs();
+          Dup newLhs = new Dup(o);
+          lhs.setLhs(newLhs);
+          InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_OR);
+          setSourceCodeInfo(store, sign);
+          return store;
+        }
+        case ASSIGN_AND -> {
+          IRNode<Instruction> rhs = expression();
+          IRNode<Instruction> o = lhs.getLhs();
+          Dup newLhs = new Dup(o);
+          lhs.setLhs(newLhs);
+          InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_AND);
+          setSourceCodeInfo(store, sign);
+          return store;
+        }
+        case ASSIGN_XOR -> {
+          IRNode<Instruction> rhs = expression();
+          IRNode<Instruction> o = lhs.getLhs();
+          Dup newLhs = new Dup(o);
+          lhs.setLhs(newLhs);
+          InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_XOR);
+          setSourceCodeInfo(store, sign);
+          return store;
+        }
+        case ASSIGN_LSHIFT -> {
+          IRNode<Instruction> rhs = expression();
+          IRNode<Instruction> o = lhs.getLhs();
+          Dup newLhs = new Dup(o);
+          lhs.setLhs(newLhs);
+          InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_LSHIFT);
+          setSourceCodeInfo(store, sign);
+          return store;
+        }
+        case ASSIGN_RSHIFT -> {
+          IRNode<Instruction> rhs = expression();
+          IRNode<Instruction> o = lhs.getLhs();
+          Dup newLhs = new Dup(o);
+          lhs.setLhs(newLhs);
+          InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_RSHIFT);
+          setSourceCodeInfo(store, sign);
+          return store;
+        }
+        case ASSIGN_U_RSHIFT -> {
+          IRNode<Instruction> rhs = expression();
+          IRNode<Instruction> o = lhs.getLhs();
+          Dup newLhs = new Dup(o);
+          lhs.setLhs(newLhs);
+          InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_U_RSHIFT);
+          setSourceCodeInfo(store, sign);
+          return store;
+        }
+      }
+    } else {
+      throwSyntaxError("Illegal statement, expected assignment or expression", tokenFlow.peek());
+    }
+    return null;
+  }
+
+  private IRNode<Instruction> returnStatement() throws SPLSyntaxError {
     tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RETURN, "require 'return' instead of \"" + tokenFlow.peek().getValueAsString());
     Lexer.Token token = tokenFlow.peek();
     tokenFlow.next();
@@ -748,29 +990,14 @@ public class SPLParser extends AbstractSyntaxParser {
       BoolLiteral boolLiteral = new BoolLiteral(idx);
       setSourceCodeInfo(boolLiteral, token);
       return boolLiteral;
-    }
-//    else if (token.isIDENTIFIER() &&
-//        tokenFlow.lookAhead().token == Lexer.TOKEN_TYPE.LEFT_PARENTHESES) {
-//      context.addVarName(token.getIdentifier());
-//      return functionCall();
-//    } else if (token.isIDENTIFIER() &&
-//        tokenFlow.lookAhead(1).token == Lexer.TOKEN_TYPE.DOT &&
-//        tokenFlow.lookAhead(2).token == Lexer.TOKEN_TYPE.IDENTIFIER &&
-//        tokenFlow.lookAhead(3).token == Lexer.TOKEN_TYPE.LEFT_PARENTHESES) {
-//      if (context.containSymbol(token.getIdentifier()) ||
-//          BuiltinNames.contain(token.getIdentifier())) {
-//        context.addVarName(token.getIdentifier());
-//        return methodCall();
-//      }
-//    }
-    else if (token.isIDENTIFIER()) {
+    } else if (token.isIDENTIFIER()) {
       tokenFlow.next();
       context.addVarName(token.getIdentifier());
       IRNode<Instruction> ret;
       Scope scope;
       if (context.isGlobal(token.getIdentifier())) {
         scope = Scope.GLOBAL;
-      } else if (context.containSymbol(token.getIdentifier())){
+      } else if (context.containSymbol(token.getIdentifier())) {
         scope = Scope.LOCAL;
       } else {
         scope = Scope.OTHERS;
@@ -785,7 +1012,11 @@ public class SPLParser extends AbstractSyntaxParser {
           String name = tokenFlow.peek().getIdentifier();
           int idx = context.addVarName(name);
           context.addSymbol(name);
-          ret = new LoadAttr(ret, idx);
+          if (tokenFlow.lookAhead().isLEFT_PARENTHESES()) {
+            ret = new LoadMethod(ret, idx, name);
+          } else {
+            ret = new LoadAttr(ret, idx, name);
+          }
           tokenFlow.next();
         } else {
           List<IRNode<Instruction>> args = new ArrayList<>();
@@ -859,9 +1090,10 @@ public class SPLParser extends AbstractSyntaxParser {
     int idx = context.getConstantObjectIndex(func);
     FuncDef funcDef = new FuncDef(idx, func.getName());
     setSourceCodeInfo(funcDef, tokenFlow.lookBack());
-//    InsVisitor insVisitor = new InsVisitor(auxContex.getVarnames(), auxContex.getConstantMap());
-//    auxContex.getInstructions().forEach(insVisitor::visit);
-//    System.out.println(insVisitor);
+    InsVisitor insVisitor = new InsVisitor(auxContex.getVarnames(), auxContex.getConstantMap());
+    auxContex.getInstructions().forEach(insVisitor::visit);
+    System.out.println(insVisitor);
+    System.out.println(codeObject);
     return funcDef;
   }
 

@@ -9,45 +9,45 @@ import org.spl.compiler.ir.context.ASTContext;
 
 import java.util.List;
 
-public class StoreAttr extends AbstractIR<Instruction> {
-  protected final IRNode<Instruction> lhs;
-  protected final IRNode<Instruction> rhs;
-  protected final int attrIndex;
-  protected final String name;
-  protected List<IRNode<Instruction>> children;
+public class LoadMethod extends AbstractIR<Instruction> {
 
-  public StoreAttr(IRNode<Instruction> lhs, IRNode<Instruction> rhs, int attrIndex, String name) {
+  private final IRNode<Instruction> lhs;
+  private final int attrIndex;
+  private List<IRNode<Instruction>> children;
+  private final String name;
+
+  public LoadMethod(IRNode<Instruction> lhs, int attrIndex, String name) {
     this.lhs = lhs;
-    this.rhs = rhs;
     this.attrIndex = attrIndex;
     this.name = name;
   }
 
   @Override
   public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
-    context.addInstruction(new Instruction(OpCode.STORE_ATTR, attrIndex), getLineNo(), getColumnNo(), getLen());
+    context.addInstruction(new Instruction(OpCode.LOAD_METHOD, attrIndex), getLineNo(), getColumnNo(), getLen());
   }
 
   @Override
   public List<IRNode<Instruction>> getChildren() {
     if (children == null) {
-      children = List.of(rhs, lhs);
+      children = List.of(lhs);
     }
     return children;
   }
 
   @Override
   public boolean isStatement() {
-   return true;
+    return true;
   }
 
   @Override
   public String toString() {
-    return lhs.toString() + "." + name + " = " + rhs.toString();
+    return lhs.toString() + "." + name;
   }
 
   @Override
   public void postVisiting(ASTContext<Instruction> context) {
-    context.decreaseStackSize(2);
+    context.increaseStackSize();
   }
 }
+

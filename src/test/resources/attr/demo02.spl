@@ -1,0 +1,15 @@
+
+
+
+a.name = 100
+a.name += 100
+a.name -= 100
+a.name *= 100
+a.name /= 100
+a.name %= 100
+a.name **= 100
+a.name <<= 100
+a.name >>= 100
+a.name &= 100
+a.name |= 100
+a.name ^= 100

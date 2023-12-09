@@ -194,4 +194,24 @@ public class TestCompiler {
     Dissembler dissembler = new Dissembler(code);
     dissembler.prettyPrint();
   }
+
+  @Test
+  public void testStoreAttr() throws SPLInternalException, SPLSyntaxError, IOException {
+    Evaluation.init();
+    SPLParser parser = new SPLParser(getResource("attr/demo02.spl"));
+    IRNode<Instruction> ir = parser.buildAST();
+    DefaultASTContext<Instruction> context = parser.getContext();
+    context.generateByteCodes(ir);
+    SPLCodeObject code = SPLCodeObjectBuilder.build(context);
+    Dissembler dissembler = new Dissembler(code);
+    dissembler.prettyPrint();
+    System.out.println(Arrays.toString(code.getConstants()));
+    System.out.println(Arrays.toString(code.getVarnames()));
+  }
+
+  @Test
+  public void testAssign() throws SPLInternalException, SPLSyntaxError, IOException {
+    DefaultEval eval = run("attr/demo03.spl");
+    System.out.println(Arrays.toString(eval.getConstants()));
+  }
 }

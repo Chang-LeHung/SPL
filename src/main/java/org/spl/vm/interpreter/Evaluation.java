@@ -44,6 +44,7 @@ public interface Evaluation {
     opcode[OpCode.INPLACE_POWER.val] = OpCode.INPLACE_POWER;
     opcode[OpCode.INPLACE_AND.val] = OpCode.INPLACE_AND;
     opcode[OpCode.INPLACE_XOR.val] = OpCode.INPLACE_XOR;
+    opcode[OpCode.INPLACE_TRUE_DIV.val] = OpCode.INPLACE_TRUE_DIV;
     opcode[OpCode.XOR.val] = OpCode.XOR;
     opcode[OpCode.INPLACE_LSHIFT.val] = OpCode.INPLACE_LSHIFT;
     opcode[OpCode.INPLACE_RSHIFT.val] = OpCode.INPLACE_RSHIFT;
@@ -75,6 +76,7 @@ public interface Evaluation {
     opcode[OpCode.STORE_ATTR.val] = OpCode.STORE_ATTR;
     opcode[OpCode.LOAD.val] = OpCode.LOAD;
     opcode[OpCode.LOAD_NAME.val] = OpCode.LOAD_NAME;
+    opcode[OpCode.DUP.val] = OpCode.DUP;
   }
 
   SPLObject evalFrame() throws SPLInternalException;

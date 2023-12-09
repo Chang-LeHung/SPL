@@ -11,13 +11,15 @@ import java.util.List;
 
 public class LoadAttr extends AbstractIR<Instruction> {
 
-  private final IRNode<Instruction> lhs;
+  private IRNode<Instruction> lhs;
   private final int attrIndex;
   private List<IRNode<Instruction>> children;
+  private final String name;
 
-  public LoadAttr(IRNode<Instruction> lhs, int attrIndex) {
+  public LoadAttr(IRNode<Instruction> lhs, int attrIndex, String name) {
     this.lhs = lhs;
     this.attrIndex = attrIndex;
+    this.name = name;
   }
 
   @Override
@@ -37,4 +39,26 @@ public class LoadAttr extends AbstractIR<Instruction> {
   public boolean isStatement() {
     return true;
   }
+
+  @Override
+  public String toString() {
+    return lhs.toString() + "." + name;
+  }
+
+  public IRNode<Instruction> getLhs() {
+    return lhs;
+  }
+
+  public void setLhs(IRNode<Instruction> lhs) {
+    this.lhs = lhs;
+  }
+
+  public int getAttrIndex() {
+    return attrIndex;
+  }
+
+  public String getName() {
+    return name;
+  }
+
 }

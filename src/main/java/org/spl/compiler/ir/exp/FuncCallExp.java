@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class FuncCallExp extends AbstractIR<Instruction> {
   private final List<IRNode<Instruction>> args;
   private List<IRNode<Instruction>> children;
-  private IRNode<Instruction> lhs;
+  private final IRNode<Instruction> lhs;
 
   public FuncCallExp(IRNode<Instruction> lhs, List<IRNode<Instruction>> args) {
     this.args = args;
@@ -35,7 +35,7 @@ public class FuncCallExp extends AbstractIR<Instruction> {
 
   @Override
   public String toString() {
-    return ".(" +
+    return lhs.toString() + "(" +
         args.stream().map(Object::toString).collect(Collectors.joining(", ")) +
         ")";
   }
