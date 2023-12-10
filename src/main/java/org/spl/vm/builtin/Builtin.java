@@ -1,10 +1,23 @@
 package org.spl.vm.builtin;
 
+import org.spl.compiler.bytecode.Instruction;
+import org.spl.compiler.exceptions.SPLSyntaxError;
+import org.spl.compiler.ir.IRNode;
+import org.spl.compiler.lexer.Lexer;
+import org.spl.compiler.parser.SPLParser;
+import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
+import org.spl.vm.exceptions.splexceptions.SPLRuntimeException;
+import org.spl.vm.internal.SPLCodeObjectBuilder;
+import org.spl.vm.internal.objs.SPLCodeObject;
+import org.spl.vm.internal.objs.SPLFuncObject;
+import org.spl.vm.internal.utils.Dissembler;
 import org.spl.vm.objects.*;
 
+import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Builtin {
@@ -12,6 +25,7 @@ public class Builtin {
   static {
     dict = new HashMap<>();
     register("print");
+    register("parse");
     register("max");
     register("min");
     register("abs");
@@ -29,6 +43,7 @@ public class Builtin {
     register("log10");
     register("exp");
     register("exit");
+    register("dis");
   }
 
   private static void register(String name) {
@@ -271,5 +286,32 @@ public class Builtin {
       System.exit(0);
     }
     throw new SPLInternalException("exit() only takes 0 or 1 int argument");
+  }
+
+  public static SPLObject dis(SPLObject... args) throws SPLInternalException, SPLSyntaxError, IOException {
+    if (args.length == 1 && args[0] instanceof SPLFuncObject f) {
+      Dissembler dissembler = new Dissembler(f.getCodeObject());
+      dissembler.prettyPrint();
+      return dissembler;
+    } else if (args.length == 1 && args[0] instanceof SPLStringObject s) {
+      SPLParser parser = new SPLParser("dis-content", s.getVal());
+      IRNode<Instruction> ir = parser.buildAST();
+      parser.getContext().generateByteCodes(ir);
+      SPLCodeObject code = SPLCodeObjectBuilder.build(parser.getContext());
+      Dissembler dissembler = new Dissembler(code);
+      dissembler.prettyPrint();
+      return dissembler;
+    }
+    return SPLErrorUtils.splErrorFormat(new SPLRuntimeException("dis() only takes one function argument"));
+  }
+
+  public static SPLObject parse(SPLObject... args) throws SPLSyntaxError, IOException, SPLInternalException {
+    if (args.length == 1 && args[0] instanceof SPLStringObject s) {
+      SPLParser parser = new SPLParser("anonymous", s.getVal());
+      List<Lexer.Token> tokens = parser.getTokens();
+      tokens.forEach(System.out::println);
+      return SPLNoneObject.getInstance();
+    }
+    return SPLErrorUtils.splErrorFormat(new SPLRuntimeException("parse() only takes one string argument"));
   }
 }
