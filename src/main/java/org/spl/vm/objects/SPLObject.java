@@ -1,5 +1,6 @@
 package org.spl.vm.objects;
 
+import org.spl.vm.annotations.SPLExportField;
 import org.spl.vm.annotations.SPLExportMethod;
 import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
@@ -11,6 +12,7 @@ import org.spl.vm.internal.objs.SPLFuncObject;
 import org.spl.vm.internal.objs.SPLMethodWrapper;
 import org.spl.vm.types.SPLCommonType;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -173,8 +175,18 @@ public class SPLObject implements SPLInterface {
   public SPLObject __getAttr__(SPLObject name) throws SPLInternalException {
     if (attrs != null && attrs.containsKey(name)) {
       return attrs.get(name);
+    } else {
+      var sn = name.toString();
+      try {
+        Field filed = getClass().getDeclaredField(sn);
+        filed.setAccessible(true);
+        if (filed.isAnnotationPresent(SPLExportField.class) && SPLObject.class.isAssignableFrom(filed.getType())) {
+          return (SPLObject) filed.get(this);
+        }
+      } catch (NoSuchFieldException | IllegalAccessException gnore) {
+      }
     }
-    return SPLErrorUtils.splErrorFormat(new SPLAttributeError("Not found a attribute named '" + name + "'"));
+    return __getMethod__(name);
   }
 
   @Override
@@ -218,7 +230,7 @@ public class SPLObject implements SPLInterface {
       }
     } catch (NoSuchMethodException ignore) {
     }
-    return SPLErrorUtils.splErrorFormat(new SPLRuntimeException("Not found a method named '" + name + "'"));
+    return SPLErrorUtils.splErrorFormat(new SPLRuntimeException("Not found a method or attribute named '" + name + "'"));
   }
 
   @SPLExportMethod

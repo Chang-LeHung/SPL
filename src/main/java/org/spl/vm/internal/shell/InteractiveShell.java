@@ -12,6 +12,7 @@ import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.block.ProgramBlock;
 import org.spl.compiler.ir.context.DefaultASTContext;
+import org.spl.compiler.ir.exp.LoadAttr;
 import org.spl.compiler.ir.exp.Pop;
 import org.spl.compiler.ir.stmt.returnstmt.Return;
 import org.spl.compiler.parser.SPLParser;
@@ -87,6 +88,8 @@ public class InteractiveShell {
       List<IRNode<Instruction>> children = pb.getChildren();
       if (pb.getLast() instanceof Pop) {
         children.remove(children.size() - 1);
+        children.add(new Return());
+      } else if (pb.getLast() instanceof LoadAttr) {
         children.add(new Return());
       }
     }

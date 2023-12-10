@@ -2,7 +2,7 @@ package org.spl.vm.annotations;
 
 import java.lang.annotation.*;
 
-@Target(ElementType.METHOD)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited

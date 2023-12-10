@@ -30,7 +30,20 @@ public class SPLCallObject extends SPLObject {
         return (SPLObject) method.invoke(self, (Object) args);
       }
     } catch (InvocationTargetException | IllegalAccessException e) {
-      return SPLErrorUtils.splErrorFormat(new SPLException(e.getMessage()));
+      return SPLErrorUtils.splErrorFormat(new SPLException(e.getCause().getMessage()));
     }
+  }
+
+  @Override
+  public String toString() {
+    if (isStatic) {
+      return "NativeMethod-Static{" + method.getName() + "}";
+    }
+    return "NativeMethod{" + method.getName() + "}, Self is \"" + self.__str__() + "\"";
+  }
+
+  @Override
+  public SPLObject __str__() {
+    return new SPLStringObject(toString());
   }
 }

@@ -3,6 +3,7 @@ package org.spl.vm.internal.utils;
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
 import org.spl.compiler.tree.InsVisitor;
+import org.spl.vm.annotations.SPLExportField;
 import org.spl.vm.annotations.SPLExportMethod;
 import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
@@ -13,12 +14,14 @@ import org.spl.vm.internal.typs.DisType;
 import org.spl.vm.interpreter.Evaluation;
 import org.spl.vm.objects.SPLNoneObject;
 import org.spl.vm.objects.SPLObject;
+import org.spl.vm.objects.SPLStringObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Dissembler extends SPLObject {
 
+  @SPLExportField
   private final SPLCodeObject codeObject;
   private final byte[] code;
   private String content;
@@ -324,5 +327,20 @@ public class Dissembler extends SPLObject {
     } else {
       return code[pc++];
     }
+  }
+
+  @Override
+  public SPLObject __str__() {
+    return new SPLStringObject(toString());
+  }
+
+  @SPLExportMethod
+  public SPLObject code (SPLObject... args) {
+    return codeObject;
+  }
+
+  @Override
+  public String toString() {
+    return "Dissembler@0x" + System.identityHashCode(this);
   }
 }

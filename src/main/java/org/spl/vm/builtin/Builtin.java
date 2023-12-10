@@ -5,6 +5,7 @@ import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.block.ProgramBlock;
 import org.spl.compiler.ir.context.DefaultASTContext;
+import org.spl.compiler.ir.exp.LoadAttr;
 import org.spl.compiler.ir.exp.Pop;
 import org.spl.compiler.ir.stmt.returnstmt.Return;
 import org.spl.compiler.lexer.Lexer;
@@ -330,7 +331,7 @@ public class Builtin {
 
 
   @SPLExportMethod
-  private static SPLObject eval(SPLObject... args) throws SPLSyntaxError, IOException, SPLInternalException {
+  public static SPLObject eval(SPLObject... args) throws SPLSyntaxError, IOException, SPLInternalException {
     if (args.length == 1 && args[0] instanceof SPLStringObject s) {
       String line = s.getVal();
       SPLCodeObject code = compile(line);
@@ -347,6 +348,8 @@ public class Builtin {
       List<IRNode<Instruction>> children = pb.getChildren();
       if (pb.getLast() instanceof Pop) {
         children.remove(children.size() - 1);
+        children.add(new Return());
+      } else if (pb.getLast() instanceof LoadAttr) {
         children.add(new Return());
       }
     }
