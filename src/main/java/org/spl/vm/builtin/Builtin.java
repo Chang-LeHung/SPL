@@ -33,6 +33,7 @@ public class Builtin {
     dict = new HashMap<>();
     register("print");
     register("parse");
+    register("eval");
     register("max");
     register("min");
     register("abs");
