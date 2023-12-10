@@ -18,15 +18,22 @@ public class Return extends AbstractIR<Instruction> {
     this.expr = expr;
   }
 
+  public Return() {
+    expr = null;
+  }
+
   @Override
   public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
-    context.add(new Instruction(OpCode.RETURN), this.getLineNo(), this.getColumnNo(), 0);
+    context.add(new Instruction(OpCode.RETURN), this.getLineNo(), this.getColumnNo(), getLen());
   }
 
   @Override
   public List<IRNode<Instruction>> getChildren() {
     if (children == null) {
-      children = List.of(expr);
+      if (expr != null)
+        children = List.of(expr);
+      else
+        children = List.of();
     }
     return children;
   }
