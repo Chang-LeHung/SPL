@@ -3,6 +3,7 @@ package org.spl.vm.objects;
 import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.exceptions.splexceptions.SPLTypeError;
+import org.spl.vm.types.SPLLongType;
 import org.spl.vm.types.SPLObjectType;
 
 public class SPLLongObject extends SPLObject {
@@ -18,7 +19,7 @@ public class SPLLongObject extends SPLObject {
   private final long val;
 
   private SPLLongObject(long val) {
-    super(SPLObjectType.getInstance());
+    super(SPLLongType.getInstance());
     this.val = val;
   }
 

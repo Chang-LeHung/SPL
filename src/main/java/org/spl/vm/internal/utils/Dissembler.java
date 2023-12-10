@@ -3,14 +3,21 @@ package org.spl.vm.internal.utils;
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
 import org.spl.compiler.tree.InsVisitor;
+import org.spl.vm.annotations.SPLExportMethod;
+import org.spl.vm.exceptions.SPLErrorUtils;
+import org.spl.vm.exceptions.jexceptions.SPLInternalException;
+import org.spl.vm.exceptions.splexceptions.SPLRuntimeException;
 import org.spl.vm.internal.objs.SPLCodeObject;
 import org.spl.vm.internal.objs.SPLFuncObject;
+import org.spl.vm.internal.typs.DisType;
 import org.spl.vm.interpreter.Evaluation;
+import org.spl.vm.objects.SPLNoneObject;
+import org.spl.vm.objects.SPLObject;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Dissembler {
+public class Dissembler extends SPLObject {
 
   private final SPLCodeObject codeObject;
   private String content;
@@ -20,12 +27,14 @@ public class Dissembler {
   private int pc;
 
   public Dissembler(SPLCodeObject codeObject) {
+    super(DisType.getInstance());
     this.codeObject = codeObject;
     code = codeObject.getCode();
     pc = 0;
   }
 
   public Dissembler(SPLFuncObject funcObject) {
+    super(DisType.getInstance());
     this.codeObject = funcObject.getCodeObject();
     code = codeObject.getCode();
     pc = 0;
@@ -281,6 +290,15 @@ public class Dissembler {
       }
       instructions.add(ins);
     }
+  }
+
+  @SPLExportMethod
+  public SPLObject dis(SPLObject... args) throws SPLInternalException {
+    if (args.length == 0) {
+      prettyPrint();
+      return SPLNoneObject.getInstance();
+    }
+    return SPLErrorUtils.splErrorFormat(new SPLRuntimeException("dis takes no arguments"));
   }
 
   public void prettyPrint() {

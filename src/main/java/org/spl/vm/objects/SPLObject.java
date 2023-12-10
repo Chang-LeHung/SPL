@@ -6,7 +6,9 @@ import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.exceptions.splexceptions.SPLAttributeError;
 import org.spl.vm.exceptions.splexceptions.SPLNotImplemented;
 import org.spl.vm.exceptions.splexceptions.SPLRuntimeException;
+import org.spl.vm.exceptions.splexceptions.SPLTypeError;
 import org.spl.vm.internal.objs.SPLFuncObject;
+import org.spl.vm.internal.objs.SPLMethodWrapper;
 import org.spl.vm.types.SPLCommonType;
 
 import java.lang.reflect.Method;
@@ -16,7 +18,7 @@ import java.util.Map;
 public class SPLObject implements SPLInterface {
 
   protected final SPLCommonType type;
-  protected Map<SPLObject, Method> methods;
+  protected Map<SPLObject, Object> methods;
   protected Map<SPLObject, SPLObject> attrs;
 
   public SPLObject(SPLCommonType type) {
@@ -198,8 +200,12 @@ public class SPLObject implements SPLInterface {
       }
     }
     if (methods != null && methods.containsKey(name)) {
-      Method method = methods.get(name);
-      return new SPLCallObject(method, this, false);
+      Object method = methods.get(name);
+      if (method instanceof Method m) {
+        return new SPLCallObject(m, this, false);
+      } else if (method instanceof SPLFuncObject func){
+        return new SPLMethodWrapper(func, this);
+      }
     }
     try {
       Method method = getClass().getMethod(name.toString(), SPLObject[].class);
@@ -213,6 +219,18 @@ public class SPLObject implements SPLInterface {
     } catch (NoSuchMethodException ignore) {
     }
     return SPLErrorUtils.splErrorFormat(new SPLRuntimeException("Not found a method named '" + name + "'"));
+  }
+
+  @SPLExportMethod
+  public SPLObject bind(SPLObject... args) throws SPLInternalException {
+    if (args.length == 2 && args[0] instanceof SPLStringObject name && args[1] instanceof SPLFuncObject func) {
+      if (methods == null) {
+        methods = new HashMap<>();
+      }
+      methods.put(name,  func);
+      return SPLNoneObject.getInstance();
+    }
+    return SPLErrorUtils.splErrorFormat(new SPLTypeError("Invalid arguments for bind"));
   }
 
 }

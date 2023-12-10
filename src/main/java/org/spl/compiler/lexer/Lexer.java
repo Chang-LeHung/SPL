@@ -2,6 +2,9 @@ package org.spl.compiler.lexer;
 
 import org.spl.compiler.exceptions.SPLException;
 import org.spl.compiler.exceptions.SPLSyntaxError;
+import org.spl.vm.objects.SPLObject;
+import org.spl.vm.objects.SPLStringObject;
+import org.spl.vm.types.SPLCommonType;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -144,7 +147,7 @@ public class Lexer {
           builder.delete(0, builder.length());
         }
         case NEWLINE -> {
-          Token token = new Token(TOKEN_TYPE.NEWLINE, "\n");
+          Token token = new Token(TOKEN_TYPE.NEWLINE, "\\n");
           tokens.add(token);
           injectTokensAndClearBuilder(token, builder);
           updateLineAndColumn();
@@ -555,7 +558,23 @@ public class Lexer {
     ASSIGN, ASSIGN_TRUE_DIV, EQ, LT, GT, GE, LE, NE, AND, CONDITIONAL_AND, OR, CONDITIONAL_OR, POWER, XOR, NOT, INVERT, CONDITIONAL_NOT, ASSIGN_ADD, ARROW, ASSIGN_SUB, ASSIGN_MUL, ASSIGN_DIV, ASSIGN_POWER, ASSIGN_MOD, ASSIGN_INVERT, ASSIGN_LSHIFT, ASSIGN_RSHIFT, ASSIGN_U_RSHIFT, ASSIGN_AND, ASSIGN_OR, ASSIGN_XOR, IF, ELSE, DO, WHILE, FOR, BREAK, CONTINUE, RETURN, DOT, LBRACE, RBRACE, IN, CLASS, DEF, GLOBAL, NONE,
   }
 
-  public static class Token {
+  public static class TokenType extends SPLCommonType {
+
+    private TokenType() {
+      super(null, "token", Token.class);
+    }
+
+    private static class SelfHolder {
+      public static final TokenType INSTANCE = new TokenType();
+
+    }
+
+    public static TokenType getInstance() {
+      return SelfHolder.INSTANCE;
+    }
+  }
+
+  public static class Token extends SPLObject {
     public TOKEN_TYPE token;
     public Object value;
     private int lineNo;
@@ -564,6 +583,7 @@ public class Lexer {
     private int length;
 
     public Token(TOKEN_TYPE token, Object value) {
+      super(TokenType.getInstance());
       this.token = token;
       this.value = value;
       this.length = String.valueOf(value).length();
@@ -661,6 +681,7 @@ public class Lexer {
     public boolean isColon() {
       return token == TOKEN_TYPE.COLON;
     }
+
     public String getIdentifier() {
       return (String) (value);
     }
@@ -974,6 +995,11 @@ public class Lexer {
 
     public String toString() {
       return "Token{" + "token:" + token + ";" + "value:" + value + ";" + "Line:" + lineNo + ";" + "Column:" + columnNo + '}';
+    }
+
+    @Override
+    public SPLObject __str__() {
+      return new SPLStringObject(toString());
     }
   }
 }

@@ -301,7 +301,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               evalStack[top++] = locals.get(varnames[oparg]);
               continue;
             }
-            throw new SPLInternalException("LOAD_LOCAL failed, " + varnames[oparg].__str__() + " is not defined");
+            throw new SPLInternalException("Instruction LOAD_LOCAL failed, variable \"" + varnames[oparg].__str__() + "\" is not defined");
           }
           case STORE_GLOBAL -> { // STORE_GLOBAL
             int oparg = code[pc++];
@@ -331,7 +331,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
                 continue;
               }
             }
-            throw new SPLInternalException("LOAD_NAME failed, " + varnames[oparg].__str__() + " is not defined");
+            throw new SPLInternalException("Instruction LOAD_NAME failed, variable \"" + varnames[oparg].__str__() + "\" is not defined");
           }
           case LOAD_METHOD -> { // LOAD_METHOD
             int arg = getOparg();
