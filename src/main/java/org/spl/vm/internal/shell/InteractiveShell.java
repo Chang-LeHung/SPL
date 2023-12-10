@@ -173,10 +173,7 @@ public class InteractiveShell {
         String line = builder.toString();
         if (line.length() == 0)
           continue;
-        else if (locals.containsKey(new SPLStringObject(line))) {
-          System.out.println(locals.get(new SPLStringObject(line)).__str__());
-          continue;
-        } else if (newLineCount(line) == 1) {
+        else if (newLineCount(line) == 1) {
           try {
             String command = line.trim();
             Process process = Runtime.getRuntime().exec(command);
