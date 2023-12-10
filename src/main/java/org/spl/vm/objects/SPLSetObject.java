@@ -151,4 +151,9 @@ public class SPLSetObject extends SPLObject {
     }
     return SPLErrorUtils.splErrorFormat(new SPLTypeError("Cannot perform '|' on " + rhs.getType() + " and a SPLSetObject"));
   }
+
+  @Override
+  public SPLObject __getIterator__() throws SPLInternalException {
+    return new SPLCommonIterator(set.stream().toList());
+  }
 }

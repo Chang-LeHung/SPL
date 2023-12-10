@@ -2,7 +2,9 @@ package org.spl.vm.objects;
 
 import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
+import org.spl.vm.exceptions.splexceptions.SPLAttributeError;
 import org.spl.vm.exceptions.splexceptions.SPLTypeError;
+import org.spl.vm.types.SPLCommonType;
 import org.spl.vm.types.SPLDictType;
 
 import java.util.HashMap;
@@ -132,5 +134,57 @@ public class SPLDictObject extends SPLObject {
     builder.delete(builder.length() - 2, builder.length());
     builder.append("}");
     return new SPLStringObject(builder.toString());
+  }
+
+  @Override
+  public SPLObject __getIterator__() throws SPLInternalException {
+    return new SPLCommonIterator(
+        dict.entrySet().stream()
+            .map(x -> new SPLPair(x.getKey(), x.getValue()))
+            .toList()
+    );
+  }
+
+  public static class SPLPair extends SPLObject {
+
+    private final SPLObject key;
+    private final SPLObject value;
+
+    public SPLPair(SPLObject key, SPLObject val) {
+      super(SPLPairType.getInstance());
+      this.key = key;
+      this.value = val;
+    }
+
+    @Override
+    public SPLObject __getAttr__(SPLObject name) throws SPLInternalException {
+      if (name instanceof SPLStringObject s) {
+        if (s.getVal().equals("key")) {
+          return key;
+        }
+        if (s.getVal().equals("value")) {
+          return value;
+        }
+        if (s.getVal().equals("val")) {
+          return value;
+        }
+      }
+      return SPLErrorUtils.splErrorFormat(new SPLAttributeError("Attribute " + name + " not found in " + getType()));
+    }
+  }
+
+  public static class SPLPairType extends SPLCommonType {
+
+    private SPLPairType() {
+      super(null, "Key", SPLPair.class);
+    }
+
+    public static class SelfHolder {
+      public static final SPLPairType INSTANCE = new SPLPairType();
+    }
+
+    public static SPLPairType getInstance() {
+      return SelfHolder.INSTANCE;
+    }
   }
 }

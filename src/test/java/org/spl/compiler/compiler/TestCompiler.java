@@ -278,4 +278,14 @@ public class TestCompiler {
   public void testConciseFor() throws SPLInternalException, SPLSyntaxError, IOException {
     run("controlflow/conciseFor.spl");
   }
+
+  @Test
+  public void testIterSet() throws SPLInternalException, SPLSyntaxError, IOException {
+    run("datastruct/iterset.spl");
+  }
+
+  @Test
+  public void testIterDict() throws SPLInternalException, SPLSyntaxError, IOException {
+    run("datastruct/iterdict.spl");
+  }
 }

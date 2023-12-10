@@ -1,0 +1,11 @@
+
+
+
+data = {1:2, 3:4, 5:6}
+
+print("data = ", data)
+
+for pair in data {
+    print("key = ", pair.key, " value = ", pair.val)
+    print("key = ", pair.key, " value = ", pair.value)
+}
