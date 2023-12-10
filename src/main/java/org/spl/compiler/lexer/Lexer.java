@@ -219,7 +219,7 @@ public class Lexer {
           }
           Token token;
           builder.delete(builder.length() - 1, builder.length());
-          if (c == '"') {
+          if (c == '"' || c == '\'') {
             token = new Token(TOKEN_TYPE.STRING, builder.toString());
           } else {
             String msg = SPLException.buildErrorMessage(stream.getFileName(), lineNo, columnNo, stream.getOff() - columnNo, stream.getBuffer(), "Illegal string literal, string literal must be enclosed in double quotes");
