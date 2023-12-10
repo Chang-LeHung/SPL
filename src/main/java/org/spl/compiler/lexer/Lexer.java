@@ -754,6 +754,10 @@ public class Lexer {
       return token == TOKEN_TYPE.MOD;
     }
 
+    public boolean isTrueDiv() {
+      return token == TOKEN_TYPE.TRUE_DIV;
+    }
+
     public boolean isLSHIFT() {
       return token == TOKEN_TYPE.LSHIFT;
     }

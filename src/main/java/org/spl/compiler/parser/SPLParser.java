@@ -836,7 +836,10 @@ public class SPLParser extends AbstractSyntaxParser {
 
   private IRNode<Instruction> term() throws SPLSyntaxError {
     IRNode<Instruction> L = factor();
-    while (tokenFlow.peek().isMUL() || tokenFlow.peek().isDIV() || tokenFlow.peek().isMOD()) {
+    while (tokenFlow.peek().isMUL() ||
+        tokenFlow.peek().isDIV() ||
+        tokenFlow.peek().isMOD() ||
+        tokenFlow.peek().isTrueDiv()) {
       switch (tokenFlow.peek().token) {
         case MUL -> {
           Lexer.Token token = tokenFlow.peek();
