@@ -10,9 +10,13 @@ import org.jline.terminal.TerminalBuilder;
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.IRNode;
+import org.spl.compiler.ir.block.ProgramBlock;
 import org.spl.compiler.ir.context.DefaultASTContext;
+import org.spl.compiler.ir.exp.Pop;
+import org.spl.compiler.ir.stmt.returnstmt.Return;
 import org.spl.compiler.parser.SPLParser;
 import org.spl.vm.builtin.Builtin;
+import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.internal.SPLCodeObjectBuilder;
 import org.spl.vm.internal.objs.SPLCodeObject;
 import org.spl.vm.interpreter.DefaultEval;
@@ -66,6 +70,12 @@ public class InteractiveShell {
     reader.setOpt(LineReader.Option.INSERT_TAB);
   }
 
+  private static SPLObject eval(String line) throws SPLSyntaxError, IOException, SPLInternalException {
+    SPLCodeObject code = compile(line);
+    DefaultEval defaultEval = new DefaultEval(filename, locals, locals, code);
+    return defaultEval.evalFrame();
+  }
+
   private static int newLineCount(String line) {
     return line.split("\n").length;
   }
@@ -73,6 +83,13 @@ public class InteractiveShell {
   public static SPLCodeObject compile(String content) throws SPLSyntaxError, IOException {
     SPLParser parser = new SPLParser(filename, content);
     IRNode<Instruction> ir = parser.buildAST();
+    if (ir instanceof ProgramBlock pb) {
+      List<IRNode<Instruction>> children = pb.getChildren();
+      if (pb.getLast() instanceof Pop) {
+        children.remove(children.size() - 1);
+        children.add(new Return());
+      }
+    }
     DefaultASTContext<Instruction> context = parser.getContext();
     context.generateByteCodes(ir);
     return SPLCodeObjectBuilder.build(context);
@@ -174,9 +191,7 @@ public class InteractiveShell {
           } catch (Exception ignore) {
           }
         }
-        SPLCodeObject code = compile(line);
-        DefaultEval defaultEval = new DefaultEval(filename, locals, locals, code);
-        SPLObject res = defaultEval.evalFrame();
+        SPLObject res = eval(line);
         if (res != SPLNoneObject.getInstance())
           System.out.println(res.__str__());
       } catch (Exception e) {

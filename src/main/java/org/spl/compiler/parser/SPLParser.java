@@ -223,6 +223,8 @@ public class SPLParser extends AbstractSyntaxParser {
           tokenFlow.setCursor(cursor);
           return expression();
         }
+      } else {
+        return expression();
       }
     } catch (IndexOutOfBoundsException e) {
       throwSyntaxError("Illegal statement, expected assignment or expression", tokenFlow.peek());
