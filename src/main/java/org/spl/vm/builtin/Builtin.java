@@ -47,6 +47,11 @@ public class Builtin {
     register("dis");
   }
 
+
+  public static Map<SPLObject, SPLObject> getDict() {
+    return dict;
+  }
+
   private static void register(String name) {
     try {
       Method method = Builtin.class.getMethod(name, SPLObject[].class);
