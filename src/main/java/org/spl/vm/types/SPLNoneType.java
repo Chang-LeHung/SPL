@@ -7,12 +7,12 @@ public class SPLNoneType extends SPLCommonType {
     super(type, name, SPLNoneObject.class);
   }
 
-  private static class SelfHolder {
-    public static final SPLNoneType instance = new SPLNoneType(null, "none");
-  }
-
   public static SPLNoneType getInstance() {
     return SelfHolder.instance;
+  }
+
+  private static class SelfHolder {
+    public static final SPLNoneType instance = new SPLNoneType(null, "none");
   }
 
 }

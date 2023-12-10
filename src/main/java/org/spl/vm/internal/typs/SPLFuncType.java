@@ -9,11 +9,11 @@ public class SPLFuncType extends SPLCommonType {
     super(type, name, clazz);
   }
 
-  private static class SelfHolder {
-    public static final SPLFuncType INSTANCE = new SPLFuncType(null, "func", SPLFuncObject.class);
-  }
-
   public static SPLFuncType getInstance() {
     return SelfHolder.INSTANCE;
+  }
+
+  private static class SelfHolder {
+    public static final SPLFuncType INSTANCE = new SPLFuncType(null, "func", SPLFuncObject.class);
   }
 }

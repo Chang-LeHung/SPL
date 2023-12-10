@@ -16,13 +16,13 @@ import java.util.Map;
 public class SPLFuncObject extends SPLObject {
   public static int anonymousCount = 0;
   private final List<String> parameters;
+  private final String name;
+  private final SPLCodeObject codeObject;
   private Map<SPLObject, SPLObject> globals;
   /**
    * defaults will be set in runtime (in instruction MAKE_FUNCTION)
    */
   private List<SPLObject> defaults;
-  private final String name;
-  private final SPLCodeObject codeObject;
 
   public SPLFuncObject(List<String> parameters, String name, SPLCodeObject codeObject) {
     super(SPLFuncType.getInstance());

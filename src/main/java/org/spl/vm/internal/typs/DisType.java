@@ -8,11 +8,11 @@ public class DisType extends SPLCommonType {
     super(type, name, clazz);
   }
 
-  private static class SelfHolder {
-    public static final DisType INSTANCE = new DisType(null, "dis", SPLObject.class);
-  }
-
   public static DisType getInstance() {
     return SelfHolder.INSTANCE;
+  }
+
+  private static class SelfHolder {
+    public static final DisType INSTANCE = new DisType(null, "dis", SPLObject.class);
   }
 }

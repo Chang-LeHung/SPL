@@ -19,7 +19,6 @@ import org.spl.compiler.ir.stmt.returnstmt.ReturnNone;
 import org.spl.compiler.ir.unaryop.*;
 import org.spl.compiler.ir.vals.*;
 import org.spl.compiler.lexer.Lexer;
-import org.spl.compiler.tree.InsVisitor;
 import org.spl.vm.internal.SPLCodeObjectBuilder;
 import org.spl.vm.internal.objs.SPLCodeObject;
 import org.spl.vm.internal.objs.SPLFuncObject;

@@ -2,10 +2,10 @@ package org.spl.compiler.parser;
 
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.exceptions.SPLException;
+import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.context.DefaultASTContext;
 import org.spl.compiler.lexer.Lexer;
-import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.lexer.TokenFlow;
 
 import java.io.BufferedReader;

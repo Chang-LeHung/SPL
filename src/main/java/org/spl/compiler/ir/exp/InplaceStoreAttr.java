@@ -9,9 +9,10 @@ import org.spl.compiler.ir.context.ASTContext;
 
 import java.util.List;
 
-public class InplaceStoreAttr extends StoreAttr{
+public class InplaceStoreAttr extends StoreAttr {
 
   private Op op;
+
   public InplaceStoreAttr(IRNode<Instruction> lhs, IRNode<Instruction> rhs, int attrIndex, String name, Op op) {
     super(lhs, rhs, attrIndex, name);
     this.op = op;

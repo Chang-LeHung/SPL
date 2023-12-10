@@ -8,7 +8,6 @@ import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.context.ASTContext;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class BuildList extends AbstractIR<Instruction> {
@@ -22,10 +21,6 @@ public class BuildList extends AbstractIR<Instruction> {
     children.add(node);
   }
 
-  public void setChildren(List<IRNode<Instruction>> children) {
-    this.children = children;
-  }
-
   @Override
   public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
     context.addInstruction(new Instruction(OpCode.BUILD_LIST, children.size()), getLineNo(), getColumnNo(), getLen());
@@ -34,6 +29,10 @@ public class BuildList extends AbstractIR<Instruction> {
   @Override
   public List<IRNode<Instruction>> getChildren() {
     return children;
+  }
+
+  public void setChildren(List<IRNode<Instruction>> children) {
+    this.children = children;
   }
 
   @Override

@@ -101,7 +101,7 @@ public class InteractiveShell {
                 if (val instanceof SPLStringObject s) {
                   printer.addRow(List.of(name, val.getType().getName(), "\"" + s.__str__().toString() + "\""));
                 } else {
-                  printer.addRow(List.of(name, val.getType().getName(),val.__str__().toString()));
+                  printer.addRow(List.of(name, val.getType().getName(), val.__str__().toString()));
                 }
               }
               printer.print();

@@ -4,14 +4,11 @@ import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.types.SPLCommonType;
 import org.spl.vm.types.SPLNoneType;
 
-public class SPLNoneObject extends SPLObject{
+public class SPLNoneObject extends SPLObject {
   public static SPLStringObject name = new SPLStringObject("None");
+
   private SPLNoneObject(SPLCommonType type) {
     super(type);
-  }
-
-  private static class  SingletonHolder {
-    private static final SPLNoneObject INSTANCE = new SPLNoneObject(SPLNoneType.getInstance());
   }
 
   public static SPLNoneObject getInstance() {
@@ -20,16 +17,20 @@ public class SPLNoneObject extends SPLObject{
 
   @Override
   public SPLObject __eq__(SPLObject rhs) throws SPLInternalException {
-    return this == rhs ? SPLBoolObject.getTrue() :  SPLBoolObject.getFalse();
+    return this == rhs ? SPLBoolObject.getTrue() : SPLBoolObject.getFalse();
   }
 
   @Override
   public SPLObject __ne__(SPLObject rhs) throws SPLInternalException {
-    return this == rhs ? SPLBoolObject.getFalse() :  SPLBoolObject.getTrue();
+    return this == rhs ? SPLBoolObject.getFalse() : SPLBoolObject.getTrue();
   }
 
   @Override
   public SPLObject __str__() {
     return name;
+  }
+
+  private static class SingletonHolder {
+    private static final SPLNoneObject INSTANCE = new SPLNoneObject(SPLNoneType.getInstance());
   }
 }

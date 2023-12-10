@@ -4,7 +4,6 @@ import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.exceptions.splexceptions.SPLTypeError;
 import org.spl.vm.types.SPLLongType;
-import org.spl.vm.types.SPLObjectType;
 
 public class SPLLongObject extends SPLObject {
   public static SPLLongObject[] pool;
@@ -42,7 +41,7 @@ public class SPLLongObject extends SPLObject {
       double res = getVal() + f.getVal();
       return new SPLFloatObject(res);
     } else if (rhs instanceof SPLStringObject s) {
-      return new SPLStringObject(String.valueOf(val) + s.getVal());
+      return new SPLStringObject(val + s.getVal());
     }
     return SPLErrorUtils.splErrorFormat(new SPLTypeError("can not apply operator '+' on long and " + rhs.getType().getName()));
   }

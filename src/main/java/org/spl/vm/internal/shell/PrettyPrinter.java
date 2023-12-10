@@ -1,6 +1,8 @@
 package org.spl.vm.internal.shell;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PrettyPrinter {
@@ -11,6 +13,24 @@ public class PrettyPrinter {
 
   private int edgeSize = 2;
 
+  public PrettyPrinter() {
+    data = new ArrayList<>();
+  }
+
+  public static <K, V> void printMap(List<Map<K, V>> maps) {
+    if (maps.size() == 0) return;
+    PrettyPrinter printer = new PrettyPrinter();
+    Map<K, V> map = maps.get(0);
+    List<String> header = map.keySet().stream().map(Object::toString).collect(Collectors.toList());
+    printer.setHeader(header);
+    for (Map<K, V> t : maps) {
+      List<String> collect = t.values().stream().map(Object::toString).collect(Collectors.toList());
+      Row row = new Row(collect);
+      printer.addRow(row);
+    }
+    printer.print();
+  }
+
   public int getEdgeSize() {
     return edgeSize;
   }
@@ -19,12 +39,12 @@ public class PrettyPrinter {
     this.edgeSize = edgeSize;
   }
 
-  public PrettyPrinter() {
-    data = new ArrayList<>();
-  }
-
   public List<String> getHeader() {
     return header;
+  }
+
+  public void setHeader(List<String> header) {
+    this.header = header;
   }
 
   public boolean addRow(Row row) {
@@ -35,32 +55,12 @@ public class PrettyPrinter {
     return data.add(new Row(row));
   }
 
-  public void setHeader(List<String> header) {
-    this.header = header;
-  }
-
   public List<Row> getData() {
     return data;
   }
 
   public void setData(List<Row> data) {
     this.data = data;
-  }
-
-  public static class Row {
-    List<String> data;
-
-    public Row(List<String> param) {
-      data = param;
-    }
-
-    public List<String> getData() {
-      return data;
-    }
-
-    public void setData(List<String> data) {
-      this.data = data;
-    }
   }
 
   public void print() {
@@ -123,17 +123,19 @@ public class PrettyPrinter {
     return arrayList;
   }
 
-  public static <K, V> void  printMap(List<Map<K, V>> maps) {
-    if (maps.size() == 0) return;
-    PrettyPrinter printer = new PrettyPrinter();
-    Map<K, V> map = maps.get(0);
-    List<String> header = map.keySet().stream().map(Object::toString).collect(Collectors.toList());
-    printer.setHeader(header);
-    for (Map<K, V> t : maps) {
-      List<String> collect = t.values().stream().map(Object::toString).collect(Collectors.toList());
-      Row row = new Row(collect);
-      printer.addRow(row);
+  public static class Row {
+    List<String> data;
+
+    public Row(List<String> param) {
+      data = param;
     }
-    printer.print();
+
+    public List<String> getData() {
+      return data;
+    }
+
+    public void setData(List<String> data) {
+      this.data = data;
+    }
   }
 }

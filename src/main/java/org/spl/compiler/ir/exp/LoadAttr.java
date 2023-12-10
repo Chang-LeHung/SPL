@@ -11,10 +11,10 @@ import java.util.List;
 
 public class LoadAttr extends AbstractIR<Instruction> {
 
-  private IRNode<Instruction> lhs;
   private final int attrIndex;
-  private List<IRNode<Instruction>> children;
   private final String name;
+  private IRNode<Instruction> lhs;
+  private List<IRNode<Instruction>> children;
 
   public LoadAttr(IRNode<Instruction> lhs, int attrIndex, String name) {
     this.lhs = lhs;

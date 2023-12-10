@@ -22,6 +22,7 @@ import java.util.Map;
 
 public class Builtin {
   private final static Map<SPLObject, SPLObject> dict;
+
   static {
     dict = new HashMap<>();
     register("print");
@@ -189,7 +190,7 @@ public class Builtin {
   public static SPLObject pow(SPLObject... arg) throws SPLInternalException {
     if (arg.length == 2) {
       if (arg[0] instanceof SPLLongObject l1 && arg[1] instanceof SPLLongObject l2) {
-        return SPLLongObject.create((long)Math.pow(l1.getVal(), l2.getVal()));
+        return SPLLongObject.create((long) Math.pow(l1.getVal(), l2.getVal()));
       }
       if (arg[0] instanceof SPLFloatObject f1 && arg[1] instanceof SPLFloatObject f2) {
         return new SPLFloatObject(Math.pow(f1.getVal(), f2.getVal()));
@@ -210,7 +211,7 @@ public class Builtin {
         return l;
       }
       if (arg[0] instanceof SPLFloatObject f) {
-        return SPLLongObject.create((long)f.getVal());
+        return SPLLongObject.create((long) f.getVal());
       }
     }
     throw new SPLInternalException("floor() only takes one int/float argument");
@@ -222,7 +223,7 @@ public class Builtin {
         return l;
       }
       if (arg[0] instanceof SPLFloatObject f) {
-        return SPLLongObject.create((long)Math.ceil(f.getVal()));
+        return SPLLongObject.create((long) Math.ceil(f.getVal()));
       }
     }
     throw new SPLInternalException("ceil() only takes one int/float argument");
@@ -234,7 +235,7 @@ public class Builtin {
         return l;
       }
       if (arg[0] instanceof SPLFloatObject f) {
-        return SPLLongObject.create((long)Math.round(f.getVal()));
+        return SPLLongObject.create(Math.round(f.getVal()));
       }
     }
     throw new SPLInternalException("round() only takes one int/float argument");
@@ -280,7 +281,7 @@ public class Builtin {
   public static SPLObject exit(SPLObject... arg) throws SPLInternalException {
     if (arg.length == 1) {
       if (arg[0] instanceof SPLLongObject l) {
-        System.exit((int)l.getVal());
+        System.exit((int) l.getVal());
       }
     } else if (arg.length == 0) {
       System.exit(0);

@@ -11,10 +11,10 @@ public class InsVisitor implements Visitor<Instruction> {
 
   private final Map<Integer, Object> idx2Var;
   private final Map<Integer, SPLObject> idx2Constant;
-  private int offset;
   private final List<Instruction> instructions;
   private final List<String> serializedInstructions;
   private final HashSet<OpCode> loadStoreInstructions;
+  private int offset;
 
   private InsVisitor() {
     idx2Var = new HashMap<>();
@@ -68,8 +68,7 @@ public class InsVisitor implements Visitor<Instruction> {
     } else if (instruction.getCode() == OpCode.LOAD_CONST) {
       serialized = String.format("%-6d %s %s", offset, instruction.getCode(),
           idx2Constant.get((instruction.getOpArg())));
-    }
-    else if (instruction.getCode() == OpCode.CALL ||
+    } else if (instruction.getCode() == OpCode.CALL ||
         instruction.getCode() == OpCode.JUMP_FALSE || instruction.getCode() == OpCode.JUMP_UNCON_FORWARD ||
         instruction.getCode() == OpCode.JUMP_BACK || instruction.getCode() == OpCode.JUMP_BACK_TRUE ||
         instruction.getCode() == OpCode.JUMP_ABSOLUTE ||

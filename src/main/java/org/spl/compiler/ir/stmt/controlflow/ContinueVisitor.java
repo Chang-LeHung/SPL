@@ -5,7 +5,7 @@ import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.context.ASTContext;
 
-public class ContinueVisitor extends  JumpContext{
+public class ContinueVisitor extends JumpContext {
   private final int position;
 
   public ContinueVisitor(ASTContext<Instruction> context, int position) {

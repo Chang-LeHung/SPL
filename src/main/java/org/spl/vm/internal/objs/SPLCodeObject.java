@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.Map;
 
 public class SPLCodeObject extends SPLObject {
-  private int args;
   private final String filename;
   private final int firstLineNo;
   private final byte[] code;
@@ -19,6 +18,7 @@ public class SPLCodeObject extends SPLObject {
   private final SPLStringObject[] varnames;
   private final SPLObject[] constants;
   private final int maxStackSize;
+  private int args;
 
   public SPLCodeObject(int args,
                        int maxStackSize,
@@ -44,8 +44,28 @@ public class SPLCodeObject extends SPLObject {
     this.constants = constants;
   }
 
+  public static SPLLongObject getSPL(int val) {
+    return SPLLongObject.create(val);
+  }
+
+  public static SPLLongObject getSPL(long val) {
+    return SPLLongObject.create(val);
+  }
+
+  public static SPLFloatObject getSPL(double val) {
+    return new SPLFloatObject(val);
+  }
+
+  public static SPLStringObject getSPL(String val) {
+    return new SPLStringObject(val);
+  }
+
   public int getArgs() {
     return args;
+  }
+
+  public void setArgs(int args) {
+    this.args = args;
   }
 
   public String getFilename() {
@@ -58,10 +78,6 @@ public class SPLCodeObject extends SPLObject {
 
   public byte[] getCode() {
     return code;
-  }
-
-  public void setArgs(int args) {
-    this.args = args;
   }
 
   public byte[] getLenColumn() {
@@ -85,22 +101,6 @@ public class SPLCodeObject extends SPLObject {
         ",\nvarnames=" + Arrays.toString(varnames) +
         ",\nmaxStackSize=" + maxStackSize +
         '\n' + '}';
-  }
-
-  public static SPLLongObject getSPL(int val) {
-    return SPLLongObject.create(val);
-  }
-
-  public static SPLLongObject getSPL(long val) {
-    return SPLLongObject.create(val);
-  }
-
-  public static SPLFloatObject getSPL(double val) {
-    return new SPLFloatObject(val);
-  }
-
-  public static SPLStringObject getSPL(String val) {
-    return new SPLStringObject(val);
   }
 
   public SPLStringObject[] getVarnames() {

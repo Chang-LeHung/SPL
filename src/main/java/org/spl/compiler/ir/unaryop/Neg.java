@@ -7,7 +7,7 @@ import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.Op;
 import org.spl.compiler.ir.context.ASTContext;
 
-public class Neg extends AbstractUnaryExp<Instruction>{
+public class Neg extends AbstractUnaryExp<Instruction> {
   public Neg(IRNode<Instruction> operand) {
     super(operand, Op.SUB);
   }

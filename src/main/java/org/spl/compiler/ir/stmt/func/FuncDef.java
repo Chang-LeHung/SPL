@@ -64,7 +64,7 @@ public class FuncDef extends AbstractIR<Instruction> {
     context.decreaseStackSize();
     context.decreaseStackSize(defaults.size());
     context.increaseStackSize();
-    if (idxInVarNames!= -1)
+    if (idxInVarNames != -1)
       context.decreaseStackSize();
   }
 

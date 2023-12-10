@@ -24,13 +24,6 @@ public class SPLBoolObject extends SPLObject {
     return value;
   }
 
-  public static class SelfHolder {
-    public static SPLBoolObject TRUE = new SPLBoolObject(true);
-    public static SPLBoolObject FALSE = new SPLBoolObject(false);
-    public static SPLBoolObject True = TRUE;
-    public static SPLBoolObject False = FALSE;
-  }
-
   @Override
   public String toString() {
     return Boolean.toString(value);
@@ -88,6 +81,13 @@ public class SPLBoolObject extends SPLObject {
 
   @Override
   public SPLObject __str__() {
-    return getTrue() == this? SelfHolder.True : SelfHolder.False;
+    return getTrue() == this ? SelfHolder.True : SelfHolder.False;
+  }
+
+  public static class SelfHolder {
+    public static SPLBoolObject TRUE = new SPLBoolObject(true);
+    public static SPLBoolObject FALSE = new SPLBoolObject(false);
+    public static SPLBoolObject True = TRUE;
+    public static SPLBoolObject False = FALSE;
   }
 }

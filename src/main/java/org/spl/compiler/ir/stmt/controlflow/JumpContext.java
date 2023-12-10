@@ -14,9 +14,8 @@ import java.util.Map;
 public class JumpContext implements ASTContext<Instruction> {
 
   private final List<Ins> code;
-  private int nBytes;
-
   private final ASTContext<Instruction> context;
+  private int nBytes;
 
   public JumpContext(ASTContext<Instruction> context) {
     this.context = context;

@@ -8,7 +8,6 @@ import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.context.ASTContext;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class BuildSet extends AbstractIR<Instruction> {
@@ -16,10 +15,6 @@ public class BuildSet extends AbstractIR<Instruction> {
 
   public BuildSet() {
     children = new ArrayList<>();
-  }
-
-  public void setChildren(List<IRNode<Instruction>> children) {
-    this.children = children;
   }
 
   public void addIR(IRNode<Instruction> node) {
@@ -34,6 +29,10 @@ public class BuildSet extends AbstractIR<Instruction> {
   @Override
   public List<IRNode<Instruction>> getChildren() {
     return children;
+  }
+
+  public void setChildren(List<IRNode<Instruction>> children) {
+    this.children = children;
   }
 
   @Override

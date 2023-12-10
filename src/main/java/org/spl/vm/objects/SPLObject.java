@@ -203,7 +203,7 @@ public class SPLObject implements SPLInterface {
       Object method = methods.get(name);
       if (method instanceof Method m) {
         return new SPLCallObject(m, this, false);
-      } else if (method instanceof SPLFuncObject func){
+      } else if (method instanceof SPLFuncObject func) {
         return new SPLMethodWrapper(func, this);
       }
     }
@@ -227,7 +227,7 @@ public class SPLObject implements SPLInterface {
       if (methods == null) {
         methods = new HashMap<>();
       }
-      methods.put(name,  func);
+      methods.put(name, func);
       return SPLNoneObject.getInstance();
     }
     return SPLErrorUtils.splErrorFormat(new SPLTypeError("Invalid arguments for bind"));

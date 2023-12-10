@@ -13,19 +13,19 @@ import java.util.*;
 
 public class DefaultASTContext<E extends Instruction> implements Visitor<E>, ASTContext<E> {
 
-  private String filename;
   private final List<E> instructions;
   private final Map<Object, Integer> varnames;
   private final Map<SPLObject, Integer> constants;
-  private int firstLineNo;
   private final ByteArrayOutputStream code;
   private final ByteArrayOutputStream debugInfo;
   private final ByteArrayOutputStream lenColumn;
+  private final Set<String> globals;
+  private final NameSpace<String> nameSpace;
+  private String filename;
+  private int firstLineNo;
   private int insOfLine;
   private int currentLineNo;
   private int lastLineNo;
-  private final Set<String> globals;
-  private final NameSpace<String> nameSpace;
   private int stackSize;
   private int topStackSize;
   private int args;

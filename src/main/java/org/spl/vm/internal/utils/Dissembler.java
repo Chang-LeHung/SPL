@@ -20,10 +20,9 @@ import java.util.List;
 public class Dissembler extends SPLObject {
 
   private final SPLCodeObject codeObject;
-  private String content;
-
-  private List<Instruction> instructions;
   private final byte[] code;
+  private String content;
+  private List<Instruction> instructions;
   private int pc;
 
   public Dissembler(SPLCodeObject codeObject) {

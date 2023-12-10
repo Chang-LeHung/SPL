@@ -4,7 +4,7 @@ import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.Op;
 
-public class TrueDivAssignStmt extends AbstractAssignStmt{
+public class TrueDivAssignStmt extends AbstractAssignStmt {
   public TrueDivAssignStmt(IRNode<Instruction> lhs, IRNode<Instruction> rhs) {
     super(lhs, rhs, Op.ASSIGN_TRUE_DIV);
   }

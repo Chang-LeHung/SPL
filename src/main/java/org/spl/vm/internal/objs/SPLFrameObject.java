@@ -15,13 +15,9 @@ public class SPLFrameObject extends SPLObject {
   protected final Map<SPLObject, SPLObject> globals;
 
   protected final byte[] code;
-
-  protected int pc;
-
   protected final SPLObject[] evalStack;
-
   protected final SPLStringObject[] varnames;
-
+  protected int pc;
   protected int top;
 
   protected SPLObject[] constants;

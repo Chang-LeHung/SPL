@@ -16,8 +16,8 @@ import static org.spl.compiler.ir.Op.NOP;
 public class Variable extends AbstractIR<Instruction> implements RValue<Instruction> {
 
   private final String name;
-  private Scope scope;
   private final IRNode<Instruction> rValue;
+  private Scope scope;
   private List<IRNode<Instruction>> children;
 
   public Variable(Scope scope, String name) {
@@ -52,12 +52,12 @@ public class Variable extends AbstractIR<Instruction> implements RValue<Instruct
     return scope;
   }
 
-  public void setScope(Scope scope) {
-    this.scope = scope;
-  }
-
   public Scope getScope() {
     return scope;
+  }
+
+  public void setScope(Scope scope) {
+    this.scope = scope;
   }
 
   @Override

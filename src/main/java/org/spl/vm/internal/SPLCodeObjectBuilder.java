@@ -4,8 +4,6 @@ import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.ir.context.ASTContext;
 import org.spl.vm.internal.objs.SPLCodeObject;
 
-import java.util.Map;
-
 public class SPLCodeObjectBuilder {
 
   public static SPLCodeObject build(ASTContext<Instruction> context) {

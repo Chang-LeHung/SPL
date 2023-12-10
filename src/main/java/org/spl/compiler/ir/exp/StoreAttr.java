@@ -38,7 +38,7 @@ public class StoreAttr extends AbstractIR<Instruction> {
 
   @Override
   public boolean isStatement() {
-   return true;
+    return true;
   }
 
   @Override

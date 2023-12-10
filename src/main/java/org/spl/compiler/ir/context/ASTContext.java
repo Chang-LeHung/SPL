@@ -64,8 +64,11 @@ public interface ASTContext<E> {
   boolean isGlobal(String name);
 
   SPLObject[] getConstants();
+
   Map<SPLObject, Integer> getConstantMap();
+
   void addConstantObject(SPLObject o);
+
   int getConstantObjectIndex(SPLObject o);
 
   int getConstantsSize();

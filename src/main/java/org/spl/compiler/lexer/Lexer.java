@@ -564,13 +564,13 @@ public class Lexer {
       super(null, "token", Token.class);
     }
 
+    public static TokenType getInstance() {
+      return SelfHolder.INSTANCE;
+    }
+
     private static class SelfHolder {
       public static final TokenType INSTANCE = new TokenType();
 
-    }
-
-    public static TokenType getInstance() {
-      return SelfHolder.INSTANCE;
     }
   }
 

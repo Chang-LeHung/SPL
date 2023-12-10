@@ -1,7 +1,6 @@
 package org.spl.vm.exceptions.types;
 
 import org.spl.vm.exceptions.splexceptions.SPLOutOfBoundException;
-import org.spl.vm.objects.SPLObject;
 import org.spl.vm.types.SPLCommonType;
 
 public class SPLOutOfBoundType extends SPLCommonType {
@@ -9,10 +8,11 @@ public class SPLOutOfBoundType extends SPLCommonType {
     super(null, "OutOfBound", SPLOutOfBoundException.class);
   }
 
-  private static class SelfHolder {
-    public static final SPLOutOfBoundType INSTANCE = new SPLOutOfBoundType();
-  }
   public static SPLOutOfBoundType getInstance() {
     return SelfHolder.INSTANCE;
+  }
+
+  private static class SelfHolder {
+    public static final SPLOutOfBoundType INSTANCE = new SPLOutOfBoundType();
   }
 }

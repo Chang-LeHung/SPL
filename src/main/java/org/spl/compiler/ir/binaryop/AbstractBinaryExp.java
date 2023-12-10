@@ -1,9 +1,9 @@
 package org.spl.compiler.ir.binaryop;
 
-import org.spl.compiler.ir.context.ASTContext;
 import org.spl.compiler.ir.AbstractIR;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.Op;
+import org.spl.compiler.ir.context.ASTContext;
 
 import java.util.List;
 

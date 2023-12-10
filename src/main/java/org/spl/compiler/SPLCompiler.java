@@ -14,6 +14,7 @@ public class SPLCompiler {
 
   private final String filename;
   private ASTContext<Instruction> context;
+
   public SPLCompiler(String filename) {
     this.filename = filename;
   }

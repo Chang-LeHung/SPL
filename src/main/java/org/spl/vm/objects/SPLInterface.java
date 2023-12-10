@@ -11,6 +11,7 @@ public interface SPLInterface {
   SPLCommonType getType();
 
   SPLObject __add__(SPLObject rhs) throws SPLInternalException;
+
   default SPLObject __inplaceAdd__(SPLObject rhs) throws SPLInternalException {
     return __add__(rhs);
   }
@@ -28,6 +29,7 @@ public interface SPLInterface {
   }
 
   SPLObject __div__(SPLObject rhs) throws SPLInternalException;
+
   SPLObject __trueDiv__(SPLObject rhs) throws SPLInternalException;
 
   default SPLObject __inplaceDiv__(SPLObject rhs) throws SPLInternalException {
@@ -128,8 +130,10 @@ public interface SPLInterface {
   }
 
   SPLObject __getAttr__(SPLObject name) throws SPLInternalException;
+
   SPLObject __getMethod__(SPLObject name) throws SPLInternalException, NoSuchMethodException;
+
   SPLObject __setAttr__(SPLObject name, SPLObject value) throws SPLInternalException;
 
-  SPLObject __subscribe__(SPLObject args) throws SPLInternalException ;
+  SPLObject __subscribe__(SPLObject args) throws SPLInternalException;
 }

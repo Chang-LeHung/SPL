@@ -8,12 +8,11 @@ public class SPLDictType extends SPLCommonType {
     super(type, name, clazz);
   }
 
+  public static SPLDictType getInstance() {
+    return SelfHolder.INSTANCE;
+  }
 
   private static class SelfHolder {
     public static final SPLDictType INSTANCE = new SPLDictType(null, "dict", SPLDictObject.class);
-  }
-
-  public static SPLDictType getInstance() {
-    return SelfHolder.INSTANCE;
   }
 }

@@ -1,7 +1,6 @@
 package org.spl.vm.internal.typs;
 
 import org.spl.vm.internal.objs.SPLFrameObject;
-import org.spl.vm.objects.SPLFloatObject;
 import org.spl.vm.types.SPLCommonType;
 
 public class SPLFrameType extends SPLCommonType {

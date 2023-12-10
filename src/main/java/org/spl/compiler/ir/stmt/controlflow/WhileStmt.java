@@ -19,6 +19,23 @@ public class WhileStmt extends AbstractIR<Instruction> {
     this.block = block;
   }
 
+  private static boolean isOK(int jmpFalse, int jmpBack, int conditionSize, int blockSize) {
+    assert jmpBack == 2 || jmpBack == 4;
+    assert jmpFalse == 2 || jmpFalse == 4;
+    if (jmpBack == 2 && blockSize + conditionSize + jmpFalse < 255) {
+      if (jmpFalse == 2 && blockSize + jmpBack < 255)
+        return true;
+      if (jmpFalse == 4 && blockSize + jmpBack >= 255)
+        return true;
+    }
+    if (jmpBack == 4 && blockSize + conditionSize + jmpFalse >= 255) {
+      if (jmpFalse == 2 && blockSize + jmpBack < 255)
+        return true;
+      return jmpFalse == 4 && blockSize + jmpBack >= 255;
+    }
+    return false;
+  }
+
   @Override
   public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
     int contStart = context.getCodeSize();
@@ -70,23 +87,6 @@ public class WhileStmt extends AbstractIR<Instruction> {
   @Override
   public List<IRNode<Instruction>> getChildren() {
     return List.of();
-  }
-
-  private static boolean isOK(int jmpFalse, int jmpBack, int conditionSize, int blockSize) {
-    assert jmpBack == 2 || jmpBack == 4;
-    assert jmpFalse == 2 || jmpFalse == 4;
-    if (jmpBack == 2 && blockSize + conditionSize + jmpFalse < 255) {
-      if (jmpFalse == 2 && blockSize + jmpBack < 255)
-        return true;
-      if (jmpFalse == 4 && blockSize + jmpBack >= 255)
-        return true;
-    }
-    if (jmpBack == 4 && blockSize + conditionSize + jmpFalse >= 255) {
-      if (jmpFalse == 2 && blockSize + jmpBack < 255)
-        return true;
-      return jmpFalse == 4 && blockSize + jmpBack >= 255;
-    }
-    return false;
   }
 
   @Override

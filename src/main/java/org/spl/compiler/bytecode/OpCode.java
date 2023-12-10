@@ -78,10 +78,6 @@ public enum OpCode {
     System.out.println(CALL.val);
   }
 
-  private static class Counter {
-    static byte count = 0;
-  }
-
   public byte getVal() {
     return val;
   }
@@ -89,5 +85,9 @@ public enum OpCode {
   @Override
   public String toString() {
     return String.format("OpCode{val=%-3d, %-15s}", val, name());
+  }
+
+  private static class Counter {
+    static byte count = 0;
   }
 }

@@ -7,11 +7,11 @@ public class SPLAttributeErrorType extends SPLCommonType {
     super(null, "AttributeError", SPLAttributeErrorType.class);
   }
 
-  private static class SelfHolder {
-    static SPLAttributeErrorType instance = new SPLAttributeErrorType();
-  }
-
   public static SPLAttributeErrorType getInstance() {
     return SelfHolder.instance;
+  }
+
+  private static class SelfHolder {
+    static SPLAttributeErrorType instance = new SPLAttributeErrorType();
   }
 }

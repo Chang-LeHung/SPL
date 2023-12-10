@@ -13,8 +13,8 @@ public class LoadMethod extends AbstractIR<Instruction> {
 
   private final IRNode<Instruction> lhs;
   private final int attrIndex;
-  private List<IRNode<Instruction>> children;
   private final String name;
+  private List<IRNode<Instruction>> children;
 
   public LoadMethod(IRNode<Instruction> lhs, int attrIndex, String name) {
     this.lhs = lhs;
