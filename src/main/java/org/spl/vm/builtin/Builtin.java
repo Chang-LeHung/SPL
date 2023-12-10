@@ -3,8 +3,13 @@ package org.spl.vm.builtin;
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.IRNode;
+import org.spl.compiler.ir.block.ProgramBlock;
+import org.spl.compiler.ir.context.DefaultASTContext;
+import org.spl.compiler.ir.exp.Pop;
+import org.spl.compiler.ir.stmt.returnstmt.Return;
 import org.spl.compiler.lexer.Lexer;
 import org.spl.compiler.parser.SPLParser;
+import org.spl.vm.annotations.SPLExportMethod;
 import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.exceptions.splexceptions.SPLRuntimeException;
@@ -12,6 +17,7 @@ import org.spl.vm.internal.SPLCodeObjectBuilder;
 import org.spl.vm.internal.objs.SPLCodeObject;
 import org.spl.vm.internal.objs.SPLFuncObject;
 import org.spl.vm.internal.utils.Dissembler;
+import org.spl.vm.interpreter.DefaultEval;
 import org.spl.vm.objects.*;
 
 import java.io.IOException;
@@ -320,4 +326,32 @@ public class Builtin {
     }
     return SPLErrorUtils.splErrorFormat(new SPLRuntimeException("parse() only takes one string argument"));
   }
+
+
+  @SPLExportMethod
+  private static SPLObject eval(SPLObject... args) throws SPLSyntaxError, IOException, SPLInternalException {
+    if (args.length == 1 && args[0] instanceof SPLStringObject s) {
+      String line = s.getVal();
+      SPLCodeObject code = compile(line);
+      DefaultEval defaultEval = new DefaultEval(code);
+      return defaultEval.evalFrame();
+    }
+    return SPLErrorUtils.splErrorFormat(new SPLRuntimeException("eval() only takes one string argument"));
+  }
+
+  public static SPLCodeObject compile(String content) throws SPLSyntaxError, IOException {
+    SPLParser parser = new SPLParser("Anonymous", content);
+    IRNode<Instruction> ir = parser.buildAST();
+    if (ir instanceof ProgramBlock pb) {
+      List<IRNode<Instruction>> children = pb.getChildren();
+      if (pb.getLast() instanceof Pop) {
+        children.remove(children.size() - 1);
+        children.add(new Return());
+      }
+    }
+    DefaultASTContext<Instruction> context = parser.getContext();
+    context.generateByteCodes(ir);
+    return SPLCodeObjectBuilder.build(context);
+  }
+
 }
