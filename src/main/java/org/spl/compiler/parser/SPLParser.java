@@ -44,6 +44,7 @@ import java.util.List;
  * globalStmt   : 'global' IDENTIFIER (',' IDENTIFIER)*
  * funcDef      : 'def' funcName '(' paramList? ')' block
  * forStmt      : 'for' '(' expression? ';' expression? ';' expression? ')' block
+ *              | 'for' IDENTIFIER 'in' expression block
  * doWhile      : 'do' block 'while' '(' expression ')'
  * ifStatement  : 'if' '(' expression  ') 'block ('else if' '(' expression  ') block)* ('else' block)*
  * whileStmt    : 'while' '(' expression ')' block
@@ -575,29 +576,45 @@ public class SPLParser extends AbstractSyntaxParser {
     tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.FOR, "require 'for' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
     Lexer.Token token = tokenFlow.peek();
     tokenFlow.next();
-    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LEFT_PARENTHESES, "require '(' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
-    tokenFlow.next();
-    IRNode<Instruction> initializer = statement();
-    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.SEMICOLON, "require ';' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
-    tokenFlow.next();
-    IRNode<Instruction> condition = statement();
-    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.SEMICOLON, "require ';' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
-    tokenFlow.next();
-    IRNode<Instruction> increment;
-    if (tokenFlow.peek().isRIGHT_PARENTHESES()) {
-      token = tokenFlow.peek();
+    if (tokenFlow.peek().isLEFT_PARENTHESES()) {
+      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LEFT_PARENTHESES, "require '(' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
       tokenFlow.next();
-      increment = new NOP();
-      setSourceCodeInfo(increment, token);
+      IRNode<Instruction> initializer = statement();
+      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.SEMICOLON, "require ';' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+      tokenFlow.next();
+      IRNode<Instruction> condition = statement();
+      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.SEMICOLON, "require ';' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+      tokenFlow.next();
+      IRNode<Instruction> increment;
+      if (tokenFlow.peek().isRIGHT_PARENTHESES()) {
+        token = tokenFlow.peek();
+        tokenFlow.next();
+        increment = new NOP();
+        setSourceCodeInfo(increment, token);
+      } else {
+        increment = statement();
+        tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RIGHT_PARENTHESES, "require ')' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+        tokenFlow.next();
+      }
+      IRNode<Instruction> block = block();
+      ForStmt forStmt = new ForStmt(initializer, condition, increment, block);
+      setSourceCodeInfo(forStmt, token);
+      return forStmt;
     } else {
-      increment = statement();
-      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RIGHT_PARENTHESES, "require ')' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.IDENTIFIER, "require identifier instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+      String i = tokenFlow.peek().getValueAsString();
+      int idx = context.addVarName(i);
+      context.addSymbol(i);
       tokenFlow.next();
+      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.IN, "require 'in' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+      tokenFlow.next();
+      IRNode<Instruction> expr = expression();
+      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LBRACE, "require '{' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+      IRNode<Instruction> block = block();
+      ConciseForStmt forStmt = new ConciseForStmt(expr, i, idx, block);
+      setSourceCodeInfo(forStmt, token);
+      return forStmt;
     }
-    IRNode<Instruction> block = block();
-    ForStmt forStmt = new ForStmt(initializer, condition, increment, block);
-    setSourceCodeInfo(forStmt, token);
-    return forStmt;
   }
 
   private IRNode<Instruction> doWhileStatement() throws SPLSyntaxError {

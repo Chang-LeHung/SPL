@@ -204,6 +204,11 @@ public class SPLObject implements SPLInterface {
   }
 
   @Override
+  public SPLObject __getIterator__() throws SPLInternalException {
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation 'getIterator' not implemented"));
+  }
+
+  @Override
   public SPLObject __getMethod__(SPLObject name) throws SPLInternalException {
     if (attrs != null && attrs.containsKey(name)) {
       SPLObject res = attrs.get(name);

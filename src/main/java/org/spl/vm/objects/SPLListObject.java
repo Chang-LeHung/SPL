@@ -5,6 +5,8 @@ import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.exceptions.splexceptions.SPLOutOfBoundException;
 import org.spl.vm.exceptions.splexceptions.SPLTypeError;
+import org.spl.vm.interfaces.SPLIterator;
+import org.spl.vm.types.SPLCommonType;
 import org.spl.vm.types.SPLListType;
 
 import java.util.ArrayList;
@@ -73,7 +75,8 @@ public class SPLListObject extends SPLObject {
     StringBuilder builder = new StringBuilder();
     builder.append("[");
     container.forEach(x -> builder.append(x.__str__()).append(", "));
-    builder.delete(builder.length() - 2, builder.length());
+    if (builder.length() > 2)
+      builder.delete(builder.length() - 2, builder.length());
     builder.append("]");
     return new SPLStringObject(builder.toString());
   }
@@ -97,5 +100,44 @@ public class SPLListObject extends SPLObject {
           String.format("Index %d out of bound %d", idx, container.size())));
     }
     return SPLErrorUtils.splErrorFormat(new SPLTypeError("Index must be integer"));
+  }
+
+  @Override
+  public SPLObject __getIterator__() throws SPLInternalException {
+    return new SPLListIterator(new ArrayList<>(container));
+  }
+
+  public static class SPLListIteratorType extends SPLCommonType {
+
+    private SPLListIteratorType() {
+      super(null, "list_iterator", SPLListIterator.class);
+    }
+
+    private static class SelfHolder {
+      public static final SPLListIteratorType INSTANCE = new SPLListIteratorType();
+    }
+
+    public static SPLListIteratorType getInstance() {
+      return SelfHolder.INSTANCE;
+    }
+  }
+
+  public static class SPLListIterator extends SPLObject implements SPLIterator {
+
+    private final List<SPLObject> container;
+    int off;
+    public SPLListIterator(List<SPLObject> container) {
+      super(SPLListIteratorType.getInstance());
+      this.container = container;
+      off = 0;
+    }
+
+    @Override
+    public SPLObject next() throws SPLInternalException {
+      if (off < container.size()) {
+        return container.get(off++);
+      }
+      return SPLStopIteration.getInstance();
+    }
   }
 }

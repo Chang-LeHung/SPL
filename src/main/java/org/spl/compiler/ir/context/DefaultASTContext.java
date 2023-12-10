@@ -122,7 +122,8 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
     }
     // write instruction info
     write(instruction.getOpCode(), code);
-    if (instruction.getCode() == OpCode.JUMP_ABSOLUTE) {
+    OpCode opcode = instruction.getCode();
+    if (opcode == OpCode.JUMP_ABSOLUTE) {
       int arg = instruction.getOparg();
       code.write(arg >> 16);
       code.write(arg >> 8);

@@ -240,6 +240,12 @@ public class TestCompiler {
   }
 
   @Test
+  public void testList03() throws SPLInternalException, SPLSyntaxError, IOException {
+    DefaultEval eval = run("datastruct/list03.spl");
+    System.out.println(Arrays.toString(eval.getConstants()));
+  }
+
+  @Test
   public void testAttr() throws SPLInternalException, SPLSyntaxError, IOException {
     run("attr/load_store.spl");
   }
@@ -252,5 +258,24 @@ public class TestCompiler {
   @Test
   public void testDictSubscribe() throws SPLInternalException, SPLSyntaxError, IOException {
     run("attr/dict.spl");
+  }
+
+  @Test
+  public void testConciseForCode() throws SPLInternalException, SPLSyntaxError, IOException {
+    Evaluation.init();
+    SPLParser parser = new SPLParser(getResource("controlflow/conciseFor.spl"));
+    IRNode<Instruction> ir = parser.buildAST();
+    DefaultASTContext<Instruction> context = parser.getContext();
+    context.generateByteCodes(ir);
+    SPLCodeObject code = SPLCodeObjectBuilder.build(context);
+    Dissembler dissembler = new Dissembler(code);
+    dissembler.prettyPrint();
+    System.out.println(Arrays.toString(code.getConstants()));
+    System.out.println(Arrays.toString(code.getVarnames()));
+  }
+
+  @Test
+  public void testConciseFor() throws SPLInternalException, SPLSyntaxError, IOException {
+    run("controlflow/conciseFor.spl");
   }
 }

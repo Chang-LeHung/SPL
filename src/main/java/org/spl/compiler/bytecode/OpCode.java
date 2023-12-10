@@ -67,7 +67,9 @@ public enum OpCode {
   RETURN,
   RETURN_NONE,
   MAKE_FUNCTION,
-  SUBSCRIBE;
+  SUBSCRIBE,
+  GET_ITERATOR,
+  NEXT;
   public final byte val;
 
   OpCode() {

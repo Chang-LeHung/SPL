@@ -51,7 +51,8 @@ public class JumpContext implements ASTContext<Instruction> {
   @Override
   public void addInstruction(Instruction instruction, int lineNo, int columnNo, int len) throws SPLSyntaxError {
     code.add(new Ins(instruction, lineNo, columnNo, len));
-    if (instruction.getCode() == OpCode.JUMP_ABSOLUTE) {
+    OpCode opcode = instruction.getCode();
+    if (opcode == OpCode.JUMP_ABSOLUTE) {
       nBytes += 4;
     } else {
       nBytes += 2;

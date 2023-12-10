@@ -36,6 +36,12 @@ public class BuildList extends AbstractIR<Instruction> {
   }
 
   @Override
+  public void postVisiting(ASTContext<Instruction> context) {
+    context.decreaseStackSize(children.size());
+    context.increaseStackSize();
+  }
+
+  @Override
   public boolean isStatement() {
     return true;
   }

@@ -1,7 +1,10 @@
 package org.spl.vm.interpreter;
 
 import org.spl.vm.builtin.Builtin;
+import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
+import org.spl.vm.exceptions.splexceptions.SPLRuntimeException;
+import org.spl.vm.interfaces.SPLIterator;
 import org.spl.vm.internal.objs.SPLCodeObject;
 import org.spl.vm.internal.objs.SPLFrameObject;
 import org.spl.vm.internal.objs.SPLFuncObject;
@@ -131,6 +134,31 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             SPLObject rhs = evalStack[--top];
             SPLObject lhs = evalStack[--top];
             evalStack[top++] = lhs.__inplaceTrueDiv__(rhs);
+          }
+          case NEXT -> {
+            int arg = getOparg();
+            SPLObject o = evalStack[this.top - 1];
+            if (o instanceof SPLIterator iterator) {
+              SPLObject next = iterator.next();
+              if (next != SPLStopIteration.getInstance()) {
+                evalStack[top++] = next;
+              } else {
+                top--;
+                pc += arg;
+              }
+              continue;
+            }
+            throw new SPLInternalException("NEXT can only be used with iterators");
+          }
+          case GET_ITERATOR -> {
+            pc++;
+            SPLObject o = evalStack[--top];
+            SPLObject iterator = o.__getIterator__();
+            if (!(iterator instanceof SPLIterator)) {
+              SPLErrorUtils.splErrorFormat(new SPLRuntimeException(o.__str__() + " is not an iterator"));
+            } else {
+              evalStack[top++] = iterator;
+            }
           }
           case INPLACE_U_RSHIFT -> { // U_RSHIFT_ASSIGN
             getOparg();

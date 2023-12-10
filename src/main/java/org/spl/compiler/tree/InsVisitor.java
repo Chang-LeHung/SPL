@@ -61,26 +61,27 @@ public class InsVisitor implements Visitor<Instruction> {
   @Override
   public void visit(Instruction instruction) {
     String serialized;
-    if (loadStoreInstructions.contains(instruction.getCode())) {
+    OpCode opcode = instruction.getCode();
+    if (loadStoreInstructions.contains(opcode)) {
       serialized = String.format(
-          "%-6d %s %s", offset, instruction.getCode(),
+          "%-6d %s %s", offset, opcode,
           idx2Var.get((instruction.getOpArg())));
-    } else if (instruction.getCode() == OpCode.LOAD_CONST) {
-      serialized = String.format("%-6d %s %s", offset, instruction.getCode(),
+    } else if (opcode == OpCode.LOAD_CONST) {
+      serialized = String.format("%-6d %s %s", offset, opcode,
           idx2Constant.get((instruction.getOpArg())));
-    } else if (instruction.getCode() == OpCode.CALL ||
-        instruction.getCode() == OpCode.JUMP_FALSE || instruction.getCode() == OpCode.JUMP_UNCON_FORWARD ||
-        instruction.getCode() == OpCode.JUMP_BACK || instruction.getCode() == OpCode.JUMP_BACK_TRUE ||
-        instruction.getCode() == OpCode.JUMP_ABSOLUTE ||
-        instruction.getCode() == OpCode.JMP_TRUE_NO_POP ||
-        instruction.getCode() == OpCode.CALL_METHOD ||
-        instruction.getCode() == OpCode.MAKE_FUNCTION) {
-      serialized = String.format("%-6d %s %d", offset, instruction.getCode(),
+    } else if (opcode == OpCode.CALL ||
+        opcode == OpCode.JUMP_FALSE || opcode == OpCode.JUMP_UNCON_FORWARD ||
+        opcode == OpCode.JUMP_BACK || opcode == OpCode.JUMP_BACK_TRUE ||
+        opcode == OpCode.JUMP_ABSOLUTE ||
+        opcode == OpCode.JMP_TRUE_NO_POP ||
+        opcode == OpCode.CALL_METHOD || opcode == OpCode.NEXT ||
+        opcode == OpCode.MAKE_FUNCTION) {
+      serialized = String.format("%-6d %s %d", offset, opcode,
           instruction.getOpArg());
     } else {
-      serialized = String.format("%-6d %s", offset, instruction.getCode());
+      serialized = String.format("%-6d %s", offset, opcode);
     }
-    if (instruction.getCode() == OpCode.JUMP_ABSOLUTE) {
+    if (opcode == OpCode.JUMP_ABSOLUTE) {
       offset += 4;
     } else {
       if (instruction.getOparg() >= 255)

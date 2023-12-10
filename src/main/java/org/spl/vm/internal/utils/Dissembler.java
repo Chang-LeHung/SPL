@@ -151,6 +151,13 @@ public class Dissembler extends SPLObject {
           ins = new Instruction(OpCode.INPLACE_MUL, 0);
           pc++;
         }
+        case GET_ITERATOR -> {
+          ins = new Instruction(OpCode.GET_ITERATOR, 0);
+          pc++;
+        }
+        case NEXT -> {
+          ins = new Instruction(OpCode.NEXT, getOparg());
+        }
         case INPLACE_DIV -> {
           ins = new Instruction(OpCode.INPLACE_DIV, 0);
           pc++;

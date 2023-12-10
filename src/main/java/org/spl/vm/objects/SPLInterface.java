@@ -136,4 +136,6 @@ public interface SPLInterface {
   SPLObject __setAttr__(SPLObject name, SPLObject value) throws SPLInternalException;
 
   SPLObject __subscribe__(SPLObject args) throws SPLInternalException;
+
+  SPLObject __getIterator__() throws SPLInternalException;
 }
