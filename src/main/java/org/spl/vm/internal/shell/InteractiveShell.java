@@ -91,6 +91,7 @@ public class InteractiveShell {
               break;
             case "clear":
               System.out.println("\033[H\033[2J");
+              break;
             case "vars":
               PrettyPrinter printer = new PrettyPrinter();
               printer.setHeader(List.of("Variable", "Type", "Value"));
