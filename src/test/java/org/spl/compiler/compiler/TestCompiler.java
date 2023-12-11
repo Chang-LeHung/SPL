@@ -318,4 +318,9 @@ public class TestCompiler {
   public void testTryReturn02() throws SPLInternalException, SPLSyntaxError, IOException {
     run("try/try03.spl");
   }
+
+  @Test
+  public void testTry04() throws SPLInternalException, SPLSyntaxError, IOException {
+    run("try/try04.spl");
+  }
 }

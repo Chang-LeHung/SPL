@@ -1,0 +1,23 @@
+
+
+
+def test() {
+
+    try {
+        a = 1 / 1
+        return 1024
+    } catch( ZeroDivisionError e) {
+        print(e)
+    } catch (Exception e) {
+        print(e)
+    }
+    finally {
+        print("In finally")
+    }
+}
+
+
+res = test()
+print("res = ", res)
+
+test.dis()
