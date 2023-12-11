@@ -20,6 +20,7 @@ public class SPLCodeObjectBuilder {
         code,
         lenColumn,
         debugInfo,
+        context.getJumpTable(),
         context.getVarnames(),
         context.getConstants());
   }

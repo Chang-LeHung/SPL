@@ -1,5 +1,6 @@
 package org.spl.vm.exceptions.types;
 
+import org.spl.vm.builtin.Builtin;
 import org.spl.vm.types.SPLCommonType;
 
 public class SPLTypeError extends SPLCommonType {
@@ -13,5 +14,9 @@ public class SPLTypeError extends SPLCommonType {
 
   private static class SelfHolder {
     final static SPLTypeError instance = new SPLTypeError(null);
+
+    static {
+      Builtin.addObject("TypeError", instance);
+    }
   }
 }

@@ -69,6 +69,14 @@ public class Builtin {
     }
   }
 
+  public static void addObject(SPLStringObject name, SPLObject o) {
+    dict.put(name, o);
+  }
+
+  public static void addObject(String name, SPLObject o) {
+    addObject(new SPLStringObject(name), o);
+  }
+
   public static SPLObject get(SPLObject key) {
     return dict.get(key);
   }

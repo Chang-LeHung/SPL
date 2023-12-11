@@ -55,6 +55,9 @@ public class Dissembler extends SPLObject {
           ins = new Instruction(OpCode.NOP, 0);
           pc++;
         }
+        case STORE_EXC_VAL -> {
+          ins = new Instruction(OpCode.STORE_EXC_VAL, getOparg());
+        }
         case ADD -> {
           ins = new Instruction(OpCode.ADD, 0);
           pc++;
@@ -267,6 +270,24 @@ public class Dissembler extends SPLObject {
         case JUMP_FALSE -> {
           ins = new Instruction(OpCode.JUMP_FALSE, getOparg());
         }
+        case LONG_JUMP -> {
+          int arg = 0;
+          arg |= code[pc++];
+          arg <<= 8;
+          arg |= code[pc++];
+          arg <<= 8;
+          arg |= code[pc++];
+          if ((arg & 1) == 1) {
+            // jump forward
+            ins = new Instruction(OpCode.LONG_JUMP, arg>>1);
+          } else {
+            // jump backward
+            ins = new Instruction(OpCode.LONG_JUMP, -(arg>>1));
+          }
+        }
+        case EXEC_MATCH -> {
+          ins = new Instruction(OpCode.EXEC_MATCH, getOparg());
+        }
         case JMP_TRUE_NO_POP -> {
           ins = new Instruction(OpCode.JMP_TRUE_NO_POP, getOparg());
         }
@@ -342,7 +363,7 @@ public class Dissembler extends SPLObject {
   }
 
   @SPLExportMethod
-  public SPLObject code (SPLObject... args) {
+  public SPLObject code(SPLObject... args) {
     return codeObject;
   }
 

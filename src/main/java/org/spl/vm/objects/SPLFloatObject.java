@@ -3,6 +3,7 @@ package org.spl.vm.objects;
 import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.exceptions.splexceptions.SPLTypeError;
+import org.spl.vm.exceptions.splexceptions.SPLZeroDivisionError;
 import org.spl.vm.types.SPlFloatType;
 
 public class SPLFloatObject extends SPLObject {
@@ -54,8 +55,12 @@ public class SPLFloatObject extends SPLObject {
   @Override
   public SPLObject __div__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLFloatObject f) {
+      if (f.getVal() == 0)
+        return SPLErrorUtils.splErrorFormat(new SPLZeroDivisionError("division by zero"));
       return new SPLFloatObject(val / f.getVal());
     } else if (rhs instanceof SPLLongObject l) {
+      if (l.getVal() == 0)
+        return SPLErrorUtils.splErrorFormat(new SPLZeroDivisionError("division by zero"));
       return new SPLFloatObject(val / l.getVal());
     }
     return SPLErrorUtils

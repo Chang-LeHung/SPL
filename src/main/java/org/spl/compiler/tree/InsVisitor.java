@@ -36,6 +36,7 @@ public class InsVisitor implements Visitor<Instruction> {
     loadStoreInstructions.add(OpCode.LOAD_METHOD);
     loadStoreInstructions.add(OpCode.LOAD_NAME);
     loadStoreInstructions.add(OpCode.STORE);
+    loadStoreInstructions.add(OpCode.STORE_EXC_VAL);
   }
 
   public InsVisitor(Map<?, Integer> varMap, Map<SPLObject, Integer> constants) {
@@ -73,7 +74,7 @@ public class InsVisitor implements Visitor<Instruction> {
         opcode == OpCode.JUMP_FALSE || opcode == OpCode.JUMP_UNCON_FORWARD ||
         opcode == OpCode.JUMP_BACK || opcode == OpCode.JUMP_BACK_TRUE ||
         opcode == OpCode.JUMP_ABSOLUTE ||
-        opcode == OpCode.JMP_TRUE_NO_POP ||
+        opcode == OpCode.JMP_TRUE_NO_POP || opcode == OpCode.LONG_JUMP ||
         opcode == OpCode.CALL_METHOD || opcode == OpCode.NEXT ||
         opcode == OpCode.MAKE_FUNCTION) {
       serialized = String.format("%-6d %s %d", offset, opcode,
@@ -81,7 +82,7 @@ public class InsVisitor implements Visitor<Instruction> {
     } else {
       serialized = String.format("%-6d %s", offset, opcode);
     }
-    if (opcode == OpCode.JUMP_ABSOLUTE) {
+    if (opcode == OpCode.JUMP_ABSOLUTE || opcode == OpCode.LONG_JUMP) {
       offset += 4;
     } else {
       if (instruction.getOparg() >= 255)

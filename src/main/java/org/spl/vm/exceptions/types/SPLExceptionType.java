@@ -1,5 +1,6 @@
 package org.spl.vm.exceptions.types;
 
+import org.spl.vm.builtin.Builtin;
 import org.spl.vm.exceptions.splexceptions.SPLException;
 import org.spl.vm.types.SPLCommonType;
 import org.spl.vm.types.SPLObjectType;
@@ -21,5 +22,9 @@ public class SPLExceptionType extends SPLCommonType {
 
   private static class SelfHolder {
     private final static SPLExceptionType instance = new SPLExceptionType(null);
+
+    static {
+      Builtin.addObject("Exception", instance);
+    }
   }
 }

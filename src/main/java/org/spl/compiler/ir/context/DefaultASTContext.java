@@ -14,6 +14,7 @@ import java.util.*;
 public class DefaultASTContext<E extends Instruction> implements Visitor<E>, ASTContext<E> {
 
   private final List<E> instructions;
+  private final List<JumpTableEntry> jumpTable;
   private final Map<Object, Integer> varnames;
   private final Map<SPLObject, Integer> constants;
   private final ByteArrayOutputStream code;
@@ -46,6 +47,7 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
     lenColumn = new ByteArrayOutputStream();
     globals = new HashSet<>();
     constants = new HashMap<>();
+    jumpTable = new ArrayList<>();
   }
 
 
@@ -103,6 +105,16 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
   }
 
   @Override
+  public void addJumpTableEntry(JumpTableEntry entry) {
+    jumpTable.add(entry);
+  }
+
+  @Override
+  public List<JumpTableEntry> getJumpTable() {
+    return jumpTable;
+  }
+
+  @Override
   public void addInstruction(E instruction, int lineNo, int columnNo, int len) throws SPLSyntaxError {
     instructions.add(instruction);
     if (firstLineNo == -1) {
@@ -123,7 +135,7 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
     // write instruction info
     write(instruction.getOpCode(), code);
     OpCode opcode = instruction.getCode();
-    if (opcode == OpCode.JUMP_ABSOLUTE) {
+    if (opcode == OpCode.JUMP_ABSOLUTE || opcode == OpCode.LONG_JUMP) {
       int arg = instruction.getOparg();
       code.write(arg >> 16);
       code.write(arg >> 8);

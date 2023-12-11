@@ -69,7 +69,10 @@ public enum OpCode {
   MAKE_FUNCTION,
   SUBSCRIBE,
   GET_ITERATOR,
-  NEXT;
+  NEXT,
+  EXEC_MATCH,
+  LONG_JUMP,
+  STORE_EXC_VAL;
   public final byte val;
 
   OpCode() {

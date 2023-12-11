@@ -555,7 +555,7 @@ public class Lexer {
   public enum TOKEN_TYPE {
     EOF, NEWLINE, STARTER, // used only in the function doParse()
     COMMA, IDENTIFIER, LBRACKET, RBRACKET, TRUE, FALSE, COLON, IMPORT, INT, FLOAT, STRING, SEMICOLON, LEFT_PARENTHESES, RIGHT_PARENTHESES, PLUS, MINUS, MUL, DIV, TRUE_DIV, MOD, LSHIFT, RSHIFT, U_RSHIFT, // unconditional left shift
-    ASSIGN, ASSIGN_TRUE_DIV, EQ, LT, GT, GE, LE, NE, AND, CONDITIONAL_AND, OR, CONDITIONAL_OR, POWER, XOR, NOT, INVERT, CONDITIONAL_NOT, ASSIGN_ADD, ARROW, ASSIGN_SUB, ASSIGN_MUL, ASSIGN_DIV, ASSIGN_POWER, ASSIGN_MOD, ASSIGN_INVERT, ASSIGN_LSHIFT, ASSIGN_RSHIFT, ASSIGN_U_RSHIFT, ASSIGN_AND, ASSIGN_OR, ASSIGN_XOR, IF, ELSE, DO, WHILE, FOR, BREAK, CONTINUE, RETURN, DOT, LBRACE, RBRACE, IN, CLASS, DEF, GLOBAL, NONE,
+    ASSIGN, ASSIGN_TRUE_DIV, EQ, LT, GT, GE, LE, NE, AND, CONDITIONAL_AND, OR, CONDITIONAL_OR, POWER, XOR, NOT, INVERT, CONDITIONAL_NOT, ASSIGN_ADD, ARROW, ASSIGN_SUB, ASSIGN_MUL, ASSIGN_DIV, ASSIGN_POWER, ASSIGN_MOD, ASSIGN_INVERT, ASSIGN_LSHIFT, ASSIGN_RSHIFT, ASSIGN_U_RSHIFT, ASSIGN_AND, ASSIGN_OR, ASSIGN_XOR, IF, ELSE, DO, WHILE, FOR, BREAK, CONTINUE, RETURN, DOT, LBRACE, RBRACE, IN, CLASS, DEF, TRY, CATCH, FINALLY, GLOBAL, NONE,
   }
 
   public static class TokenType extends SPLCommonType {
@@ -605,6 +605,9 @@ public class Lexer {
           case "break" -> {
             this.token = TOKEN_TYPE.BREAK;
           }
+          case "finally" -> {
+            this.token = TOKEN_TYPE.FINALLY;
+          }
           case "do" -> {
             this.token = TOKEN_TYPE.DO;
           }
@@ -616,6 +619,12 @@ public class Lexer {
           }
           case "def" -> {
             this.token = TOKEN_TYPE.DEF;
+          }
+          case "try" -> {
+            this.token = TOKEN_TYPE.TRY;
+          }
+          case "catch" -> {
+            this.token = TOKEN_TYPE.CATCH;
           }
           case "global" -> {
             this.token = TOKEN_TYPE.GLOBAL;
@@ -879,6 +888,18 @@ public class Lexer {
 
     public boolean isIDENTIFIER() {
       return token == TOKEN_TYPE.IDENTIFIER;
+    }
+
+    public boolean isTry() {
+      return token == TOKEN_TYPE.TRY;
+    }
+
+    public boolean isCatch() {
+      return token == TOKEN_TYPE.CATCH;
+    }
+
+    public boolean isFinally() {
+      return token == TOKEN_TYPE.FINALLY;
     }
 
     public boolean isASSIGN_ADD() {

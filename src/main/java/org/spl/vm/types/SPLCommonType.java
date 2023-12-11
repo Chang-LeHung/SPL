@@ -7,28 +7,19 @@ import java.util.LinkedList;
 
 public class SPLCommonType extends SPLObject {
 
-  private final Deque<SPLCommonType> bases;
+  private final SPLCommonType base;
   private final String name;
   private final Class<? extends SPLObject> clazz;
 
   public SPLCommonType(SPLCommonType type, String name, Class<? extends SPLObject> clazz) {
     super(type);
-    bases = new LinkedList<>();
-    this.bases.addFirst(SPLObjectType.getInstance());
+    base = SPLObjectType.getInstance();
     this.name = name;
     this.clazz = clazz;
   }
 
-  public Deque<SPLCommonType> getBases() {
-    return bases;
-  }
-
-  public void addBaseFront(SPLCommonType base) {
-    bases.addFirst(base);
-  }
-
-  public void addBaseBack(SPLCommonType base) {
-    bases.addLast(base);
+  public SPLCommonType getBase() {
+    return base;
   }
 
   public String getName() {
@@ -37,5 +28,15 @@ public class SPLCommonType extends SPLObject {
 
   public Class<? extends SPLObject> getObjectClazz() {
     return clazz;
+  }
+
+  public static boolean isExecMatch(SPLObject o1, SPLCommonType o2) {
+    SPLCommonType type = o1.getType();
+    while (type != null) {
+      if (type == o2)
+        return true;
+      type = type.getBase();
+    }
+    return false;
   }
 }

@@ -3,6 +3,7 @@ package org.spl.vm.objects;
 import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.exceptions.splexceptions.SPLTypeError;
+import org.spl.vm.exceptions.splexceptions.SPLZeroDivisionError;
 import org.spl.vm.types.SPLLongType;
 
 public class SPLLongObject extends SPLObject {
@@ -69,8 +70,12 @@ public class SPLLongObject extends SPLObject {
   @Override
   public SPLObject __div__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLLongObject l) {
+      if (l.getVal() == 0)
+        return SPLErrorUtils.splErrorFormat(new SPLZeroDivisionError("division by zero"));
       return create(val / l.val);
     } else if (rhs instanceof SPLFloatObject f) {
+      if (f.getVal() == 0)
+        return SPLErrorUtils.splErrorFormat(new SPLZeroDivisionError("division by zero"));
       return new SPLFloatObject(getVal() / f.getVal());
     }
     return SPLErrorUtils.splErrorFormat(new SPLTypeError("can not apply operator '/' on long and " + rhs.getType().getName()));
@@ -259,9 +264,13 @@ public class SPLLongObject extends SPLObject {
   @Override
   public SPLObject __trueDiv__(SPLObject rhs) throws SPLInternalException {
     if (rhs instanceof SPLLongObject l) {
+      if (l.getVal() == 0)
+        return SPLErrorUtils.splErrorFormat(new SPLZeroDivisionError("division by zero"));
       return create((int) val / l.val);
     } else if (rhs instanceof SPLFloatObject f) {
-      return new SPLFloatObject((int) getVal() / f.getVal());
+      if (f.getVal() == 0)
+        return SPLErrorUtils.splErrorFormat(new SPLZeroDivisionError("division by zero"));
+      return new SPLLongObject((int) (getVal() / f.getVal()));
     }
     return SPLErrorUtils.splErrorFormat(new SPLTypeError("can not apply operator '/' on long and " + rhs.getType().getName()));
   }

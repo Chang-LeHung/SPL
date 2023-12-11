@@ -1,0 +1,9 @@
+
+
+try {
+    a = 1 / 0
+} catch( ZeroDivisionError e) {
+    print(e)
+} finally {
+    print("In finally")
+}

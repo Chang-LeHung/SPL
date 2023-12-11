@@ -1,12 +1,15 @@
 package org.spl.vm.internal.objs;
 
+import org.spl.compiler.ir.context.ASTContext;
 import org.spl.vm.internal.typs.SPLCodeType;
 import org.spl.vm.objects.SPLFloatObject;
 import org.spl.vm.objects.SPLLongObject;
 import org.spl.vm.objects.SPLObject;
 import org.spl.vm.objects.SPLStringObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class SPLCodeObject extends SPLObject {
@@ -18,6 +21,7 @@ public class SPLCodeObject extends SPLObject {
   private final SPLStringObject[] varnames;
   private final SPLObject[] constants;
   private final int maxStackSize;
+  private final List<ASTContext.JumpTableEntry> jumpTable;
   private int args;
 
   public SPLCodeObject(int args,
@@ -27,6 +31,7 @@ public class SPLCodeObject extends SPLObject {
                        byte[] code,
                        byte[] lenColumn,
                        byte[] debugInfo,
+                       List<ASTContext.JumpTableEntry> jumpTable,
                        Map<Object, Integer> varnames, SPLObject[] constants) {
     super(SPLCodeType.getInstance());
     this.args = args;
@@ -42,6 +47,7 @@ public class SPLCodeObject extends SPLObject {
       this.varnames[v] = new SPLStringObject((String) k);
     });
     this.constants = constants;
+    this.jumpTable = jumpTable;
   }
 
   public static SPLLongObject getSPL(int val) {
@@ -100,6 +106,7 @@ public class SPLCodeObject extends SPLObject {
         ",\nconstants=" + Arrays.toString(constants) +
         ",\nvarnames=" + Arrays.toString(varnames) +
         ",\nmaxStackSize=" + maxStackSize +
+        ",\nJumpTable=" + jumpTable.toString() +
         '\n' + '}';
   }
 
@@ -113,5 +120,9 @@ public class SPLCodeObject extends SPLObject {
 
   public SPLObject[] getConstants() {
     return constants;
+  }
+
+  public List<ASTContext.JumpTableEntry> getJumpTable() {
+    return jumpTable;
   }
 }

@@ -83,6 +83,9 @@ public interface Evaluation {
     opcode[OpCode.SUBSCRIBE.val] = OpCode.SUBSCRIBE;
     opcode[OpCode.GET_ITERATOR.val] = OpCode.GET_ITERATOR;
     opcode[OpCode.NEXT.val] = OpCode.NEXT;
+    opcode[OpCode.LONG_JUMP.val] = OpCode.LONG_JUMP;
+    opcode[OpCode.EXEC_MATCH.val] = OpCode.EXEC_MATCH;
+    opcode[OpCode.STORE_EXC_VAL.val] = OpCode.STORE_EXC_VAL;
   }
 
   SPLObject evalFrame() throws SPLInternalException;

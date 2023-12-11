@@ -75,15 +75,13 @@ public class TestCompiler {
 
   public DefaultEval run(String filename) throws SPLSyntaxError, IOException, SPLInternalException {
     SPLCompiler compiler = new SPLCompiler(getResource(filename));
+    Evaluation.init();
     SPLCodeObject code = compiler.compile();
-    ASTContext<Instruction> context = compiler.getContext();
-    InsVisitor insVisitor = new InsVisitor(context.getVarnames(), context.getConstantMap());
-    context.getInstructions().forEach(insVisitor::visit);
-    System.out.println(insVisitor);
-    System.out.println(context.getTopStackSize());
-    System.out.println(code);
+    Dissembler dissembler = new Dissembler(code);
+    dissembler.prettyPrint();
     DefaultEval defaultEval = new DefaultEval(code);
     defaultEval.evalFrame();
+    System.out.println(code);
     return defaultEval;
   }
 
@@ -287,5 +285,23 @@ public class TestCompiler {
   @Test
   public void testIterDict() throws SPLInternalException, SPLSyntaxError, IOException {
     run("datastruct/iterdict.spl");
+  }
+
+  @Test
+  public void testTry01Code() throws SPLInternalException, SPLSyntaxError, IOException {
+    Evaluation.init();
+    SPLParser parser = new SPLParser(getResource("try/try01.spl"));
+    IRNode<Instruction> ir = parser.buildAST();
+    DefaultASTContext<Instruction> context = parser.getContext();
+    context.generateByteCodes(ir);
+    SPLCodeObject code = SPLCodeObjectBuilder.build(context);
+    Dissembler dissembler = new Dissembler(code);
+    dissembler.prettyPrint();
+    System.out.println(code);
+  }
+
+  @Test
+  public void testTry01() throws SPLInternalException, SPLSyntaxError, IOException {
+    run("try/try01.spl");
   }
 }

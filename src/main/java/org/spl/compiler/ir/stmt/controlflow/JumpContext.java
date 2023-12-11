@@ -52,7 +52,7 @@ public class JumpContext implements ASTContext<Instruction> {
   public void addInstruction(Instruction instruction, int lineNo, int columnNo, int len) throws SPLSyntaxError {
     code.add(new Ins(instruction, lineNo, columnNo, len));
     OpCode opcode = instruction.getCode();
-    if (opcode == OpCode.JUMP_ABSOLUTE) {
+    if (opcode == OpCode.JUMP_ABSOLUTE || opcode == OpCode.LONG_JUMP) {
       nBytes += 4;
     } else {
       nBytes += 2;
@@ -189,6 +189,16 @@ public class JumpContext implements ASTContext<Instruction> {
   @Override
   public int getConstantsSize() {
     return context.getConstantsSize();
+  }
+
+  @Override
+  public void addJumpTableEntry(JumpTableEntry entry) {
+
+  }
+
+  @Override
+  public List<JumpTableEntry> getJumpTable() {
+    return null;
   }
 
   public int getNBytes() {

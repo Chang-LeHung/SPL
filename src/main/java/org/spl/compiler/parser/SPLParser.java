@@ -40,6 +40,8 @@ import java.util.List;
  *              | forStmt
  *              | globalStmt
  *              | returnStmt
+ *              | tryStmt
+ * tryStmt      : 'try' block ('catch' '(' IDENTIFIER IDENTIFIER ')' block) * ('finally' block)*
  * returnStmt   : 'return' expression?
  * globalStmt   : 'global' IDENTIFIER (',' IDENTIFIER)*
  * funcDef      : 'def' funcName '(' paramList? ')' block
@@ -214,7 +216,10 @@ public class SPLParser extends AbstractSyntaxParser {
         Continue cont = new Continue();
         setSourceCodeInfo(cont, token);
         return cont;
-      } else if (tokenFlow.peek().isIDENTIFIER()) {
+      } else if (tokenFlow.peek().isTry()) {
+        return tryStatement();
+      }
+      else if (tokenFlow.peek().isIDENTIFIER()) {
         int cursor = tokenFlow.getCursor();
         atom();
         if (tokenFlow.peek().isASSIGN()) {
@@ -232,6 +237,47 @@ public class SPLParser extends AbstractSyntaxParser {
     }
     throwSyntaxError("Illegal statement, expected assignment or expression", tokenFlow.peek());
     return null;
+  }
+
+  private IRNode<Instruction> tryStatement() throws SPLSyntaxError {
+    tokenAssertion(tokenFlow.peek(),  Lexer.TOKEN_TYPE.TRY, "Expected  'try' instead of " + tokenFlow.peek().getValueAsString());
+    Lexer.Token token = tokenFlow.peek();
+    Lexer.Token tryToken = token;
+    tokenFlow.next();
+    IRNode<Instruction> tryBlock = block();
+    List<IRNode<Instruction>> exceptBlocks = new ArrayList<>();
+    while (tokenFlow.peek().isCatch()) {
+      Lexer.Token exceptToken = tokenFlow.peek();
+      tokenFlow.next();
+      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LEFT_PARENTHESES, "Expected '(' instead of " + tokenFlow.peek().getValueAsString());
+      tokenFlow.next();
+      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.IDENTIFIER, "Expected an identifier instead of " + tokenFlow.peek().getValueAsString());
+      token = tokenFlow.peek();
+      tokenFlow.next();
+      String exceptName = token.getIdentifier();
+      context.addSymbol(exceptName);
+      int exceptIdx = context.addVarName(exceptName);
+      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.IDENTIFIER, "Expected an identifier instead of " + tokenFlow.peek().getValueAsString());
+      token = tokenFlow.peek();
+      tokenFlow.next();
+      String storeName = token.getIdentifier();
+      context.addSymbol(exceptName);
+      int storeIdx = context.addVarName(storeName);
+      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RIGHT_PARENTHESES, "Expected ')' instead of " + tokenFlow.peek().getValueAsString());
+      tokenFlow.next();
+      IRNode<Instruction> block = block();
+      ExceptBlock exceptBlock = new ExceptBlock(exceptName, exceptIdx, storeName, storeIdx, block);
+      setSourceCodeInfo(exceptBlock, exceptToken);
+      exceptBlocks.add(exceptBlock);
+    }
+    IRNode<Instruction> finallyBlock = null;
+    if (tokenFlow.peek().isFinally()) {
+      tokenFlow.next();
+      finallyBlock = block();
+    }
+    TryStmt tryStmt = new TryStmt(tryBlock, exceptBlocks, finallyBlock);
+    setSourceCodeInfo(tryStmt, tryToken);
+    return tryStmt;
   }
 
   private IRNode<Instruction> assignStatement() throws SPLSyntaxError {

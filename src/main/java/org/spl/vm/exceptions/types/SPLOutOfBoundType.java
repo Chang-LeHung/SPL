@@ -1,5 +1,6 @@
 package org.spl.vm.exceptions.types;
 
+import org.spl.vm.builtin.Builtin;
 import org.spl.vm.exceptions.splexceptions.SPLOutOfBoundException;
 import org.spl.vm.types.SPLCommonType;
 
@@ -14,5 +15,10 @@ public class SPLOutOfBoundType extends SPLCommonType {
 
   private static class SelfHolder {
     public static final SPLOutOfBoundType INSTANCE = new SPLOutOfBoundType();
+    static {
+      Builtin.addObject("OutOfBoundError", SelfHolder.INSTANCE);
+      Builtin.addObject("IndexError", SelfHolder.INSTANCE);
+    }
   }
+
 }

@@ -72,4 +72,23 @@ public interface ASTContext<E> {
   int getConstantObjectIndex(SPLObject o);
 
   int getConstantsSize();
+
+  void addJumpTableEntry(JumpTableEntry entry);
+
+  List<JumpTableEntry> getJumpTable();
+  record JumpTableEntry(int startPc, int endPc, int targetPc) {
+
+    @Override
+      public String toString() {
+        return "JumpTableEntry{" +
+            "startPC=" + startPc +
+            ", endPC=" + endPc +
+            ", targetPC=" + targetPc +
+            '}';
+      }
+
+      public boolean isInRange(int pc) {
+        return pc >= startPc && pc <= endPc;
+      }
+    }
 }
