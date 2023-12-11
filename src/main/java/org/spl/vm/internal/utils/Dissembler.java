@@ -10,6 +10,7 @@ import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.exceptions.splexceptions.SPLRuntimeException;
 import org.spl.vm.internal.objs.SPLCodeObject;
 import org.spl.vm.internal.objs.SPLFuncObject;
+import org.spl.vm.internal.shell.PrettyPrinter;
 import org.spl.vm.internal.typs.DisType;
 import org.spl.vm.interpreter.Evaluation;
 import org.spl.vm.objects.SPLNoneObject;
@@ -17,6 +18,7 @@ import org.spl.vm.objects.SPLObject;
 import org.spl.vm.objects.SPLStringObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Dissembler extends SPLObject {
@@ -339,6 +341,12 @@ public class Dissembler extends SPLObject {
       content = insVisitor.toString();
     }
     System.out.println(content);
+    PrettyPrinter printer = new PrettyPrinter();
+    printer.setHeader(List.of("StartPC", "EndPC", "HandlePC"));
+    codeObject.getJumpTable().forEach(entry -> printer.addRow(List.of(entry.startPc(), entry.endPc(), entry.targetPc())));
+    // print below content with green font
+    System.out.println("\033[32mJump Table:\033[0m");
+    printer.print();
   }
 
   public String getContent() {

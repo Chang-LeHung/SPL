@@ -81,7 +81,6 @@ public class TestCompiler {
     dissembler.prettyPrint();
     DefaultEval defaultEval = new DefaultEval(code);
     defaultEval.evalFrame();
-    System.out.println(code);
     return defaultEval;
   }
 

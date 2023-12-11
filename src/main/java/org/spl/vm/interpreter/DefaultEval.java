@@ -520,6 +520,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               int arg = getOparg();
               ThreadState ts = ThreadState.get();
               var val = ts.getExecVal();
+              assert val != null;
               locals.put(varnames[arg], val);
             }
             default -> {
@@ -527,7 +528,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             }
           }
         }
-        break MainLoop;
+        break;
       } catch (SPLInternalException e) {
         ThreadState ts = ThreadState.get();
         if (ts.getExecVal() != null) {

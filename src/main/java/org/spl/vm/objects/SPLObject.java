@@ -250,4 +250,8 @@ public class SPLObject implements SPLInterface {
     return SPLErrorUtils.splErrorFormat(new SPLTypeError("Invalid arguments for bind"));
   }
 
+  @Override
+  public String toString() {
+    return String.format("<object %s @0x%s>", getType().getName(), Integer.toHexString(hashCode()));
+  }
 }

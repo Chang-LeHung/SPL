@@ -51,7 +51,7 @@ public class PrettyPrinter {
     return data.add(row);
   }
 
-  public boolean addRow(List<String> row) {
+  public boolean addRow(List<?> row) {
     return data.add(new Row(row));
   }
 
@@ -71,12 +71,14 @@ public class PrettyPrinter {
     System.out.println();
     printLine(list);
     System.out.println();
-    for (Row row : data) {
-      printData(row.getData(), list);
+    if (data.size() > 0) {
+      for (Row row : data) {
+        printData(row.getData(), list);
+        System.out.println();
+      }
+      printLine(list);
       System.out.println();
     }
-    printLine(list);
-    System.out.println();
   }
 
   private void printData(List<String> data, List<Integer> list) {
@@ -107,7 +109,7 @@ public class PrettyPrinter {
     }
   }
 
-  private List<Integer> findLens() {
+  public List<Integer> findLens() {
     List<Integer> arrayList = new ArrayList<>();
     for (String s : header) {
       arrayList.add(s.length() + edgeSize);
@@ -123,11 +125,15 @@ public class PrettyPrinter {
     return arrayList;
   }
 
+
   public static class Row {
     List<String> data;
 
-    public Row(List<String> param) {
-      data = param;
+    public Row(List<?> param) {
+      data = new ArrayList<>();
+      for (Object o : param) {
+        data.add(o.toString());
+      }
     }
 
     public List<String> getData() {
