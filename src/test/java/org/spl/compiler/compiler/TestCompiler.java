@@ -303,4 +303,9 @@ public class TestCompiler {
   public void testTry01() throws SPLInternalException, SPLSyntaxError, IOException {
     run("try/try01.spl");
   }
+
+  @Test
+  public void testLambda() throws SPLInternalException, SPLSyntaxError, IOException {
+    run("function/lambda.spl");
+  }
 }

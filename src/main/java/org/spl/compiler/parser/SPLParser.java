@@ -218,8 +218,7 @@ public class SPLParser extends AbstractSyntaxParser {
         return cont;
       } else if (tokenFlow.peek().isTry()) {
         return tryStatement();
-      }
-      else if (tokenFlow.peek().isIDENTIFIER()) {
+      } else if (tokenFlow.peek().isIDENTIFIER()) {
         int cursor = tokenFlow.getCursor();
         atom();
         if (tokenFlow.peek().isASSIGN()) {
@@ -240,7 +239,7 @@ public class SPLParser extends AbstractSyntaxParser {
   }
 
   private IRNode<Instruction> tryStatement() throws SPLSyntaxError {
-    tokenAssertion(tokenFlow.peek(),  Lexer.TOKEN_TYPE.TRY, "Expected  'try' instead of " + tokenFlow.peek().getValueAsString());
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.TRY, "Expected  'try' instead of " + tokenFlow.peek().getValueAsString());
     Lexer.Token token = tokenFlow.peek();
     Lexer.Token tryToken = token;
     tokenFlow.next();
@@ -1225,31 +1224,43 @@ public class SPLParser extends AbstractSyntaxParser {
     tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.DEF,
         "Expected 'def' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
     tokenFlow.next();
-    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LEFT_PARENTHESES, "Expected '(' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
-    tokenFlow.next();
     var params = new ArrayList<String>();
     DefaultASTContext<Instruction> auxContex = new DefaultASTContext<>(filename);
     var oldContex = context;
     context = auxContex;
-    while (!tokenFlow.peek().isRIGHT_PARENTHESES()) {
-      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.IDENTIFIER, "Expected an identifier instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+    if (tokenFlow.peek().isLEFT_PARENTHESES()) {
+      tokenFlow.next();
+      while (!tokenFlow.peek().isRIGHT_PARENTHESES()) {
+        tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.IDENTIFIER, "Expected an identifier instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+        params.add(tokenFlow.peek().getIdentifier());
+        context.addVarName(tokenFlow.peek().getIdentifier());
+        context.addSymbol(tokenFlow.peek().getIdentifier());
+        tokenFlow.next();
+        if (tokenFlow.peek().isComma()) {
+          tokenFlow.next();
+        } else {
+          tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RIGHT_PARENTHESES, "Expected ')' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
+        }
+      }
+      tokenFlow.next();
+    } else {
+      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.IDENTIFIER, "Expected 'IDENTIFIER' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
       params.add(tokenFlow.peek().getIdentifier());
       context.addVarName(tokenFlow.peek().getIdentifier());
       context.addSymbol(tokenFlow.peek().getIdentifier());
       tokenFlow.next();
-      if (tokenFlow.peek().isComma()) {
-        tokenFlow.next();
-      } else {
-        tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RIGHT_PARENTHESES, "Expected ')' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
-      }
+      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.ARROW, "Expected '->' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
     }
     ProgramBlock block;
-    tokenFlow.next();
     if (tokenFlow.peek().isArrow()) {
       tokenFlow.next();
-      block = new ProgramBlock();
-      Return ret = new Return(expression());
-      block.addIRNode(ret);
+      if (tokenFlow.peek().isLBRACE()) {
+        block = (ProgramBlock) block();
+      } else {
+        block = new ProgramBlock();
+        Return ret = new Return(expression());
+        block.addIRNode(ret);
+      }
     } else {
       tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LBRACE, "Expected '{' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
       block = (ProgramBlock) block();

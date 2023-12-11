@@ -1,0 +1,8 @@
+
+
+
+
+hello = def (x) -> {print(x*2);print(x**2)}
+hello.dis()
+hello = def x -> {print(x*2);print(x**2)}
+hello.dis()
