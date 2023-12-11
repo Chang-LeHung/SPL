@@ -323,4 +323,10 @@ public class TestCompiler {
   public void testTry04() throws SPLInternalException, SPLSyntaxError, IOException {
     run("try/try04.spl");
   }
+
+  @Test
+  public void testComment() throws SPLInternalException, SPLSyntaxError, IOException {
+    run("comment/comment.spl");
+  }
 }
+

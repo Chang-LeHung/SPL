@@ -105,6 +105,7 @@ public class Lexer {
             c = nextChar(builder);
           }
           builder.delete(0, builder.length());
+          state = CHAR_TYPE.INIT;
         }
         case LBRACKET -> {
           Token token = new Token(TOKEN_TYPE.LBRACKET, "[");
