@@ -4,6 +4,7 @@ import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
 import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.IRNode;
+import org.spl.compiler.ir.block.ProgramBlock;
 import org.spl.compiler.ir.context.ASTContext;
 import org.spl.vm.objects.SPLObject;
 
@@ -17,10 +18,14 @@ public class JumpContext implements ASTContext<Instruction> {
   private final ASTContext<Instruction> context;
   private int nBytes;
 
+  private boolean inTry;
+  private ProgramBlock pb;
+
   public JumpContext(ASTContext<Instruction> context) {
     this.context = context;
     code = new ArrayList<>();
     nBytes = 0;
+    TryStmt.tryStateCopy(context, this);
   }
 
   @Override
@@ -194,6 +199,31 @@ public class JumpContext implements ASTContext<Instruction> {
   @Override
   public void addJumpTableEntry(JumpTableEntry entry) {
 
+  }
+
+  @Override
+  public void enableTryBlock() {
+    inTry = true;
+  }
+
+  @Override
+  public void disableTryBlock() {
+    inTry = false;
+  }
+
+  @Override
+  public boolean isTryBlockEnabled() {
+    return inTry;
+  }
+
+  @Override
+  public void setFinallyBlock(ProgramBlock pb) {
+    this.pb = pb;
+  }
+
+  @Override
+  public ProgramBlock getFinallyBlock() {
+    return pb;
   }
 
   @Override

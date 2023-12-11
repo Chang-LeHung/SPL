@@ -264,6 +264,7 @@ public class SPLParser extends AbstractSyntaxParser {
       int storeIdx = context.addVarName(storeName);
       tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RIGHT_PARENTHESES, "Expected ')' instead of " + tokenFlow.peek().getValueAsString());
       tokenFlow.next();
+      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LBRACE, "Expected '{' instead of " + tokenFlow.peek().getValueAsString());
       IRNode<Instruction> block = block();
       ExceptBlock exceptBlock = new ExceptBlock(exceptName, exceptIdx, storeName, storeIdx, block);
       setSourceCodeInfo(exceptBlock, exceptToken);
@@ -272,6 +273,7 @@ public class SPLParser extends AbstractSyntaxParser {
     IRNode<Instruction> finallyBlock = null;
     if (tokenFlow.peek().isFinally()) {
       tokenFlow.next();
+      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LBRACE, "Expected '{' instead of " + tokenFlow.peek().getValueAsString());
       finallyBlock = block();
     }
     TryStmt tryStmt = new TryStmt(tryBlock, exceptBlocks, finallyBlock);

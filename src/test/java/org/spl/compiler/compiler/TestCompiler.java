@@ -308,4 +308,14 @@ public class TestCompiler {
   public void testLambda() throws SPLInternalException, SPLSyntaxError, IOException {
     run("function/lambda.spl");
   }
+
+  @Test
+  public void testTryReturn() throws SPLInternalException, SPLSyntaxError, IOException {
+    run("try/try02.spl");
+  }
+
+  @Test
+  public void testTryReturn02() throws SPLInternalException, SPLSyntaxError, IOException {
+    run("try/try03.spl");
+  }
 }

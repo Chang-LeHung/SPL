@@ -5,6 +5,7 @@ import org.spl.compiler.bytecode.OpCode;
 import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.AbstractIR;
 import org.spl.compiler.ir.IRNode;
+import org.spl.compiler.ir.block.ProgramBlock;
 import org.spl.compiler.ir.context.ASTContext;
 
 import java.util.List;

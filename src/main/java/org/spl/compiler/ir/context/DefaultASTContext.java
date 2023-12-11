@@ -5,6 +5,7 @@ import org.spl.compiler.bytecode.OpCode;
 import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.NameSpace;
+import org.spl.compiler.ir.block.ProgramBlock;
 import org.spl.compiler.tree.Visitor;
 import org.spl.vm.objects.SPLObject;
 
@@ -30,6 +31,8 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
   private int stackSize;
   private int topStackSize;
   private int args;
+  private ProgramBlock pb;
+  private boolean inTry = false;
 
   public DefaultASTContext(String filename) {
     this.filename = filename;
@@ -107,6 +110,31 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
   @Override
   public void addJumpTableEntry(JumpTableEntry entry) {
     jumpTable.add(entry);
+  }
+
+  @Override
+  public void enableTryBlock() {
+    inTry = true;
+  }
+
+  @Override
+  public void disableTryBlock() {
+    inTry = false;
+  }
+
+  @Override
+  public boolean isTryBlockEnabled() {
+    return inTry;
+  }
+
+  @Override
+  public void setFinallyBlock(ProgramBlock pb) {
+    this.pb = pb;
+  }
+
+  @Override
+  public ProgramBlock getFinallyBlock() {
+    return pb;
   }
 
   @Override

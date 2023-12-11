@@ -2,6 +2,7 @@ package org.spl.compiler.ir.context;
 
 import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.IRNode;
+import org.spl.compiler.ir.block.ProgramBlock;
 import org.spl.vm.objects.SPLObject;
 
 import java.util.List;
@@ -74,6 +75,16 @@ public interface ASTContext<E> {
   int getConstantsSize();
 
   void addJumpTableEntry(JumpTableEntry entry);
+
+  void enableTryBlock();
+
+  void disableTryBlock();
+
+  boolean isTryBlockEnabled();
+
+  void setFinallyBlock(ProgramBlock pb);
+
+  ProgramBlock getFinallyBlock();
 
   List<JumpTableEntry> getJumpTable();
   record JumpTableEntry(int startPc, int endPc, int targetPc) {
