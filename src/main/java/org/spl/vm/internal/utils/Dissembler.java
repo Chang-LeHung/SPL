@@ -345,7 +345,7 @@ public class Dissembler extends SPLObject {
     printer.setHeader(List.of("StartPC", "EndPC", "HandlePC"));
     codeObject.getJumpTable().forEach(entry -> printer.addRow(List.of(entry.startPc(), entry.endPc(), entry.targetPc())));
     // print below content with green font
-    System.out.println("\033[32mJump Table:\033[0m");
+    System.out.println("\033[32mException Table:\033[0m");
     printer.print();
   }
 
