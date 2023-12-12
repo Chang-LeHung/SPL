@@ -18,6 +18,7 @@ import org.spl.vm.internal.SPLCodeObjectBuilder;
 import org.spl.vm.internal.objs.SPLCodeObject;
 import org.spl.vm.internal.objs.SPLFuncObject;
 import org.spl.vm.internal.utils.Dissembler;
+import org.spl.vm.internal.utils.SPLRangeObject;
 import org.spl.vm.interpreter.DefaultEval;
 import org.spl.vm.objects.*;
 
@@ -370,9 +371,16 @@ public class Builtin {
   @SPLExportMethod
   public static SPLObject range(SPLObject... args) throws SPLInternalException {
     if (args.length == 1 && args[0] instanceof SPLLongObject o) {
-      return new SPLCommonIterator(IntStream.range(0, (int) o.getVal()).mapToObj(SPLLongObject::create).toList());
+      return new SPLRangeObject(0, (int) o.getVal(),  1);
+    } else if (args.length == 2 && args[0] instanceof SPLLongObject o1
+        && args[1] instanceof SPLLongObject o2) {
+      return new SPLRangeObject((int) o1.getVal(), (int) o2.getVal(), 1);
+    } else if (args.length == 3 && args[0] instanceof SPLLongObject o1
+        && args[1] instanceof SPLLongObject o2
+        && args[2] instanceof SPLLongObject o3) {
+      return new SPLRangeObject((int) o1.getVal(), (int) o2.getVal(), (int) o3.getVal());
     }
-    return SPLErrorUtils.splErrorFormat(new SPLRuntimeException("range() only takes one int argument"));
+    return SPLErrorUtils.splErrorFormat(new SPLRuntimeException("range() only takes 1, 2 or 3 int arguments"));
   }
 
 }
