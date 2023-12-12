@@ -4,7 +4,6 @@ import org.spl.vm.annotations.SPLExportField;
 import org.spl.vm.annotations.SPLExportMethod;
 import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
-import org.spl.vm.exceptions.splexceptions.SPLAttributeError;
 import org.spl.vm.exceptions.splexceptions.SPLNotImplemented;
 import org.spl.vm.exceptions.splexceptions.SPLRuntimeException;
 import org.spl.vm.exceptions.splexceptions.SPLTypeError;
@@ -19,12 +18,14 @@ import java.util.Map;
 
 public class SPLObject implements SPLInterface {
 
+  @SPLExportField
   protected final SPLCommonType type;
   protected Map<SPLObject, Object> methods;
   protected Map<SPLObject, SPLObject> attrs;
 
   public SPLObject(SPLCommonType type) {
     this.type = type;
+    attrs = new HashMap<>();
   }
 
   @Override
@@ -171,19 +172,35 @@ public class SPLObject implements SPLInterface {
     return new SPLStringObject(this.toString());
   }
 
+
+  private SPLObject loadAttributeFromClass(Class<?> clazz, SPLObject name) {
+    var sn = name.__str__().toString();
+    try {
+      Field filed = clazz.getDeclaredField(sn);
+      filed.setAccessible(true);
+      if (filed.isAnnotationPresent(SPLExportField.class) && SPLObject.class.isAssignableFrom(filed.getType())) {
+        return (SPLObject) filed.get(this);
+      }
+    } catch (NoSuchFieldException | IllegalAccessException ignored) {
+    }
+    return null;
+  }
   @Override
   public SPLObject __getAttr__(SPLObject name) throws SPLInternalException {
-    if (attrs != null && attrs.containsKey(name)) {
+    if (attrs.containsKey(name)) {
       return attrs.get(name);
     } else {
-      var sn = name.toString();
-      try {
-        Field filed = getClass().getDeclaredField(sn);
-        filed.setAccessible(true);
-        if (filed.isAnnotationPresent(SPLExportField.class) && SPLObject.class.isAssignableFrom(filed.getType())) {
-          return (SPLObject) filed.get(this);
-        }
-      } catch (NoSuchFieldException | IllegalAccessException gnore) {
+      // load from this class
+      SPLObject res = loadAttributeFromClass(getClass(), name);
+      if (res != null) {
+        attrs.put(name, res);
+        return res;
+      }
+      // load from super class
+      res = loadAttributeFromClass(getClass().getSuperclass(), name);
+      if (res != null) {
+        attrs.put(name, res);
+        return res;
       }
     }
     return __getMethod__(name);
@@ -216,26 +233,7 @@ public class SPLObject implements SPLInterface {
         return res;
       }
     }
-    if (methods != null && methods.containsKey(name)) {
-      Object method = methods.get(name);
-      if (method instanceof Method m) {
-        return new SPLCallObject(m, this, false);
-      } else if (method instanceof SPLFuncObject func) {
-        return new SPLMethodWrapper(func, this);
-      }
-    }
-    try {
-      Method method = getClass().getMethod(name.toString(), SPLObject[].class);
-      if (method.isAnnotationPresent(SPLExportMethod.class) && method.getReturnType().isAssignableFrom(SPLObject.class)) {
-        if (methods == null) {
-          methods = new HashMap<>();
-        }
-        methods.put(name, method);
-        return new SPLCallObject(method, this, false);
-      }
-    } catch (NoSuchMethodException ignore) {
-    }
-    return SPLErrorUtils.splErrorFormat(new SPLRuntimeException("Not found a method or attribute named '" + name + "'"));
+    return type.__getMethod__(name);
   }
 
   @SPLExportMethod

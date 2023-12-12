@@ -1,8 +1,18 @@
 package org.spl.vm.types;
 
+import org.spl.vm.annotations.SPLExportMethod;
+import org.spl.vm.exceptions.SPLErrorUtils;
+import org.spl.vm.exceptions.jexceptions.SPLInternalException;
+import org.spl.vm.exceptions.splexceptions.SPLRuntimeException;
+import org.spl.vm.internal.objs.SPLFuncObject;
+import org.spl.vm.internal.objs.SPLMethodWrapper;
+import org.spl.vm.objects.SPLCallObject;
 import org.spl.vm.objects.SPLObject;
+import org.spl.vm.objects.SPLStringObject;
 
+import java.lang.reflect.Method;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedList;
 
 public class SPLCommonType extends SPLObject {
@@ -16,6 +26,7 @@ public class SPLCommonType extends SPLObject {
     base = SPLObjectType.getInstance();
     this.name = name;
     this.clazz = clazz;
+    methods = new HashMap<>();
   }
 
   public SPLCommonType getBase() {
@@ -43,6 +54,44 @@ public class SPLCommonType extends SPLObject {
 
   @Override
   public String toString() {
-    return String.format("<class %s @0x%s>", getType().getName(), Integer.toHexString(hashCode()));
+    return String.format("<type %s @0x%s>", getName(), Integer.toHexString(hashCode()));
+  }
+
+  private SPLObject getFromCache(SPLObject name) {
+    if (methods.containsKey(name)) {
+      Object method = methods.get(name);
+      if (method instanceof Method m) {
+        return new SPLCallObject(m, this, false);
+      } else if (method instanceof SPLFuncObject func) {
+        return new SPLMethodWrapper(func, this);
+      }
+    }
+    return null;
+  }
+
+  @Override
+  public SPLObject __getAttr__(SPLObject name) throws SPLInternalException {
+    return __getMethod__(name);
+  }
+
+  @Override
+  public SPLObject __getMethod__(SPLObject name) throws SPLInternalException {
+    SPLObject res = getFromCache(name);
+    if (res != null) return res;
+    try {
+      Method method = clazz.getMethod(name.toString(), SPLObject[].class);
+      if (method.isAnnotationPresent(SPLExportMethod.class) && method.getReturnType().isAssignableFrom(SPLObject.class)) {
+        methods.put(name, method);
+        return new SPLCallObject(method, this, false);
+      }
+      // check super class only single inheritance allowed in SPL
+      res = type.__getMethod__(name);
+      if (res != null) {
+        methods.put(name, res);
+        return res;
+      }
+    } catch (NoSuchMethodException ignore) {
+    }
+    return SPLErrorUtils.splErrorFormat(new SPLRuntimeException("Not found an attribute or method  named '" + name + "'"));
   }
 }

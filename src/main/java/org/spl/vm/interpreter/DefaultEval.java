@@ -42,7 +42,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
   @Override
   public SPLObject evalFrame() throws SPLInternalException {
     MainLoop:
-    for (;;) {
+    for (; ; ) {
       try {
         while (pc < code.length) {
           insNumExecuted++;
@@ -538,10 +538,8 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               continue MainLoop;
             }
           }
-        } else {
-          System.err.println("pc = " + pc);
-          throw e;
         }
+        throw e;
       }
     }
     return SPLNoneObject.getInstance();
