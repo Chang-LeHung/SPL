@@ -15,6 +15,7 @@ public class SPLOutOfBoundType extends SPLCommonType {
 
   private static class SelfHolder {
     public static final SPLOutOfBoundType INSTANCE = new SPLOutOfBoundType();
+
     static {
       Builtin.addObject("OutOfBoundError", SelfHolder.INSTANCE);
       Builtin.addObject("IndexError", SelfHolder.INSTANCE);

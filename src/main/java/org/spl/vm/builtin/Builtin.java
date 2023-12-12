@@ -24,9 +24,9 @@ import org.spl.vm.objects.*;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Builtin {
   private final static Map<SPLObject, SPLObject> dict;
@@ -371,7 +371,7 @@ public class Builtin {
   @SPLExportMethod
   public static SPLObject range(SPLObject... args) throws SPLInternalException {
     if (args.length == 1 && args[0] instanceof SPLLongObject o) {
-      return new SPLRangeObject(0, (int) o.getVal(),  1);
+      return new SPLRangeObject(0, (int) o.getVal(), 1);
     } else if (args.length == 2 && args[0] instanceof SPLLongObject o1
         && args[1] instanceof SPLLongObject o2) {
       return new SPLRangeObject((int) o1.getVal(), (int) o2.getVal(), 1);

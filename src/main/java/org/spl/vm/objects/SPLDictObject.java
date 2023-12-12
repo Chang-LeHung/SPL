@@ -179,12 +179,12 @@ public class SPLDictObject extends SPLObject {
       super(null, "Key", SPLPair.class);
     }
 
-    public static class SelfHolder {
-      public static final SPLPairType INSTANCE = new SPLPairType();
-    }
-
     public static SPLPairType getInstance() {
       return SelfHolder.INSTANCE;
+    }
+
+    public static class SelfHolder {
+      public static final SPLPairType INSTANCE = new SPLPairType();
     }
   }
 }

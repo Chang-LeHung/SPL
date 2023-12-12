@@ -18,8 +18,8 @@ public class SPL {
   }
 
   private final String filename;
-  private SPLCodeObject code;
-  private DefaultEval frame;
+  private final SPLCodeObject code;
+  private final DefaultEval frame;
 
   public SPL(String filename) throws SPLSyntaxError, IOException, SPLInternalException {
     this.filename = filename;

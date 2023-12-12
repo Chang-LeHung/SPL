@@ -25,11 +25,6 @@ public class TryStmt extends AbstractIR<Instruction> {
     this.finallyBlock = finallyBlock;
   }
 
-  public static class TryState {
-    public boolean inTry;
-    public ProgramBlock pb;
-  }
-
   public static TryState saveState(ASTContext<Instruction> context) {
     TryState state = new TryState();
     state.inTry = context.isTryBlockEnabled();
@@ -46,12 +41,13 @@ public class TryStmt extends AbstractIR<Instruction> {
     }
   }
 
-  public static void tryStateCopy(ASTContext<Instruction> source,ASTContext<Instruction> destination) {
+  public static void tryStateCopy(ASTContext<Instruction> source, ASTContext<Instruction> destination) {
     if (source.isTryBlockEnabled()) {
       destination.enableTryBlock();
     }
     destination.setFinallyBlock(source.getFinallyBlock());
   }
+
   @Override
   public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
     boolean needJmp = false;
@@ -91,7 +87,7 @@ public class TryStmt extends AbstractIR<Instruction> {
       }
     }
     for (IRNode<Instruction> node : catchBlock) {
-      node.accept(context)  ;
+      node.accept(context);
     }
     if (finallyBlock != null) {
       finallyBlock.accept(context);
@@ -110,5 +106,10 @@ public class TryStmt extends AbstractIR<Instruction> {
       children = List.of();
     }
     return children;
+  }
+
+  public static class TryState {
+    public boolean inTry;
+    public ProgramBlock pb;
   }
 }

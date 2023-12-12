@@ -82,24 +82,25 @@ public interface ASTContext<E> {
 
   boolean isTryBlockEnabled();
 
-  void setFinallyBlock(ProgramBlock pb);
-
   ProgramBlock getFinallyBlock();
 
+  void setFinallyBlock(ProgramBlock pb);
+
   List<JumpTableEntry> getJumpTable();
+
   record JumpTableEntry(int startPc, int endPc, int targetPc) {
 
     @Override
-      public String toString() {
-        return "JumpTableEntry{" +
-            "startPC=" + startPc +
-            ", endPC=" + endPc +
-            ", targetPC=" + targetPc +
-            '}';
-      }
-
-      public boolean isInRange(int pc) {
-        return pc >= startPc && pc <= endPc;
-      }
+    public String toString() {
+      return "JumpTableEntry{" +
+          "startPC=" + startPc +
+          ", endPC=" + endPc +
+          ", targetPC=" + targetPc +
+          '}';
     }
+
+    public boolean isInRange(int pc) {
+      return pc >= startPc && pc <= endPc;
+    }
+  }
 }

@@ -6,14 +6,12 @@ import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.exceptions.splexceptions.SPLAttributeError;
 import org.spl.vm.exceptions.splexceptions.SPLNotImplemented;
-import org.spl.vm.exceptions.splexceptions.SPLRuntimeException;
 import org.spl.vm.exceptions.splexceptions.SPLTypeError;
 import org.spl.vm.internal.objs.SPLFuncObject;
 import org.spl.vm.internal.objs.SPLMethodWrapper;
 import org.spl.vm.types.SPLCommonType;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -186,6 +184,7 @@ public class SPLObject implements SPLInterface {
     }
     return null;
   }
+
   @Override
   public SPLObject __getAttr__(SPLObject name) throws SPLInternalException {
     if (attrs.containsKey(name)) {

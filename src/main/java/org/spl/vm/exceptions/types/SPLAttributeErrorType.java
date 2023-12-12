@@ -14,6 +14,7 @@ public class SPLAttributeErrorType extends SPLCommonType {
 
   private static class SelfHolder {
     static SPLAttributeErrorType instance = new SPLAttributeErrorType();
+
     static {
       Builtin.addObject("AttributeError", getInstance());
     }

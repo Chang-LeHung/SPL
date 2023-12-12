@@ -128,13 +128,13 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
   }
 
   @Override
-  public void setFinallyBlock(ProgramBlock pb) {
-    this.pb = pb;
+  public ProgramBlock getFinallyBlock() {
+    return pb;
   }
 
   @Override
-  public ProgramBlock getFinallyBlock() {
-    return pb;
+  public void setFinallyBlock(ProgramBlock pb) {
+    this.pb = pb;
   }
 
   @Override

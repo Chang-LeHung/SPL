@@ -9,6 +9,7 @@ import java.util.List;
 public class SPLCommonIterator extends SPLObject implements SPLIterator {
   private final List<? extends SPLObject> container;
   private int off;
+
   public SPLCommonIterator(List<? extends SPLObject> container) {
     super(SPLCommonIteratorType.getInstance());
     this.container = container;

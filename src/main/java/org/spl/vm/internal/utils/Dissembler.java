@@ -18,7 +18,6 @@ import org.spl.vm.objects.SPLObject;
 import org.spl.vm.objects.SPLStringObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class Dissembler extends SPLObject {
@@ -281,10 +280,10 @@ public class Dissembler extends SPLObject {
           arg |= code[pc++];
           if ((arg & 1) == 1) {
             // jump forward
-            ins = new Instruction(OpCode.LONG_JUMP, arg>>1);
+            ins = new Instruction(OpCode.LONG_JUMP, arg >> 1);
           } else {
             // jump backward
-            ins = new Instruction(OpCode.LONG_JUMP, -(arg>>1));
+            ins = new Instruction(OpCode.LONG_JUMP, -(arg >> 1));
           }
         }
         case EXEC_MATCH -> {

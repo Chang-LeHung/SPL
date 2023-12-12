@@ -12,6 +12,7 @@ public class SPLRangeObject extends SPLObject {
   private final int start;
   private final int end;
   private final int step;
+
   public SPLRangeObject(int start, int end, int step) {
     super(SPLRangeType.getInstance());
     this.start = start;

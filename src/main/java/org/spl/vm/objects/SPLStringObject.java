@@ -143,7 +143,7 @@ public class SPLStringObject extends SPLObject {
       SPLObject S = args[2];
       if (L instanceof SPLLongObject l && R instanceof SPLLongObject r && S instanceof SPLLongObject s) {
         StringBuilder builder = new StringBuilder();
-        for(long i = l.getVal(); i < r.getVal(); i += s.getVal()) {
+        for (long i = l.getVal(); i < r.getVal(); i += s.getVal()) {
           builder.append(msg.charAt((int) i));
         }
         return new SPLStringObject(builder.toString());

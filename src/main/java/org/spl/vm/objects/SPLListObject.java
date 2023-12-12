@@ -113,12 +113,12 @@ public class SPLListObject extends SPLObject {
       super(null, "list_iterator", SPLListIterator.class);
     }
 
-    private static class SelfHolder {
-      public static final SPLListIteratorType INSTANCE = new SPLListIteratorType();
-    }
-
     public static SPLListIteratorType getInstance() {
       return SelfHolder.INSTANCE;
+    }
+
+    private static class SelfHolder {
+      public static final SPLListIteratorType INSTANCE = new SPLListIteratorType();
     }
   }
 
@@ -126,6 +126,7 @@ public class SPLListObject extends SPLObject {
 
     private final List<SPLObject> container;
     int off;
+
     public SPLListIterator(List<SPLObject> container) {
       super(SPLListIteratorType.getInstance());
       this.container = container;

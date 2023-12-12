@@ -5,7 +5,6 @@ import org.spl.compiler.bytecode.OpCode;
 import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.AbstractIR;
 import org.spl.compiler.ir.IRNode;
-import org.spl.compiler.ir.block.ProgramBlock;
 import org.spl.compiler.ir.context.ASTContext;
 
 import java.util.List;
@@ -16,9 +15,8 @@ public class ExceptBlock extends AbstractIR<Instruction> {
   private final int exceptIdx;
   private final String storeName;
   private final int storeIdx;
-  private int targetPc;
-
   private final IRNode<Instruction> block;
+  private int targetPc;
 
   public ExceptBlock(String exceptName, int exceptIdx, String storeName, int storeIdx, IRNode<Instruction> block) {
     this.exceptName = exceptName;

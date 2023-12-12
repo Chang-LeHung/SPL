@@ -5,15 +5,11 @@ import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.exceptions.splexceptions.SPLRuntimeException;
 import org.spl.vm.internal.objs.SPLFuncObject;
-import org.spl.vm.internal.objs.SPLMethodWrapper;
 import org.spl.vm.objects.SPLCallObject;
 import org.spl.vm.objects.SPLObject;
-import org.spl.vm.objects.SPLStringObject;
 
 import java.lang.reflect.Method;
-import java.util.Deque;
 import java.util.HashMap;
-import java.util.LinkedList;
 
 public class SPLCommonType extends SPLObject {
 
@@ -29,6 +25,17 @@ public class SPLCommonType extends SPLObject {
     methods = new HashMap<>();
   }
 
+  public static boolean isExecMatch(SPLObject o1, SPLCommonType o2) {
+    if (o1 == null) return false;
+    SPLCommonType type = o1.getType();
+    while (type != null) {
+      if (type == o2)
+        return true;
+      type = type.getBase();
+    }
+    return false;
+  }
+
   public SPLCommonType getBase() {
     return base;
   }
@@ -39,17 +46,6 @@ public class SPLCommonType extends SPLObject {
 
   public Class<? extends SPLObject> getObjectClazz() {
     return clazz;
-  }
-
-  public static boolean isExecMatch(SPLObject o1, SPLCommonType o2) {
-    if (o1 == null) return false;
-    SPLCommonType type = o1.getType();
-    while (type != null) {
-      if (type == o2)
-        return true;
-      type = type.getBase();
-    }
-    return false;
   }
 
   @Override

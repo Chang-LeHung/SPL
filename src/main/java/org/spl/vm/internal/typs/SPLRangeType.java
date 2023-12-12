@@ -8,11 +8,11 @@ public class SPLRangeType extends SPLCommonType {
     super(null, "range", SPLRangeObject.class);
   }
 
-  private static class SelfHolder {
-    public static final SPLRangeType INSTANCE = new SPLRangeType();
-  }
-
   public static SPLRangeType getInstance() {
     return SelfHolder.INSTANCE;
+  }
+
+  private static class SelfHolder {
+    public static final SPLRangeType INSTANCE = new SPLRangeType();
   }
 }
