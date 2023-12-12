@@ -23,9 +23,9 @@ import org.spl.vm.objects.*;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Builtin {
   private final static Map<SPLObject, SPLObject> dict;
@@ -34,6 +34,7 @@ public class Builtin {
     dict = new HashMap<>();
     register("print");
     register("parse");
+    register("range");
     register("eval");
     register("max");
     register("min");
@@ -364,6 +365,14 @@ public class Builtin {
     DefaultASTContext<Instruction> context = parser.getContext();
     context.generateByteCodes(ir);
     return SPLCodeObjectBuilder.build(context);
+  }
+
+  @SPLExportMethod
+  public static SPLObject range(SPLObject... args) throws SPLInternalException {
+    if (args.length == 1 && args[0] instanceof SPLLongObject o) {
+      return new SPLCommonIterator(IntStream.range(0, (int) o.getVal()).mapToObj(SPLLongObject::create).toList());
+    }
+    return SPLErrorUtils.splErrorFormat(new SPLRuntimeException("range() only takes one int argument"));
   }
 
 }
