@@ -6,10 +6,10 @@ import org.spl.vm.objects.SPLObject;
 
 public class SPLMethodWrapper extends SPLObject {
 
-  private final SPLFuncObject func;
-  private final SPLObject self;
+  private final SPLObject func;
+  private SPLObject self;
 
-  public SPLMethodWrapper(SPLFuncObject func, SPLObject self) {
+  public SPLMethodWrapper(SPLObject func, SPLObject self) {
     super(SPLMethodWrapperType.getInstance());
     this.func = func;
     this.self = self;
@@ -21,5 +21,13 @@ public class SPLMethodWrapper extends SPLObject {
     newArgs[0] = self;
     System.arraycopy(args, 0, newArgs, 1, args.length);
     return func.__call__(newArgs);
+  }
+
+  public SPLObject getSelf() {
+    return self;
+  }
+
+  public void setSelf(SPLObject self) {
+    this.self = self;
   }
 }

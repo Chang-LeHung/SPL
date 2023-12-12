@@ -4,6 +4,7 @@ import org.spl.vm.annotations.SPLExportField;
 import org.spl.vm.annotations.SPLExportMethod;
 import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
+import org.spl.vm.exceptions.splexceptions.SPLAttributeError;
 import org.spl.vm.exceptions.splexceptions.SPLNotImplemented;
 import org.spl.vm.exceptions.splexceptions.SPLRuntimeException;
 import org.spl.vm.exceptions.splexceptions.SPLTypeError;
@@ -233,7 +234,15 @@ public class SPLObject implements SPLInterface {
         return res;
       }
     }
-    return type.__getMethod__(name);
+    SPLObject method = type.__getMethod__(name);
+    if (method instanceof SPLCallObject callable) {
+      callable.setStatic(false);
+      callable.setSelf(this);
+      return callable;
+    } else if (method instanceof SPLFuncObject callable) {
+      return new SPLMethodWrapper(callable, this);
+    }
+    return SPLErrorUtils.splErrorFormat(new SPLAttributeError("can not find an attribute or method '" + name + "'"));
   }
 
   @SPLExportMethod

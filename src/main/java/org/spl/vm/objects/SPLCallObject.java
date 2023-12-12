@@ -11,8 +11,8 @@ import java.lang.reflect.Method;
 public class SPLCallObject extends SPLObject {
 
   private final Method method;
-  private final boolean isStatic;
-  private final SPLObject self;
+  private boolean isStatic;
+  private SPLObject self;
 
   public SPLCallObject(Method method, SPLObject self, boolean isStatic) {
     super(SPLCallType.getInstance());
@@ -45,5 +45,21 @@ public class SPLCallObject extends SPLObject {
   @Override
   public SPLObject __str__() {
     return new SPLStringObject(toString());
+  }
+
+  public SPLObject getSelf() {
+    return self;
+  }
+
+  public void setSelf(SPLObject self) {
+    this.self = self;
+  }
+
+  public boolean isStatic() {
+    return isStatic;
+  }
+
+  public void setStatic(boolean aStatic) {
+    isStatic = aStatic;
   }
 }

@@ -61,9 +61,9 @@ public class SPLCommonType extends SPLObject {
     if (methods.containsKey(name)) {
       Object method = methods.get(name);
       if (method instanceof Method m) {
-        return new SPLCallObject(m, this, false);
+        return new SPLCallObject(m, null, true);
       } else if (method instanceof SPLFuncObject func) {
-        return new SPLMethodWrapper(func, this);
+        return func;
       }
     }
     return null;
@@ -71,6 +71,9 @@ public class SPLCommonType extends SPLObject {
 
   @Override
   public SPLObject __getAttr__(SPLObject name) throws SPLInternalException {
+    if (attrs != null && attrs.containsKey(name)) {
+      return attrs.get(name);
+    }
     return __getMethod__(name);
   }
 
@@ -82,10 +85,10 @@ public class SPLCommonType extends SPLObject {
       Method method = clazz.getMethod(name.toString(), SPLObject[].class);
       if (method.isAnnotationPresent(SPLExportMethod.class) && method.getReturnType().isAssignableFrom(SPLObject.class)) {
         methods.put(name, method);
-        return new SPLCallObject(method, this, false);
+        return new SPLCallObject(method, null, true);
       }
       // check super class only single inheritance allowed in SPL
-      res = type.__getMethod__(name);
+      res = base.__getMethod__(name);
       if (res != null) {
         methods.put(name, res);
         return res;
