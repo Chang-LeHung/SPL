@@ -374,7 +374,7 @@ public class Lexer {
                   token = new Token(TOKEN_TYPE.ASSIGN_U_RSHIFT, ">>>=");
                   c = nextChar(builder);
                 } else {
-                  token = new Token(TOKEN_TYPE.RSHIFT, ">>>");
+                  token = new Token(TOKEN_TYPE.U_RSHIFT, ">>>");
                 }
               } else {
                 token = new Token(TOKEN_TYPE.RSHIFT, ">>");
