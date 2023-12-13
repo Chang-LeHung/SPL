@@ -55,13 +55,13 @@ public class SPLTraceBackObject extends SPLObject {
     StringBuilder builder = new StringBuilder();
     String codeText = eval.getSourceCode().get(line - 1);
     StringBuilder tip = new StringBuilder(" ".repeat(codeText.length()));
-    builder.append("\tFile")
+    builder.append("File \"")
         .append(codeObject.getFilename())
-        .append(", line ")
+        .append("\", line ")
         .append(line)
         .append(", in ")
         .append(codeObject.getName())
-        .append("\n\t\t")
+        .append("\n\t")
         .append(codeText.strip())
         .append("\n");
     int leftBoundary = 0;
@@ -74,7 +74,7 @@ public class SPLTraceBackObject extends SPLObject {
       tip.setCharAt(column + i, '^');
     }
     tip.delete(0, leftBoundary);
-    errorMessage = builder.append("\t\t").append(tip).toString();
+    errorMessage = builder.append("\t").append(tip).toString();
   }
 
   private void iterateLenColumnTo(int n) {
