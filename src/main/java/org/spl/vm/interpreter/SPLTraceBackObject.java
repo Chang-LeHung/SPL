@@ -9,12 +9,18 @@ public class SPLTraceBackObject extends SPLObject {
   private String errorMessage;
   private SPLTraceBackObject next;
   private final DefaultEval eval;
-  private byte[] debugInfo;
+  private final byte[] debugInfo;
+  private final byte[] position;
+  private int pos;
   private int cursor;
 
   public SPLTraceBackObject(DefaultEval eval) {
     super(SPLTraceBackType.getInstance());
     this.eval = eval;
+    SPLCodeObject codeObject = eval.getCodeObject();
+    debugInfo = codeObject.getDebugInfo();
+    position = codeObject.getLenColumn();
+    pos = 0;
     doTrace();
   }
 
@@ -39,15 +45,55 @@ public class SPLTraceBackObject extends SPLObject {
       ins++;
     }
     SPLCodeObject codeObject = eval.getCodeObject();
-    debugInfo = codeObject.getDebugInfo();
     cursor = 0;
-    int pos = codeObject.getFirstLineNo();
+    int line = codeObject.getFirstLineNo();
     int count = 0;
     while (count < ins) {
       count += getValidCount();
-      pos +=  getValidCount();
+      line += getValidCount();
     }
-    errorMessage = "\tFile \"" + codeObject.getFilename() + "\", line " + pos + ", in " + codeObject.getName() + "\n\t\t" + eval.getSourceCode().get(pos - 1).strip();
+    StringBuilder builder = new StringBuilder();
+    String codeText = eval.getSourceCode().get(line - 1);
+    StringBuilder tip = new StringBuilder(" ".repeat(codeText.length()));
+    builder.append("\tFile")
+        .append(codeObject.getFilename())
+        .append(", line ")
+        .append(line)
+        .append(", in ")
+        .append(codeObject.getName())
+        .append("\n\t\t")
+        .append(codeText.strip())
+        .append("\n");
+    int leftBoundary = 0;
+    while (codeText.charAt(leftBoundary) == ' ')
+      leftBoundary++;
+    iterateLenColumnTo(ins - 1);
+    int len = getArg();
+    int column = getArg();
+    for (int i = 0; i < len; i++) {
+      tip.setCharAt(column + i, '^');
+    }
+    tip.delete(0, leftBoundary);
+    errorMessage = builder.append("\t\t").append(tip).toString();
+  }
+
+  private void iterateLenColumnTo(int n) {
+    for (int i = 0; i < n; i++) {
+      getArg(); // len
+      getArg(); // column
+    }
+  }
+
+  private int getArg() {
+    if (position[pos] == -1) {
+      pos++;
+      int arg = position[pos++];
+      arg <<= 8;
+      arg |= (position[pos++] & 0xff);
+      return arg;
+    } else {
+      return position[pos++];
+    }
   }
 
   private int getValidCount() {
