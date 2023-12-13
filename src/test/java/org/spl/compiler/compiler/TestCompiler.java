@@ -17,6 +17,7 @@ import org.spl.vm.internal.objs.SPLFuncObject;
 import org.spl.vm.internal.utils.Dissembler;
 import org.spl.vm.interpreter.DefaultEval;
 import org.spl.vm.interpreter.Evaluation;
+import org.spl.vm.interpreter.SPL;
 
 import java.io.IOException;
 import java.net.URL;
@@ -327,6 +328,13 @@ public class TestCompiler {
   @Test
   public void testComment() throws SPLInternalException, SPLSyntaxError, IOException {
     run("comment/comment.spl");
+  }
+
+  @Test
+  public void testDefaultArg() throws SPLInternalException, SPLSyntaxError, IOException {
+    SPL spl = new SPL("function/defaultArg03.spl");
+    spl.dis();
+    spl.run();
   }
 }
 
