@@ -10,6 +10,7 @@ import org.spl.vm.objects.SPLObject;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 
 public class SPL {
 
@@ -30,6 +31,22 @@ public class SPL {
       this.frame = new DefaultEval(code);
     } catch (SPLInternalException ignore) {
     }
+  }
+
+  public SPL(String filename, HashMap<SPLObject, SPLObject> locals,
+             HashMap<SPLObject, SPLObject> globals) throws SPLSyntaxError, IOException {
+    this.filename = filename;
+    SPLCompiler compiler = new SPLCompiler(getResource(filename));
+    SPLCodeObject code = compiler.compile();
+    this.code = code;
+    this.frame = new DefaultEval(filename, locals, globals, code);
+  }
+
+  public SPL(String filename, HashMap<SPLObject, SPLObject> locals,
+             HashMap<SPLObject, SPLObject> globals, SPLCodeObject code) throws SPLSyntaxError, IOException {
+    this.filename = filename;
+    this.code = code;
+    this.frame = new DefaultEval(filename, locals, globals, code);
   }
 
   public static String getResource(String filename) {
