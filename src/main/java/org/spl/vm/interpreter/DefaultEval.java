@@ -565,6 +565,9 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
     if (trace == null) {
       ts.setTrace(newTrace);
     } else {
+      while (trace.getNext() != null) {
+        trace = trace.getNext();
+      }
       trace.setNext(newTrace);
     }
   }
