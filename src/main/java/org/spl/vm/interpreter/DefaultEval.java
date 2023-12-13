@@ -406,7 +406,9 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               for (int i = 0; i < oparg; i++) {
                 args[i] = evalStack[--top];
               }
+              ThreadState.increaseThreadCallStackSize();
               evalStack[top++] = callable.__call__(args);
+              ThreadState.decreaseThreadCallStackSize();
             }
             case LOAD_CONST -> { // LOAD_CONST
               int oparg = getOparg();

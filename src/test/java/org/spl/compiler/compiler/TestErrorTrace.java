@@ -31,4 +31,11 @@ public class TestErrorTrace {
     SPLObject run = spl.run();
     assert run == null;
   }
+
+  @Test
+  public void testStackOverflow() throws SPLSyntaxError, IOException {
+    SPL spl = new SPL("error/stack.spl");
+    SPLObject run = spl.run();
+    assert run == null;
+  }
 }
