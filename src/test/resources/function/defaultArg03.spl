@@ -1,0 +1,10 @@
+
+
+words = "******"
+
+def hello(e=words*2) {
+    print(e)
+}
+
+hello()
+hello.dis()
