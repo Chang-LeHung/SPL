@@ -1,0 +1,16 @@
+
+
+def world() {
+    a = 1
+    print(a())
+}
+
+def hello() {
+    world()
+}
+
+def main() {
+    hello()
+}
+
+main()

@@ -16,4 +16,19 @@ public class TestErrorTrace {
     SPLObject run = spl.run();
     assert run == null;
   }
+
+  @Test
+  public void testAdd() throws SPLSyntaxError, IOException {
+    SPL spl = new SPL("error/adderror.spl");
+    spl.dis();
+    SPLObject run = spl.run();
+    assert run == null;
+  }
+
+  @Test
+  public void testCall() throws SPLSyntaxError, IOException {
+    SPL spl = new SPL("error/call.spl");
+    SPLObject run = spl.run();
+    assert run == null;
+  }
 }
