@@ -13,6 +13,7 @@ public class ThreadState {
 
   private SPLCommonType execType;
   private SPLException execVal;
+  private SPLTraceBackObject trace;
 
   public static ThreadState get() {
     ThreadState ts = tss.get();
@@ -41,5 +42,13 @@ public class ThreadState {
 
   public void setExecVal(SPLException execVal) {
     this.execVal = execVal;
+  }
+
+  public SPLTraceBackObject getTrace() {
+    return trace;
+  }
+
+  public void setTrace(SPLTraceBackObject trace) {
+    this.trace = trace;
   }
 }

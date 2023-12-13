@@ -16,12 +16,13 @@ public class SPLCodeObjectBuilder {
     return new SPLCodeObject(args,
         context.getTopStackSize(),
         fileName,
+        context.getCoName(),
         firstLineNo,
         code,
         lenColumn,
         debugInfo,
         context.getJumpTable(),
         context.getVarnames(),
-        context.getConstants());
+        context.getConstants(), context.getSourceCode());
   }
 }

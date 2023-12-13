@@ -19,14 +19,17 @@ public class SPL {
 
   private final String filename;
   private final SPLCodeObject code;
-  private final DefaultEval frame;
+  private DefaultEval frame;
 
-  public SPL(String filename) throws SPLSyntaxError, IOException, SPLInternalException {
+  public SPL(String filename) throws SPLSyntaxError, IOException {
     this.filename = filename;
     SPLCompiler compiler = new SPLCompiler(getResource(filename));
     SPLCodeObject code = compiler.compile();
     this.code = code;
-    this.frame = new DefaultEval(code);
+    try {
+      this.frame = new DefaultEval(code);
+    } catch (SPLInternalException ignore) {
+    }
   }
 
   public static String getResource(String filename) {
@@ -37,8 +40,28 @@ public class SPL {
     return resource.getPath();
   }
 
-  public SPLObject run() throws SPLSyntaxError, IOException, SPLInternalException {
-    return this.frame.evalFrame();
+  public SPLObject run() {
+    try {
+      return this.frame.evalFrame();
+    } catch (SPLInternalException ignore) {
+      printStackTrace();
+    }
+    return null;
+  }
+
+  private void printStackTrace() {
+    // make content below printed in red
+    System.err.print("\033[31m");
+    System.err.println("Traceback (most recent call last):");
+    ThreadState ts = ThreadState.get();
+    SPLTraceBackObject trace = ts.getTrace();
+    assert trace != null;
+    while (trace != null) {
+      System.err.println(trace.getErrorMessage());
+      trace = trace.getNext();
+    }
+    System.err.println(ts.getExecVal().getType().getName() + ":" + ts.getExecVal().getMsg());
+    System.err.print("\033[0m");
   }
 
   public SPLCodeObject getCode() {
@@ -54,5 +77,9 @@ public class SPL {
   public void dis() {
     Dissembler dissembler = new Dissembler(code);
     dissembler.prettyPrint();
+  }
+
+  public String getFilename() {
+    return filename;
   }
 }

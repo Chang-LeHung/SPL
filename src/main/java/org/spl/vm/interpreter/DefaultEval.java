@@ -17,7 +17,6 @@ import java.util.*;
 
 public class DefaultEval extends SPLFrameObject implements Evaluation {
 
-
   private final String name;
 
   public DefaultEval(SPLCodeObject codeObj) throws SPLInternalException {
@@ -333,7 +332,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
                 evalStack[top++] = locals.get(varnames[oparg]);
                 continue;
               }
-              throw new SPLInternalException("Instruction LOAD_LOCAL failed, variable \"" + varnames[oparg].__str__() + "\" is not defined");
+              SPLErrorUtils.splErrorFormat(new SPLRuntimeException("Not find a variable named \"" + varnames[oparg].__str__() + "\""));
             }
             case STORE_GLOBAL -> { // STORE_GLOBAL
               int oparg = code[pc++];
@@ -349,7 +348,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
                 evalStack[top++] = Builtin.getDict().get(varnames[oparg]);
                 continue;
               }
-              throw new SPLInternalException("not found, " + varnames[oparg].__str__() + " is not defined");
+              SPLErrorUtils.splErrorFormat(new SPLRuntimeException("Not find a variable named \"" + varnames[oparg].__str__() + "\""));
             }
             case LOAD_NAME, LOAD -> { // LOAD_NAME
               int oparg = getOparg();
@@ -366,7 +365,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
                   continue;
                 }
               }
-              throw new SPLInternalException("Instruction LOAD_NAME failed, variable \"" + varnames[oparg].__str__() + "\" is not defined");
+              SPLErrorUtils.splErrorFormat(new SPLRuntimeException("Not find a variable named \"" + varnames[oparg].__str__() + "\""));
             }
             case LOAD_METHOD -> { // LOAD_METHOD
               int arg = getOparg();
@@ -539,6 +538,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             }
           }
         }
+        traceThis();
         throw e;
       }
     }
@@ -557,4 +557,15 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
     }
   }
 
+
+  public void traceThis() {
+    ThreadState ts = ThreadState.get();
+    SPLTraceBackObject trace = ts.getTrace();
+    SPLTraceBackObject newTrace = new SPLTraceBackObject(this);
+    if (trace == null) {
+      ts.setTrace(newTrace);
+    } else {
+      trace.setNext(newTrace);
+    }
+  }
 }

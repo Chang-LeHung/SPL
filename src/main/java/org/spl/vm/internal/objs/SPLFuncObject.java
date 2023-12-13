@@ -29,6 +29,7 @@ public class SPLFuncObject extends SPLObject {
     this.parameters = parameters;
     this.name = name;
     this.codeObject = codeObject;
+    this.codeObject.setName(new SPLStringObject(name));
   }
 
   public SPLFuncObject(List<String> parameters, SPLCodeObject codeObject) {
@@ -36,6 +37,7 @@ public class SPLFuncObject extends SPLObject {
     this.parameters = parameters;
     this.name = "Anonymous-" + ++anonymousCount;
     this.codeObject = codeObject;
+    this.codeObject.setName(new SPLStringObject(this.name));
   }
 
   public List<String> getParameters() {

@@ -231,6 +231,15 @@ public class JumpContext implements ASTContext<Instruction> {
     return null;
   }
 
+  @Override
+  public String getCoName() {
+    return null;
+  }
+
+  @Override
+  public void setCoName(String coName) {
+  }
+
   public int getNBytes() {
     return nBytes;
   }

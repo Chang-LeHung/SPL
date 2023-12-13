@@ -15,6 +15,7 @@ import java.util.*;
 public class DefaultASTContext<E extends Instruction> implements Visitor<E>, ASTContext<E> {
 
   private final List<E> instructions;
+  private String coName;
   private final List<JumpTableEntry> jumpTable;
   private final Map<Object, Integer> varnames;
   private final Map<SPLObject, Integer> constants;
@@ -24,6 +25,7 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
   private final Set<String> globals;
   private final NameSpace<String> nameSpace;
   private String filename;
+  private boolean started;
   private int firstLineNo;
   private int insOfLine;
   private int currentLineNo;
@@ -33,9 +35,11 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
   private int args;
   private ProgramBlock pb;
   private boolean inTry = false;
+  private final List<String> sourceCode;
 
-  public DefaultASTContext(String filename) {
+  public DefaultASTContext(String filename, List<String> sourceCode) {
     this.filename = filename;
+    coName = "<module>";
     stackSize = 0;
     topStackSize = 0;
     instructions = new ArrayList<>();
@@ -46,11 +50,12 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
     code = new ByteArrayOutputStream();
     debugInfo = new ByteArrayOutputStream();
     currentLineNo = 0;
-    lastLineNo = 0;
+    this.sourceCode = sourceCode;
     lenColumn = new ByteArrayOutputStream();
     globals = new HashSet<>();
     constants = new HashMap<>();
     jumpTable = new ArrayList<>();
+    started = false;
   }
 
 
@@ -143,23 +148,31 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
   }
 
   @Override
+  public List<String> getSourceCode() {
+    return sourceCode;
+  }
+
+  @Override
   public void addInstruction(E instruction, int lineNo, int columnNo, int len) throws SPLSyntaxError {
     instructions.add(instruction);
-    if (firstLineNo == -1) {
-      firstLineNo = lineNo;
+    if (!started) {
+      started = true;
       currentLineNo = lineNo;
-      lastLineNo = lineNo;
-    }
-    if (currentLineNo != lineNo) {
-      write(insOfLine, debugInfo);
-      int rest = currentLineNo - lastLineNo;
-      write(rest, debugInfo);
-      lastLineNo = currentLineNo;
-      currentLineNo = lineNo;
-      insOfLine = 1;
-    } else {
+      lastLineNo = firstLineNo;
       insOfLine++;
+    } else {
+      if (currentLineNo != lineNo) {
+        write(insOfLine, debugInfo);
+        int rest = currentLineNo - lastLineNo;
+        write(rest, debugInfo);
+        lastLineNo = currentLineNo;
+        currentLineNo = lineNo;
+        insOfLine = 1;
+      } else {
+        insOfLine++;
+      }
     }
+
     // write instruction info
     write(instruction.getOpCode(), code);
     OpCode opcode = instruction.getCode();
@@ -322,9 +335,8 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
 
   private void completeVisiting() throws SPLSyntaxError {
     write(insOfLine, debugInfo);
-    int rest = currentLineNo - lastLineNo;
+    int rest = 0;
     write(rest, debugInfo);
-    lastLineNo = 0;
     currentLineNo = 0;
     insOfLine = 0;
   }
@@ -333,5 +345,14 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
     globals.add(name);
   }
 
+  @Override
+  public String getCoName() {
+    return coName;
+  }
+
+  @Override
+  public void setCoName(String coName) {
+    this.coName = coName;
+  }
 }
 

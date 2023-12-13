@@ -5,6 +5,7 @@ import org.spl.vm.objects.SPLObject;
 import org.spl.vm.objects.SPLStringObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SPLFrameObject extends SPLObject {
@@ -68,7 +69,7 @@ public class SPLFrameObject extends SPLObject {
     return code;
   }
 
-  public int getPc() {
+  public int getPC() {
     return pc;
   }
 
@@ -90,5 +91,13 @@ public class SPLFrameObject extends SPLObject {
 
   public long getInsNumExecuted() {
     return insNumExecuted;
+  }
+
+  public String getFilename() {
+    return codeObject.getFilename();
+  }
+
+  public List<String> getSourceCode() {
+    return codeObject.getSourceCode();
   }
 }

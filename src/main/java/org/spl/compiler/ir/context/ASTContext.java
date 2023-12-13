@@ -103,4 +103,12 @@ public interface ASTContext<E> {
       return pc >= startPc && pc <= endPc;
     }
   }
+
+  default List<String> getSourceCode() {
+    return null;
+  }
+
+  String getCoName();
+
+  void setCoName(String coName);
 }

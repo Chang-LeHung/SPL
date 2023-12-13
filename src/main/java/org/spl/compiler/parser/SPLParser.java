@@ -165,6 +165,7 @@ public class SPLParser extends AbstractSyntaxParser {
       if (!flag) {
         flag = true;
         setSourceCodeInfo(block, top);
+        context.setFirstLineNo(top.getLineNo());
       }
       IRNode<Instruction> node = statement();
       if (node instanceof GlobalNop)
@@ -557,7 +558,7 @@ public class SPLParser extends AbstractSyntaxParser {
     tokenFlow.next();
     tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LEFT_PARENTHESES, "require '(' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
     tokenFlow.next();
-    var funcContext = new DefaultASTContext<>(filename);
+    var funcContext = new DefaultASTContext<>(filename, getSourceCode());
     funcContext.setFirstLineNo(token.getLineNo());
     List<String> parameters = new ArrayList<>();
     List<IRNode<Instruction>> defaultParams = new ArrayList<>();
@@ -1227,7 +1228,7 @@ public class SPLParser extends AbstractSyntaxParser {
         "Expected 'def' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
     tokenFlow.next();
     var params = new ArrayList<String>();
-    DefaultASTContext<Instruction> auxContex = new DefaultASTContext<>(filename);
+    DefaultASTContext<Instruction> auxContex = new DefaultASTContext<>(filename, getSourceCode());
     var oldContex = context;
     context = auxContex;
     if (tokenFlow.peek().isLEFT_PARENTHESES()) {

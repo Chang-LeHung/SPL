@@ -35,7 +35,7 @@ public abstract class AbstractSyntaxParser implements ASTBuilder<Instruction> {
     while ((line = reader.readLine()) != null) {
       sourceCode.add(line);
     }
-    context = new DefaultASTContext<>(filename);
+    context = new DefaultASTContext<>(filename, sourceCode);
     reader.close();
   }
 
@@ -51,7 +51,7 @@ public abstract class AbstractSyntaxParser implements ASTBuilder<Instruction> {
     while ((line = reader.readLine()) != null) {
       sourceCode.add(line);
     }
-    context = new DefaultASTContext<>(filename);
+    context = new DefaultASTContext<>(filename, sourceCode);
     reader.close();
   }
 
