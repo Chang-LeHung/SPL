@@ -1,7 +1,7 @@
 # SPL
 A comprehensive compiler and interpreter implementation.(Educational Project)
 
-SPL aims to help the enthusiasts of compilers and programming languages to understand the programs better. Now it supports the most common grammar.
+The SPL aims to assist compiler and programming language enthusiasts in better understanding programs. It currently supports the most common syntax, drawing inspiration from the syntax designs of Java, Python, and JavaScript.
 
 ## Basics
 
