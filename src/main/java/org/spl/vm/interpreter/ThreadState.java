@@ -57,6 +57,12 @@ public class ThreadState {
     tss.set(ts);
   }
 
+  public static void clearThreadState() {
+    get().setExecType(null);
+    get().setExecVal(null);
+    get().setTrace(null);
+  }
+
   public SPLCommonType getExecType() {
     return execType;
   }

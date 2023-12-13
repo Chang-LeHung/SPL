@@ -21,6 +21,8 @@ import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.internal.SPLCodeObjectBuilder;
 import org.spl.vm.internal.objs.SPLCodeObject;
 import org.spl.vm.interpreter.DefaultEval;
+import org.spl.vm.interpreter.SPL;
+import org.spl.vm.interpreter.ThreadState;
 import org.spl.vm.objects.SPLNoneObject;
 import org.spl.vm.objects.SPLObject;
 import org.spl.vm.objects.SPLStringObject;
@@ -73,8 +75,10 @@ public class InteractiveShell {
 
   private static SPLObject eval(String line) throws SPLSyntaxError, IOException, SPLInternalException {
     SPLCodeObject code = compile(line);
-    DefaultEval defaultEval = new DefaultEval(filename, locals, locals, code);
-    return defaultEval.evalFrame();
+    SPL spl = new SPL(filename, locals, locals, code);
+    SPLObject o = spl.run();
+    ThreadState.clearThreadState();
+    return o;
   }
 
   private static int newLineCount(String line) {
@@ -192,7 +196,7 @@ public class InteractiveShell {
           }
         }
         SPLObject res = eval(line);
-        if (res != SPLNoneObject.getInstance())
+        if (res != null && res != SPLNoneObject.getInstance())
           System.out.println(res.__str__());
       } catch (Exception e) {
         System.err.println("\033[31m" + e.getMessage() + "\033[0m");
