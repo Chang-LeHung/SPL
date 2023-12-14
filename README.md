@@ -244,5 +244,47 @@ Exception Table:
 +---------+-------+----------+
 ```
 
+### Better tracebacks
 
+In SPL, we provide better traceback information than Java and Javascript. When a program crashes, SPL not only prints the call stack but also marks the location of the source error.
+
+```spl
+def hello(a) {
+    if (a > 1)
+        return [1, 2, 3, 4]
+    return "hello"
+}
+
+def main() {
+    print(hello(1), hello(2), hello(3), hello(1) + " world", hello(2) + "world")
+}
+
+main()
+```
+
+In general, the traceback is like below:
+
+```spl
+Traceback (most recent call last):
+File "src/test/resources/error/error02.spl", line 11, in main
+        print(hello(1), hello(2), hello(3), hello(1) + " world", hello(2) + "world")  
+File "src/test/resources/error/error02.spl", line 14, in <module>
+        main()
+TypeError:Can not add "[1, 2, 3, 4]" to "world"
+```
+
+The result in SPL is as follows:
+
+```spl
+Traceback (most recent call last):
+File "src/test/resources/error/error02.spl", line 11, in main
+        print(hello(1), hello(2), hello(3), hello(1) + " world", hello(2) + "world")
+                                                                          ^         
+File "src/test/resources/error/error02.spl", line 14, in <module>
+        main()
+        ^^^^  
+TypeError:Can not add "[1, 2, 3, 4]" to "world"
+```
+
+![function_dis](docs/imgs/traceback.png)
 

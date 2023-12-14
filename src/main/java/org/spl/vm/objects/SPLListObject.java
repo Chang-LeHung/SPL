@@ -33,7 +33,7 @@ public class SPLListObject extends SPLObject {
       container.addAll(other.container);
       return this;
     }
-    return SPLErrorUtils.splErrorFormat(new SPLTypeError("Can not add " + this.__str__() + " to " + rhs.__str__()));
+    return SPLErrorUtils.splErrorFormat(new SPLTypeError("Can not add \"" + this.__str__() + "\" to \"" + rhs.__str__() + "\""));
   }
 
   @Override
@@ -43,7 +43,7 @@ public class SPLListObject extends SPLObject {
       res.addAll(other.container);
       return new SPLListObject(res);
     }
-    return SPLErrorUtils.splErrorFormat(new SPLTypeError("Can not add " + this.__str__() + " to " + rhs.__str__()));
+    return SPLErrorUtils.splErrorFormat(new SPLTypeError("Can not add \"" + this.__str__() + "\" to \"" + rhs.__str__() + "\""));
   }
 
   @Override
@@ -55,7 +55,7 @@ public class SPLListObject extends SPLObject {
       }
       return this;
     }
-    return SPLErrorUtils.splErrorFormat(new SPLTypeError("Can not mul " + this.__str__() + " to " + rhs.__str__()));
+    return SPLErrorUtils.splErrorFormat(new SPLTypeError("Can not mul \"" + this.__str__() + "\" to \"" + rhs.__str__() + "\""));
   }
 
   @Override
@@ -67,7 +67,7 @@ public class SPLListObject extends SPLObject {
       }
       return new SPLListObject(res);
     }
-    return SPLErrorUtils.splErrorFormat(new SPLTypeError("Can not mul " + this.__str__() + " to " + rhs.__str__()));
+    return SPLErrorUtils.splErrorFormat(new SPLTypeError("Can not mul \"" + this.__str__() + "\" to \"" + rhs.__str__() + "\""));
   }
 
   @Override
