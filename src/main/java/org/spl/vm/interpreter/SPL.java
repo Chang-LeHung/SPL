@@ -53,7 +53,8 @@ public class SPL {
     URL resource = Thread.currentThread().
         getContextClassLoader().
         getResource(filename);
-    assert resource != null;
+    if (resource == null)
+      return filename;
     return resource.getPath();
   }
 

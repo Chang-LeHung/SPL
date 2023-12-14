@@ -5,19 +5,23 @@ import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.internal.objs.SPLCodeObject;
 import org.spl.vm.internal.shell.InteractiveShell;
+import org.spl.vm.objects.SPLObject;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 public class SPLMain {
 
   public static void main(String[] args) throws SPLInternalException, SPLSyntaxError, IOException {
+    System.out.println(Arrays.toString(args));
     if (args.length == 1) {
       try {
-        SPLCompiler compiler = new SPLCompiler(args[0]);
-        SPLCodeObject code = compiler.compile();
-        DefaultEval defaultEval = new DefaultEval(code);
-        defaultEval.evalFrame();
-      } catch (SPLSyntaxError | SPLInternalException | IOException e) {
+        SPL spl = new SPL(args[0]);
+        SPLObject run = spl.run();
+        if (run == null) {
+          Runtime.getRuntime().exit(-1);
+        }
+      } catch (SPLSyntaxError | IOException e) {
         // output red font words
         System.err.println("\u001B[31m" + e.getMessage() + "\u001B[0m");
         Runtime.getRuntime().exit(-1);
