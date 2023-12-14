@@ -13,7 +13,6 @@ import java.util.Arrays;
 public class SPLMain {
 
   public static void main(String[] args) throws SPLInternalException, SPLSyntaxError, IOException {
-    System.out.println(Arrays.toString(args));
     if (args.length == 1) {
       try {
         SPL spl = new SPL(args[0]);

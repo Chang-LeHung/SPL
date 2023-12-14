@@ -38,4 +38,11 @@ public class TestErrorTrace {
     SPLObject run = spl.run();
     assert run == null;
   }
+
+  @Test
+  public void testError02() throws SPLSyntaxError, IOException {
+    SPL spl = new SPL("error/error02.spl");
+    SPLObject run = spl.run();
+    assert run == null;
+  }
 }

@@ -1,0 +1,14 @@
+
+
+
+def hello(a) {
+    if (a > 1)
+        return [1, 2, 3, 4]
+    return "hello"
+}
+
+def main() {
+    print(hello(1), hello(2), hello(3), hello(1) + " world", hello(2) + "world")
+}
+
+main()
