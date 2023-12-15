@@ -1,14 +1,11 @@
 package org.spl.vm.interpreter;
 
-import org.spl.compiler.SPLCompiler;
 import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
-import org.spl.vm.internal.objs.SPLCodeObject;
 import org.spl.vm.internal.shell.InteractiveShell;
 import org.spl.vm.objects.SPLObject;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 public class SPLMain {
 

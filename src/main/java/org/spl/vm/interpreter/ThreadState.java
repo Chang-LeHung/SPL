@@ -25,17 +25,6 @@ public class ThreadState {
     callStackSize = 0;
   }
 
-  public void increaseCallStackSize() throws SPLInternalException {
-    callStackSize++;
-    if (maxCallStackSize <= callStackSize) {
-      SPLErrorUtils.splErrorFormat(new SPLStackOverflowError("Stack Overflow"));
-    }
-  }
-
-  public void decreaseCallStackSize() {
-    callStackSize--;
-  }
-
   public static void increaseThreadCallStackSize() throws SPLInternalException {
     get().increaseCallStackSize();
   }
@@ -61,6 +50,17 @@ public class ThreadState {
     get().setExecType(null);
     get().setExecVal(null);
     get().setTrace(null);
+  }
+
+  public void increaseCallStackSize() throws SPLInternalException {
+    callStackSize++;
+    if (maxCallStackSize <= callStackSize) {
+      SPLErrorUtils.splErrorFormat(new SPLStackOverflowError("Stack Overflow"));
+    }
+  }
+
+  public void decreaseCallStackSize() {
+    callStackSize--;
   }
 
   public SPLCommonType getExecType() {

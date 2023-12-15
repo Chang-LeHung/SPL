@@ -6,11 +6,11 @@ import org.spl.vm.objects.SPLObject;
 
 public class SPLTraceBackObject extends SPLObject {
 
-  private String errorMessage;
-  private SPLTraceBackObject next;
   private final DefaultEval eval;
   private final byte[] debugInfo;
   private final byte[] position;
+  private String errorMessage;
+  private SPLTraceBackObject next;
   private int pos;
   private int cursor;
 

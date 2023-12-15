@@ -20,7 +20,6 @@ import org.spl.vm.builtin.Builtin;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.internal.SPLCodeObjectBuilder;
 import org.spl.vm.internal.objs.SPLCodeObject;
-import org.spl.vm.interpreter.DefaultEval;
 import org.spl.vm.interpreter.SPL;
 import org.spl.vm.interpreter.ThreadState;
 import org.spl.vm.objects.SPLNoneObject;

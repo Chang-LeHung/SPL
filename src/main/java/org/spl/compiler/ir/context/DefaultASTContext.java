@@ -15,7 +15,6 @@ import java.util.*;
 public class DefaultASTContext<E extends Instruction> implements Visitor<E>, ASTContext<E> {
 
   private final List<E> instructions;
-  private String coName;
   private final List<JumpTableEntry> jumpTable;
   private final Map<Object, Integer> varnames;
   private final Map<SPLObject, Integer> constants;
@@ -24,6 +23,8 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
   private final ByteArrayOutputStream lenColumn;
   private final Set<String> globals;
   private final NameSpace<String> nameSpace;
+  private final List<String> sourceCode;
+  private String coName;
   private String filename;
   private boolean started;
   private int firstLineNo;
@@ -35,7 +36,6 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
   private int args;
   private ProgramBlock pb;
   private boolean inTry = false;
-  private final List<String> sourceCode;
 
   public DefaultASTContext(String filename, List<String> sourceCode) {
     this.filename = filename;

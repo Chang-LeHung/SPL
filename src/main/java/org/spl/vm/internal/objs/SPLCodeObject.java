@@ -14,8 +14,6 @@ import java.util.Map;
 
 public class SPLCodeObject extends SPLObject {
   private final String filename;
-  @SPLExportField
-  private SPLStringObject name;
   private final int firstLineNo;
   private final byte[] code;
   private final byte[] lenColumn;
@@ -24,8 +22,10 @@ public class SPLCodeObject extends SPLObject {
   private final SPLObject[] constants;
   private final int maxStackSize;
   private final List<ASTContext.JumpTableEntry> jumpTable;
-  private int args;
   private final List<String> sourceCode;
+  @SPLExportField
+  private SPLStringObject name;
+  private int args;
 
   public SPLCodeObject(int args,
                        int maxStackSize,

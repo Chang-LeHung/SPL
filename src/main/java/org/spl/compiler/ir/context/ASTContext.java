@@ -88,6 +88,14 @@ public interface ASTContext<E> {
 
   List<JumpTableEntry> getJumpTable();
 
+  default List<String> getSourceCode() {
+    return null;
+  }
+
+  String getCoName();
+
+  void setCoName(String coName);
+
   record JumpTableEntry(int startPc, int endPc, int targetPc) {
 
     @Override
@@ -103,12 +111,4 @@ public interface ASTContext<E> {
       return pc >= startPc && pc <= endPc;
     }
   }
-
-  default List<String> getSourceCode() {
-    return null;
-  }
-
-  String getCoName();
-
-  void setCoName(String coName);
 }
