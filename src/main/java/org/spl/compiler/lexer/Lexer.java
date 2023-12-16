@@ -537,8 +537,10 @@ public class Lexer {
   }
 
   private void stepBack(StringBuilder builder) {
-    stepBack();
-    builder.delete(builder.length() - 1, builder.length());
+    if (offset != code.length()) {
+      stepBack();
+      builder.delete(builder.length() - 1, builder.length());
+    }
   }
 
   public List<Token> getTokens() {
