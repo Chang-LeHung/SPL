@@ -335,7 +335,7 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
 
   private void completeVisiting() throws SPLSyntaxError {
     write(insOfLine, debugInfo);
-    int rest = 0;
+    int rest = currentLineNo - lastLineNo;
     write(rest, debugInfo);
     currentLineNo = 0;
     insOfLine = 0;

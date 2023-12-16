@@ -6,44 +6,85 @@ import org.spl.vm.objects.SPLObject;
 import org.spl.vm.objects.SPLStringObject;
 import org.spl.vm.types.SPLCommonType;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Lexer {
 
+  private final String filename;
 
   private final List<Token> tokens;
-  private final InputBuffer stream;
+  private final StringBuilder code;
+  private final List<String> sourceCode;
+  private int offset;
   private int lineNo = 1;
-  private int columnNo = 1;
+  private int columnNo = 0;
 
   public Lexer(String filename) throws IOException {
     tokens = new ArrayList<>();
-    stream = new InputBuffer(filename);
+    code = new StringBuilder();
+    offset = 0;
+    sourceCode = new ArrayList<>();
+    this.filename = filename;
+    try (BufferedReader fileReader = new BufferedReader(new FileReader(filename))) {
+      String line;
+      while ((line = fileReader.readLine()) != null) {
+        code.append(line).append("\n");
+        sourceCode.add(line);
+      }
+    }
   }
 
-  public Lexer(String filename, String content) throws IOException {
+  public Lexer(String filename, String content) {
     tokens = new ArrayList<>();
-    stream = new InputBuffer(filename, content);
+    code = new StringBuilder(content);
+    offset = 0;
+    this.filename = filename;
+    sourceCode = new ArrayList<>(List.of(content.split("\n")));
   }
 
-
-  private void updateLineAndColumn() {
-    lineNo = stream.getLineNo();
-    columnNo = stream.getColumnNo();
-  }
-
-  private void injectTokensAndClearBuilder(Token token, StringBuilder builder) {
-    token.setColumnNo(columnNo);
-    token.setLineNo(lineNo);
+  private static void clear(StringBuilder builder) {
     builder.delete(0, builder.length());
   }
 
+  private void injectTokensAndClearBuilder(Token token) {
+    token.setColumnNo(columnNo - token.getValueAsString().length() + 1);
+    token.setLineNo(lineNo);
+  }
+
+  public String getFilename() {
+    return filename;
+  }
+
   private char nextChar(StringBuilder builder) {
-    char c = stream.nextChar();
+    if (offset >= code.length())
+      return 0;
+    char last = 0;
+    if (offset > 0) {
+      last = code.charAt(offset - 1);
+    }
+    if (last == '\n') {
+      lineNo++;
+      columnNo = 0;
+    }
+    char c = code.charAt(offset++);
+    columnNo++;
     builder.append(c);
     return c;
+  }
+
+  private void stepBack() {
+    assert offset > 0;
+    offset--;
+    if (code.charAt(offset - 1) == '\n') {
+      lineNo--;
+      columnNo = sourceCode.get(lineNo - 1).length() + 1;
+    } else {
+      columnNo--;
+    }
   }
 
   public void doParse() throws SPLSyntaxError {
@@ -90,96 +131,78 @@ public class Lexer {
             case ']' -> state = CHAR_TYPE.RBRACKET;
             default -> {
               if (Character.isWhitespace(c)) {
-                updateLineAndColumn();
                 c = nextChar(builder);
-                builder.delete(0, builder.length());
               } else {
                 throw new SPLSyntaxError("Illegal character '" + c + "'");
               }
             }
           }
-
         }
         case HASH -> {
           while (c != '\n') {
             c = nextChar(builder);
           }
-          builder.delete(0, builder.length());
           state = CHAR_TYPE.INIT;
         }
         case LBRACKET -> {
           Token token = new Token(TOKEN_TYPE.LBRACKET, "[");
           tokens.add(token);
-          injectTokensAndClearBuilder(token, builder);
-          // must call updateLineAndColumn before nextChar, or `columnNo--`
-          updateLineAndColumn();
-          c = nextChar(builder);
+          injectTokensAndClearBuilder(token);
           state = CHAR_TYPE.INIT;
-          builder.delete(0, builder.length());
+          c = nextChar(builder);
         }
         case RBRACKET -> {
           Token token = new Token(TOKEN_TYPE.RBRACKET, "]");
           tokens.add(token);
-          injectTokensAndClearBuilder(token, builder);
-          // must call updateLineAndColumn before nextChar, or `columnNo--`
-          updateLineAndColumn();
-          c = nextChar(builder);
+          injectTokensAndClearBuilder(token);
           state = CHAR_TYPE.INIT;
-          builder.delete(0, builder.length());
+          c = nextChar(builder);
         }
         case COMMA -> {
           Token token = new Token(TOKEN_TYPE.COMMA, ",");
           tokens.add(token);
-          injectTokensAndClearBuilder(token, builder);
-          // must call updateLineAndColumn before nextChar, or `columnNo--`
-          updateLineAndColumn();
-          c = nextChar(builder);
+          injectTokensAndClearBuilder(token);
           state = CHAR_TYPE.INIT;
-          builder.delete(0, builder.length());
+          c = nextChar(builder);
         }
         case COLON -> {
           Token token = new Token(TOKEN_TYPE.COLON, ":");
           tokens.add(token);
-          injectTokensAndClearBuilder(token, builder);
-          // must call updateLineAndColumn before nextChar, or `columnNo--`
-          updateLineAndColumn();
+          injectTokensAndClearBuilder(token);
           c = nextChar(builder);
           state = CHAR_TYPE.INIT;
-          builder.delete(0, builder.length());
         }
         case NEWLINE -> {
           Token token = new Token(TOKEN_TYPE.NEWLINE, "\\n");
           tokens.add(token);
-          injectTokensAndClearBuilder(token, builder);
-          updateLineAndColumn();
+          injectTokensAndClearBuilder(token);
+          token.columnNo += 1;
           state = CHAR_TYPE.INIT;
           c = nextChar(builder);
-          builder.delete(0, builder.length());
         }
         case DOT -> {
           Token token = new Token(TOKEN_TYPE.DOT, ".");
-          injectTokensAndClearBuilder(token, builder);
+          injectTokensAndClearBuilder(token);
           tokens.add(token);
-          updateLineAndColumn();
           state = CHAR_TYPE.INIT;
           c = nextChar(builder);
-          builder.delete(0, builder.length());
         }
         case IDENTIFIER -> {
+          clear(builder);
           // identifier branch
           builder.append(c);
           while (Character.isAlphabetic(c) || Character.isDigit(c) || c == '_') {
             c = nextChar(builder);
           }
-          builder.delete(builder.length() - 1, builder.length());
+          stepBack(builder);
           Token token = new Token(TOKEN_TYPE.IDENTIFIER, builder.toString());
-          injectTokensAndClearBuilder(token, builder);
+          injectTokensAndClearBuilder(token);
           tokens.add(token);
-          updateLineAndColumn();
           state = CHAR_TYPE.INIT;
-          columnNo--;
+          c = nextChar(builder);
         }
         case NUMBER -> {
+          clear(builder);
           // number branch
           builder.append(c);
           while (Character.isDigit(c)) {
@@ -190,27 +213,25 @@ public class Lexer {
             while (Character.isDigit(c)) {
               c = nextChar(builder);
             }
-            builder.delete(builder.length() - 1, builder.length());
             if (c == '.') {
-              String buffer = stream.getBuffer();
-              String msg = SPLException.buildErrorMessage(stream.getFileName(), lineNo, columnNo, stream.getOff() - columnNo, buffer.substring(0, buffer.length() - 1), "Illegal float literal, two or more dots are not allowed in float literals");
+              String msg = SPLException.buildErrorMessage(filename, lineNo, columnNo - builder.length(), builder.length(), sourceCode.get(lineNo - 1), "Illegal float literal, two or more dots are not allowed in float literals");
               throw new SPLSyntaxError(msg);
             }
+            stepBack(builder);
             Token token = new Token(TOKEN_TYPE.FLOAT, Float.parseFloat(builder.toString()));
-            injectTokensAndClearBuilder(token, builder);
-            updateLineAndColumn();
+            injectTokensAndClearBuilder(token);
             tokens.add(token);
           } else {
-            builder.delete(builder.length() - 1, builder.length());
+            stepBack(builder);
             Token token = new Token(TOKEN_TYPE.INT, Integer.parseInt(builder.toString()));
-            injectTokensAndClearBuilder(token, builder);
-            updateLineAndColumn();
+            injectTokensAndClearBuilder(token);
             tokens.add(token);
           }
-          columnNo--;
           state = CHAR_TYPE.INIT;
+          c = nextChar(builder);
         }
         case QUOTATION -> {
+          clear(builder);
           // string branch
           char t = c;
           c = nextChar(builder);
@@ -223,83 +244,73 @@ public class Lexer {
           if (c == '"' || c == '\'') {
             token = new Token(TOKEN_TYPE.STRING, builder.toString());
           } else {
-            String msg = SPLException.buildErrorMessage(stream.getFileName(), lineNo, columnNo, stream.getOff() - columnNo, stream.getBuffer(), "Illegal string literal, string literal must be enclosed in double quotes");
+            String msg = SPLException.buildErrorMessage(filename, lineNo, columnNo - builder.length(), builder.length(), sourceCode.get(lineNo - 1), "Illegal string literal, string literal must be enclosed in double quotes");
             throw new SPLSyntaxError(msg);
           }
-          injectTokensAndClearBuilder(token, builder);
-          updateLineAndColumn();
+          injectTokensAndClearBuilder(token);
           tokens.add(token);
-          c = nextChar(builder);
-          builder.delete(0, builder.length());
           state = CHAR_TYPE.INIT;
+          c = nextChar(builder);
         }
         case PLUS -> {
           c = nextChar(builder);
           Token token;
           if (c == '=') {
             token = new Token(TOKEN_TYPE.ASSIGN_ADD, "+=");
-            c = nextChar(builder);
           } else {
+            stepBack();
             token = new Token(TOKEN_TYPE.PLUS, "+");
           }
-          injectTokensAndClearBuilder(token, builder);
+          injectTokensAndClearBuilder(token);
           tokens.add(token);
-          updateLineAndColumn();
-          builder.delete(0, builder.length());
           state = CHAR_TYPE.INIT;
-          columnNo--;
+          c = nextChar(builder);
         }
         case SEMICOLON -> {
-          c = nextChar(builder);
           Token token = new Token(TOKEN_TYPE.SEMICOLON, ";");
-          injectTokensAndClearBuilder(token, builder);
+          injectTokensAndClearBuilder(token);
           tokens.add(token);
-          updateLineAndColumn();
-          columnNo--;
-          builder.delete(0, builder.length());
           state = CHAR_TYPE.INIT;
+          c = nextChar(builder);
         }
         case MINUS -> {
           c = nextChar(builder);
           Token token;
           if (c == '=') {
             token = new Token(TOKEN_TYPE.ASSIGN_SUB, "-=");
-            c = nextChar(builder);
           } else if (c == '>') {
             token = new Token(TOKEN_TYPE.ARROW, "->");
-            c = nextChar(builder);
           } else {
+            stepBack();
             token = new Token(TOKEN_TYPE.MINUS, "-");
           }
-          injectTokensAndClearBuilder(token, builder);
+          injectTokensAndClearBuilder(token);
           tokens.add(token);
-          updateLineAndColumn();
-          columnNo--;
           state = CHAR_TYPE.INIT;
+          c = nextChar(builder);
         }
         case MUL -> {
           c = nextChar(builder);
           Token token;
           if (c == '=') {
-            c = nextChar(builder);
             token = new Token(TOKEN_TYPE.ASSIGN_MUL, "*=");
           } else {
             if (c == '*') {
               c = nextChar(builder);
               if (c == '=') {
-                c = nextChar(builder);
                 token = new Token(TOKEN_TYPE.ASSIGN_POWER, "**=");
               } else {
+                stepBack();
                 token = new Token(TOKEN_TYPE.POWER, "**");
               }
             } else {
+              stepBack();
               token = new Token(TOKEN_TYPE.MUL, "*");
             }
           }
-          injectTokensAndClearBuilder(token, builder);
+          injectTokensAndClearBuilder(token);
           tokens.add(token);
-          updateLineAndColumn();
-          columnNo--;
+          c = nextChar(builder);
           state = CHAR_TYPE.INIT;
         }
         case DIV -> {
@@ -307,23 +318,23 @@ public class Lexer {
           Token token;
           if (c == '=') {
             token = new Token(TOKEN_TYPE.ASSIGN_DIV, "/=");
-            c = nextChar(builder);
           } else {
             if (c == '/') {
-              token = new Token(TOKEN_TYPE.TRUE_DIV, "//");
               c = nextChar(builder);
               if (c == '=') {
                 token = new Token(TOKEN_TYPE.ASSIGN_TRUE_DIV, "//=");
-                c = nextChar(builder);
+              } else {
+                stepBack();
+                token = new Token(TOKEN_TYPE.TRUE_DIV, "//");
               }
             } else {
+              stepBack();
               token = new Token(TOKEN_TYPE.DIV, "/");
             }
           }
-          injectTokensAndClearBuilder(token, builder);
+          injectTokensAndClearBuilder(token);
           tokens.add(token);
-          updateLineAndColumn();
-          columnNo--;
+          c = nextChar(builder);
           state = CHAR_TYPE.INIT;
         }
         case MOD -> {
@@ -331,14 +342,13 @@ public class Lexer {
           Token token;
           if (c == '=') {
             token = new Token(TOKEN_TYPE.ASSIGN_MOD, "%=");
-            c = nextChar(builder);
           } else {
+            stepBack();
             token = new Token(TOKEN_TYPE.MOD, "%");
           }
-          injectTokensAndClearBuilder(token, builder);
+          injectTokensAndClearBuilder(token);
           tokens.add(token);
-          updateLineAndColumn();
-          columnNo--;
+          c = nextChar(builder);
           state = CHAR_TYPE.INIT;
         }
         case ASSIGN -> {
@@ -346,14 +356,13 @@ public class Lexer {
           Token token;
           if (c == '=') {
             token = new Token(TOKEN_TYPE.EQ, "==");
-            c = nextChar(builder);
           } else {
+            stepBack();
             token = new Token(TOKEN_TYPE.ASSIGN, "=");
           }
-          injectTokensAndClearBuilder(token, builder);
+          injectTokensAndClearBuilder(token);
           tokens.add(token);
-          updateLineAndColumn();
-          columnNo--;
+          c = nextChar(builder);
           state = CHAR_TYPE.INIT;
         }
         case GT -> {
@@ -361,18 +370,15 @@ public class Lexer {
           Token token;
           if (c == '=') {
             token = new Token(TOKEN_TYPE.GE, ">=");
-            c = nextChar(builder);
           } else if (c == '>') {
             c = nextChar(builder);
             if (c == '=') {
               token = new Token(TOKEN_TYPE.ASSIGN_RSHIFT, ">>=");
-              c = nextChar(builder);
             } else {
               if (c == '>') {
                 c = nextChar(builder);
                 if (c == '=') {
                   token = new Token(TOKEN_TYPE.ASSIGN_U_RSHIFT, ">>>=");
-                  c = nextChar(builder);
                 } else {
                   token = new Token(TOKEN_TYPE.U_RSHIFT, ">>>");
                 }
@@ -383,10 +389,9 @@ public class Lexer {
           } else {
             token = new Token(TOKEN_TYPE.GT, ">");
           }
-          injectTokensAndClearBuilder(token, builder);
+          injectTokensAndClearBuilder(token);
           tokens.add(token);
-          updateLineAndColumn();
-          columnNo--;
+          c = nextChar(builder);
           state = CHAR_TYPE.INIT;
         }
         case LT -> {
@@ -395,23 +400,23 @@ public class Lexer {
           if (c == '=') {
             // <=
             token = new Token(TOKEN_TYPE.LE, "<=");
-            c = nextChar(builder);
           } else if (c == '<') {
             // <<
             c = nextChar(builder);
             if (c == '=') {
               // <<=
               token = new Token(TOKEN_TYPE.ASSIGN_LSHIFT, "<<=");
-              c = nextChar(builder);
             } else {
+              stepBack();
               token = new Token(TOKEN_TYPE.LSHIFT, "<<");
             }
           } else {
+            stepBack();
             token = new Token(TOKEN_TYPE.LT, "<");
           }
-          injectTokensAndClearBuilder(token, builder);
+          injectTokensAndClearBuilder(token);
           tokens.add(token);
-          updateLineAndColumn();
+          c = nextChar(builder);
           columnNo--;
           state = CHAR_TYPE.INIT;
         }
@@ -421,19 +426,17 @@ public class Lexer {
           if (c == '=') {
             // &=
             token = new Token(TOKEN_TYPE.ASSIGN_AND, "&=");
-            c = nextChar(builder);
           } else if (c == '&') {
             // &&
             token = new Token(TOKEN_TYPE.CONDITIONAL_AND, "&&");
-            c = nextChar(builder);
           } else {
             // &
+            stepBack();
             token = new Token(TOKEN_TYPE.AND, "&");
           }
-          injectTokensAndClearBuilder(token, builder);
+          injectTokensAndClearBuilder(token);
           tokens.add(token);
-          updateLineAndColumn();
-          columnNo--;
+          c = nextChar(builder);
           state = CHAR_TYPE.INIT;
         }
         case OR -> {
@@ -442,19 +445,17 @@ public class Lexer {
           if (c == '=') {
             // |=
             token = new Token(TOKEN_TYPE.ASSIGN_OR, "|=");
-            c = nextChar(builder);
           } else if (c == '|') {
             // ||
             token = new Token(TOKEN_TYPE.CONDITIONAL_OR, "||");
-            c = nextChar(builder);
           } else {
             // |
+            stepBack();
             token = new Token(TOKEN_TYPE.OR, "|");
           }
-          injectTokensAndClearBuilder(token, builder);
+          injectTokensAndClearBuilder(token);
           tokens.add(token);
-          updateLineAndColumn();
-          columnNo--;
+          c = nextChar(builder);
           state = CHAR_TYPE.INIT;
         }
         case NOT -> {
@@ -462,87 +463,82 @@ public class Lexer {
           Token token;
           if (c == '=') {
             token = new Token(TOKEN_TYPE.NE, "!=");
-            c = nextChar(builder);
           } else {
+            stepBack();
             token = new Token(TOKEN_TYPE.CONDITIONAL_NOT, "!");
           }
-          injectTokensAndClearBuilder(token, builder);
+          injectTokensAndClearBuilder(token);
           tokens.add(token);
-          updateLineAndColumn();
-          columnNo--;
           state = CHAR_TYPE.INIT;
+          c = nextChar(builder);
         }
         case INVERT -> {
           Token token;
           c = nextChar(builder);
           if (c == '=') {
             token = new Token(TOKEN_TYPE.ASSIGN_INVERT, "~=");
-            c = nextChar(builder);
           } else {
+            stepBack();
             token = new Token(TOKEN_TYPE.INVERT, "~");
           }
-          injectTokensAndClearBuilder(token, builder);
+          injectTokensAndClearBuilder(token);
           tokens.add(token);
-          updateLineAndColumn();
-          columnNo--;
           state = CHAR_TYPE.INIT;
+          c = nextChar(builder);
         }
         case LPAREN -> {
           Token token = new Token(TOKEN_TYPE.LEFT_PARENTHESES, "(");
-          c = nextChar(builder);
-          injectTokensAndClearBuilder(token, builder);
+          injectTokensAndClearBuilder(token);
           tokens.add(token);
-          updateLineAndColumn();
-          columnNo--;
           state = CHAR_TYPE.INIT;
+          c = nextChar(builder);
         }
         case RPAREN -> {
           Token token = new Token(TOKEN_TYPE.RIGHT_PARENTHESES, ")");
-          c = nextChar(builder);
-          injectTokensAndClearBuilder(token, builder);
+          injectTokensAndClearBuilder(token);
           tokens.add(token);
-          updateLineAndColumn();
-          columnNo--;
           state = CHAR_TYPE.INIT;
+          c = nextChar(builder);
         }
         case POWER -> {
           c = nextChar(builder);
           Token token;
           if (c == '=') {
             token = new Token(TOKEN_TYPE.ASSIGN_XOR, "^=");
-            c = nextChar(builder);
           } else {
+            stepBack();
             token = new Token(TOKEN_TYPE.XOR, "^");
           }
-          injectTokensAndClearBuilder(token, builder);
+          injectTokensAndClearBuilder(token);
           tokens.add(token);
-          updateLineAndColumn();
-          columnNo--;
+          c = nextChar(builder);
           state = CHAR_TYPE.INIT;
         }
         case LBRACE -> {
           Token token = new Token(TOKEN_TYPE.LBRACE, "{");
-          injectTokensAndClearBuilder(token, builder);
-          updateLineAndColumn();
+          injectTokensAndClearBuilder(token);
           tokens.add(token);
-          c = nextChar(builder);
-          builder.delete(0, builder.length());
           state = CHAR_TYPE.INIT;
+          c = nextChar(builder);
         }
         case RBRACE -> {
           Token token = new Token(TOKEN_TYPE.RBRACE, "}");
-          injectTokensAndClearBuilder(token, builder);
-          updateLineAndColumn();
+          injectTokensAndClearBuilder(token);
           tokens.add(token);
-          c = nextChar(builder);
-          builder.delete(0, builder.length());
           state = CHAR_TYPE.INIT;
+          c = nextChar(builder);
         }
       }
     }
     Token token = new Token(TOKEN_TYPE.EOF, "EOF");
-    token.setLineNo(1);
+    token.setLineNo(lineNo);
+    token.setColumnNo(columnNo);
     tokens.add(token);
+  }
+
+  private void stepBack(StringBuilder builder) {
+    stepBack();
+    builder.delete(builder.length() - 1, builder.length());
   }
 
   public List<Token> getTokens() {

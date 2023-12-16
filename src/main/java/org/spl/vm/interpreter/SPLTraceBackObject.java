@@ -71,7 +71,7 @@ public class SPLTraceBackObject extends SPLObject {
     int len = getArg();
     int column = getArg();
     for (int i = 0; i < len; i++) {
-      tip.setCharAt(column + i, '^');
+      tip.setCharAt(column + i - 1, '^');
     }
     tip.delete(0, leftBoundary);
     errorMessage = builder.append("\t").append(tip).toString();
