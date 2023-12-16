@@ -60,8 +60,10 @@ public class Lexer {
   }
 
   private char nextChar(StringBuilder builder) {
-    if (offset >= code.length())
+    if (offset >= code.length()) {
+      builder.append(0);
       return 0;
+    }
     char last = 0;
     if (offset > 0) {
       last = code.charAt(offset - 1);
