@@ -1,0 +1,9 @@
+
+
+
+
+
+data = {1: 2}
+
+data["age"] = 10
+print(data)

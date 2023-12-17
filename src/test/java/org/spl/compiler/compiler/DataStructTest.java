@@ -15,4 +15,12 @@ public class DataStructTest {
     System.out.println(spl.getCode().getMaxStackSize());
     spl.run();
   }
+
+  @Test
+  public void testDict03() throws SPLSyntaxError, IOException {
+    SPL spl = new SPL("datastruct/dict03.spl");
+    spl.dis();
+    System.out.println(spl.getCode().getMaxStackSize());
+    spl.run();
+  }
 }

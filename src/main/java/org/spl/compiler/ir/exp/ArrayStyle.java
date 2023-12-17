@@ -35,6 +35,11 @@ public class ArrayStyle extends AbstractIR<Instruction> {
   }
 
   @Override
+  public String toString() {
+    return lhs.toString() + "[" + sub.toString() + "]";
+  }
+
+  @Override
   public boolean isStatement() {
     return true;
   }

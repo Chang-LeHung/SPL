@@ -210,6 +210,10 @@ public class Dissembler extends SPLObject {
           ins = new Instruction(OpCode.NOT, 0);
           pc++;
         }
+        case SUBSCRIBE_STORE -> {
+          ins = new Instruction(OpCode.SUBSCRIBE_STORE, 0);
+          pc++;
+        }
         case INVERT -> {
           ins = new Instruction(OpCode.INVERT, 0);
           pc++;
