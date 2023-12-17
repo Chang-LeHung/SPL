@@ -16,15 +16,18 @@ import static org.spl.compiler.ir.Op.NOP;
 public class Variable extends AbstractIR<Instruction> implements RValue<Instruction> {
 
   private final String name;
+  private int idx;
   private final IRNode<Instruction> rValue;
   private Scope scope;
   private List<IRNode<Instruction>> children;
 
-  public Variable(Scope scope, String name) {
+  public Variable(Scope scope, String name, int idx) {
     this.name = name;
     this.scope = scope;
+    this.idx = idx;
     rValue = null;
   }
+
 
   public Variable(Scope scope, String name, IRNode<Instruction> rValue) {
     this.name = name;
@@ -34,7 +37,6 @@ public class Variable extends AbstractIR<Instruction> implements RValue<Instruct
 
   @Override
   public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
-    int idx = context.getVarNameIndex(name);
     switch (scope) {
       case LOCAL -> {
         context.add(new Instruction(OpCode.LOAD_LOCAL, idx), getLineNo(), getColumnNo(), getLen());
@@ -42,10 +44,17 @@ public class Variable extends AbstractIR<Instruction> implements RValue<Instruct
       case GLOBAL -> {
         context.add(new Instruction(OpCode.LOAD_GLOBAL, idx), getLineNo(), getColumnNo(), getLen());
       }
+      case CLOSURE -> {
+        context.add(new Instruction(OpCode.LOAD_CLOSURE, idx), getLineNo(), getColumnNo(), getLen());
+      }
       case OTHERS -> {
         context.add(new Instruction(OpCode.LOAD_NAME, idx), getLineNo(), getColumnNo(), getLen());
       }
     }
+  }
+
+  public int getIdx() {
+    return idx;
   }
 
   public Scope scope() {

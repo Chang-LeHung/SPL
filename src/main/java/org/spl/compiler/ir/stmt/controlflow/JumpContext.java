@@ -7,6 +7,7 @@ import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.block.ProgramBlock;
 import org.spl.compiler.ir.context.ASTContext;
 import org.spl.vm.objects.SPLObject;
+import org.spl.vm.objects.SPLStringObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -238,6 +239,26 @@ public class JumpContext implements ASTContext<Instruction> {
 
   @Override
   public void setCoName(String coName) {
+  }
+
+  @Override
+  public boolean isInFunction() {
+    return context.isInFunction();
+  }
+
+  @Override
+  public ASTContext<Instruction> getPreviousContext() {
+    return context.getPreviousContext();
+  }
+
+  @Override
+  public boolean requestClosure(String var) {
+    return context.requestClosure(var);
+  }
+
+  @Override
+  public Map<String, Integer> getClosureMap() {
+    return context.getClosureMap();
   }
 
   public int getNBytes() {

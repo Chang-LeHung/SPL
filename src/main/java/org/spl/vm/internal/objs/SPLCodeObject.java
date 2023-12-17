@@ -23,6 +23,7 @@ public class SPLCodeObject extends SPLObject {
   private final int maxStackSize;
   private final List<ASTContext.JumpTableEntry> jumpTable;
   private final List<String> sourceCode;
+  private SPLObject[] closures;
   @SPLExportField
   private SPLStringObject name;
   private int args;
@@ -143,5 +144,13 @@ public class SPLCodeObject extends SPLObject {
 
   public void setName(SPLStringObject name) {
     this.name = name;
+  }
+
+  public SPLObject[] getClosures() {
+    return closures;
+  }
+
+  public void setClosures(SPLObject[] closures) {
+    this.closures = closures;
   }
 }

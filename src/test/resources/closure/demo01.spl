@@ -1,0 +1,17 @@
+
+
+
+def hello(a) {
+
+    def world() {
+        print("world")
+        return a
+    }
+    return world
+}
+
+f = hello("Hello")
+print(f)
+print(f())
+
+

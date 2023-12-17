@@ -327,7 +327,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               locals.put(key, o);
             }
             case LOAD_LOCAL -> { // LOAD_LOCAL
-              int oparg = code[pc++];
+              int oparg = getOparg();
               if (locals.containsKey(varnames[oparg])) {
                 evalStack[top++] = locals.get(varnames[oparg]);
                 continue;
@@ -335,12 +335,12 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               SPLErrorUtils.splErrorFormat(new SPLRuntimeException("Not find a variable named \"" + varnames[oparg].__str__() + "\""));
             }
             case STORE_GLOBAL -> { // STORE_GLOBAL
-              int oparg = code[pc++];
+              int oparg = getOparg();
               SPLObject o = evalStack[--top];
               globals.put(varnames[oparg], o);
             }
             case LOAD_GLOBAL -> { // LOAD_GLOBAL
-              int oparg = code[pc++];
+              int oparg = getOparg();
               if (globals.containsKey(varnames[oparg])) {
                 evalStack[top++] = globals.get(varnames[oparg]);
                 continue;
@@ -385,7 +385,14 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
                 defaults.add(evalStack[--top]);
               }
               func.setGlobals(globals);
-              ((SPLFuncObject) func).setDefaults(defaults);
+              SPLFuncObject f = ((SPLFuncObject) func);
+              SPLObject[] closure = f.getCodeObject().getClosures();
+              if (closure != null) {
+                for (int i = 0; i < closure.length; i++) {
+                  closure[i] = evalStack[--top];
+                }
+              }
+              f.setDefaults(defaults);
               evalStack[top++] = func;
             }
             case STORE -> { // STORE
@@ -400,7 +407,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               evalStack[top - 1] = evalStack[top - 1].__getAttr__(varnames[arg]);
             }
             case CALL -> { // CALL
-              int oparg = code[pc++];
+              int oparg = getOparg();
               SPLObject callable = evalStack[--top];
               SPLObject[] args = new SPLObject[oparg];
               for (int i = 0; i < oparg; i++) {
@@ -413,6 +420,14 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             case LOAD_CONST -> { // LOAD_CONST
               int oparg = getOparg();
               evalStack[top++] = constants[oparg];
+            }
+            case LOAD_CLOSURE -> {
+              int arg = getOparg();
+              evalStack[top++] = codeObject.getClosures()[arg];
+            }
+            case STORE_CLOSURE -> {
+              int arg = getOparg();
+              codeObject.getClosures()[arg] = evalStack[top - 1];
             }
             case POP -> { // POP
               pc++;

@@ -237,6 +237,12 @@ public class Dissembler extends SPLObject {
         case LOAD -> {
           ins = new Instruction(OpCode.LOAD, getOparg());
         }
+        case LOAD_CLOSURE -> {
+          ins = new Instruction(OpCode.LOAD_CLOSURE, getOparg());
+        }
+        case STORE_CLOSURE -> {
+          ins = new Instruction(OpCode.STORE_CLOSURE, getOparg());
+        }
         case LOAD_CONST -> {
           ins = new Instruction(OpCode.LOAD_CONST, getOparg());
         }

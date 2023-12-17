@@ -70,13 +70,16 @@ public class AbstractAssignStmt extends AbstractIR<Instruction> {
       }
     }
     var L = (Variable) lhs;
-    int idx = context.getVarNameIndex(L.getName());
+    int idx = L.getIdx();
     switch (L.scope()) {
       case LOCAL -> {
         context.add(new Instruction(OpCode.STORE_LOCAL, idx), getLineNo(), getColumnNo(), getLen());
       }
       case GLOBAL -> {
         context.add(new Instruction(OpCode.STORE_GLOBAL, idx), getLineNo(), getColumnNo(), getLen());
+      }
+      case CLOSURE -> {
+        context.add(new Instruction(OpCode.STORE_CLOSURE, idx), getLineNo(), getColumnNo(), getLen());
       }
       case OTHERS -> {
         // fallback to STORE

@@ -27,6 +27,7 @@ import org.spl.vm.objects.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * program      : block*
@@ -177,10 +178,6 @@ public class SPLParser extends AbstractSyntaxParser {
         setSourceCodeInfo(pop, token);
         block.addIRNode(pop);
       }
-      // if (!(tokenFlow.peek().isNEWLINE() || tokenFlow.peek().isSEMICOLON())) {
-      //   throwSyntaxError("Illegal statement, expected semicolon or newline", tokenFlow.peek());
-      // }
-      // tokenFlow.next();
     }
     return block;
   }
@@ -559,6 +556,8 @@ public class SPLParser extends AbstractSyntaxParser {
     tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LEFT_PARENTHESES, "require '(' instead of \"" + tokenFlow.peek().getValueAsString() + "\"");
     tokenFlow.next();
     var funcContext = new DefaultASTContext<>(filename, getSourceCode());
+    funcContext.setInFunc(true);
+    funcContext.setPrev(context);
     funcContext.setFirstLineNo(token.getLineNo());
     List<String> parameters = new ArrayList<>();
     List<IRNode<Instruction>> defaultParams = new ArrayList<>();
@@ -594,8 +593,6 @@ public class SPLParser extends AbstractSyntaxParser {
     parameters.forEach(funcContext::addSymbol);
     parameters.forEach(funcContext::addVarName);
     context = funcContext;
-//    funcContext.addVarName(funcName);
-//    funcContext.addSymbol(funcName);
     IRNode<Instruction> block = block();
     assert block instanceof ProgramBlock;
     var pb = (ProgramBlock) block;
@@ -611,11 +608,27 @@ public class SPLParser extends AbstractSyntaxParser {
     SPLCodeObject code = SPLCodeObjectBuilder.build(funcContext);
     SPLFuncObject func = new SPLFuncObject(parameters, funcName, code);
     context.addConstantObject(func);
-//    InsVisitor insVisitor = new InsVisitor(funcContext.getVarnames(), funcContext.getConstantMap());
-//    funcContext.getInstructions().forEach(insVisitor::visit);
-//    System.out.println(insVisitor);
     int idxInConstants = context.getConstantObjectIndex(func);
-    FuncDef funcDef = new FuncDef(funcName, idxInConstants, idxInVar, defaultParams);
+    Map<String, Integer> closureMap = funcContext.getClosureMap();
+    String[] vars = new String[closureMap.size()];
+    ArrayList<IRNode<Instruction>> closures = new ArrayList<>();
+    closureMap.forEach((k, v) -> vars[v] = k);
+    code.setClosures(new SPLObject[vars.length]);
+    Variable variable;
+    for (String var : vars) {
+      if (context.isGlobal(var)) {
+        variable = new Variable(Scope.GLOBAL, var, context.getSymbolIndex(var));
+      } else if (context.containSymbol(var)) {
+        variable = new Variable(Scope.LOCAL, var, context.getSymbolIndex(var));
+      } else if (context.loadClosureVar(var) != -1) {
+        variable = new Variable(Scope.CLOSURE, var, context.loadClosureVar(var));
+      } else {
+        variable = new Variable(Scope.OTHERS, var, context.getVarNameIndex(var));
+      }
+      setSourceCodeInfo(variable, token);
+      closures.add(variable);
+    }
+    FuncDef funcDef = new FuncDef(closures, funcName, idxInConstants, idxInVar, defaultParams);
     setSourceCodeInfo(funcDef, token);
     return funcDef;
   }
@@ -1072,18 +1085,24 @@ public class SPLParser extends AbstractSyntaxParser {
     } else if (token.isLBRACKET()) {
       return list();
     } else if (token.isIDENTIFIER()) {
+      int idx;
       tokenFlow.next();
-      context.addVarName(token.getIdentifier());
+      String identifier = token.getIdentifier();
+      context.addVarName(identifier);
       IRNode<Instruction> ret;
       Scope scope;
-      if (context.isGlobal(token.getIdentifier())) {
+      idx = context.getVarNameIndex(identifier);
+      if (context.isGlobal(identifier)) {
         scope = Scope.GLOBAL;
-      } else if (context.containSymbol(token.getIdentifier())) {
+      } else if (context.containSymbol(identifier)) {
         scope = Scope.LOCAL;
+      } else if (context.loadClosureVar(identifier) != -1) {
+        scope = Scope.CLOSURE;
+        idx = context.loadClosureVar(identifier);
       } else {
         scope = Scope.OTHERS;
       }
-      ret = new Variable(scope, token.getIdentifier());
+      ret = new Variable(scope, identifier, idx);
       setSourceCodeInfo(ret, token);
       while (tokenFlow.peek().isDOT() || tokenFlow.peek().isLEFT_PARENTHESES() || tokenFlow.peek().isLBRACKET()) {
         if (tokenFlow.peek().isDOT()) {
@@ -1092,7 +1111,7 @@ public class SPLParser extends AbstractSyntaxParser {
           tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.IDENTIFIER,
               "Expected identifier after '.'");
           String name = tokenFlow.peek().getIdentifier();
-          int idx = context.addVarName(name);
+          idx = context.addVarName(name);
           context.addSymbol(name);
           if (tokenFlow.lookAhead().isLEFT_PARENTHESES()) {
             ret = new LoadMethod(ret, idx, name);
@@ -1306,96 +1325,109 @@ public class SPLParser extends AbstractSyntaxParser {
           ));
     }
     tokenFlow.next();
+    String name = token.getIdentifier();
+    int idx = context.getVarNameIndex(token.getIdentifier());
+    Scope scope;
+    if (context.isGlobal(name)) {
+      scope = Scope.GLOBAL;
+    } else if (context.loadClosureVar(name) != -1) {
+      scope = Scope.LOCAL;
+      idx = context.loadClosureVar(name);
+    } else if (context.getSymbolIndex(name) != -1) {
+      scope = Scope.LOCAL;
+    } else {
+      scope = Scope.OTHERS;
+    }
     switch (sign.token) {
       case ASSIGN -> {
         context.addSymbol(token.getIdentifier());
         context.addVarName(token.getIdentifier());
         IRNode<Instruction> rhs = expression();
-        Variable lhs = new Variable(Scope.LOCAL, token.getIdentifier());
+        Variable lhs = new Variable(Scope.LOCAL, token.getIdentifier(), idx);
         AssignStmt assignStmt = new AssignStmt(lhs, rhs);
         setSourceCodeInfo(assignStmt, sign);
         return assignStmt;
       }
       case ASSIGN_ADD -> {
         IRNode<Instruction> rhs = expression();
-        Variable lhs = new Variable(Scope.LOCAL, token.getIdentifier());
+        Variable lhs = new Variable(scope, token.getIdentifier(), idx);
         AddAssignStmt addAssignStmt = new AddAssignStmt(lhs, rhs);
         setSourceCodeInfo(addAssignStmt, sign);
         return addAssignStmt;
       }
       case ASSIGN_SUB -> {
         IRNode<Instruction> rhs = expression();
-        Variable lhs = new Variable(Scope.LOCAL, token.getIdentifier());
+        Variable lhs = new Variable(scope, token.getIdentifier(), idx);
         SubAssignStmt subAssignStmt = new SubAssignStmt(lhs, rhs);
         setSourceCodeInfo(subAssignStmt, sign);
         return subAssignStmt;
       }
       case ASSIGN_MUL -> {
         IRNode<Instruction> rhs = expression();
-        Variable lhs = new Variable(Scope.LOCAL, token.getIdentifier());
+        Variable lhs = new Variable(scope, token.getIdentifier(), idx);
         MulAssignStmt mulAssignStmt = new MulAssignStmt(lhs, rhs);
         setSourceCodeInfo(mulAssignStmt, sign);
         return mulAssignStmt;
       }
       case ASSIGN_DIV -> {
         IRNode<Instruction> rhs = expression();
-        Variable lhs = new Variable(Scope.LOCAL, token.getIdentifier());
+        Variable lhs = new Variable(scope, token.getIdentifier(), idx);
         DivAssignStmt divAssignStmt = new DivAssignStmt(lhs, rhs);
         setSourceCodeInfo(divAssignStmt, sign);
         return divAssignStmt;
       }
       case ASSIGN_POWER -> {
         IRNode<Instruction> rhs = expression();
-        Variable lhs = new Variable(Scope.LOCAL, token.getIdentifier());
+        Variable lhs = new Variable(scope, token.getIdentifier(), idx);
         PowerAssignStmt powerAssignStmt = new PowerAssignStmt(lhs, rhs);
         setSourceCodeInfo(powerAssignStmt, sign);
         return powerAssignStmt;
       }
       case ASSIGN_MOD -> {
         IRNode<Instruction> rhs = expression();
-        Variable lhs = new Variable(Scope.LOCAL, token.getIdentifier());
+        Variable lhs = new Variable(scope, token.getIdentifier(), idx);
         ModAssignStmt modAssignStmt = new ModAssignStmt(lhs, rhs);
         setSourceCodeInfo(modAssignStmt, sign);
         return modAssignStmt;
       }
       case ASSIGN_OR -> {
         IRNode<Instruction> rhs = expression();
-        Variable lhs = new Variable(Scope.LOCAL, token.getIdentifier());
+        Variable lhs = new Variable(scope, token.getIdentifier(), idx);
         OrAssignStmt orAssignStmt = new OrAssignStmt(lhs, rhs);
         setSourceCodeInfo(orAssignStmt, sign);
         return orAssignStmt;
       }
       case ASSIGN_AND -> {
         IRNode<Instruction> rhs = expression();
-        Variable lhs = new Variable(Scope.LOCAL, token.getIdentifier());
+        Variable lhs = new Variable(scope, token.getIdentifier(), idx);
         AndAssignStmt andAssignStmt = new AndAssignStmt(lhs, rhs);
         setSourceCodeInfo(andAssignStmt, sign);
         return andAssignStmt;
       }
       case ASSIGN_XOR -> {
         IRNode<Instruction> rhs = expression();
-        Variable lhs = new Variable(Scope.LOCAL, token.getIdentifier());
+        Variable lhs = new Variable(scope, token.getIdentifier(), idx);
         XorAssignStmt xorAssignStmt = new XorAssignStmt(lhs, rhs);
         setSourceCodeInfo(xorAssignStmt, sign);
         return xorAssignStmt;
       }
       case ASSIGN_LSHIFT -> {
         IRNode<Instruction> rhs = expression();
-        Variable lhs = new Variable(Scope.LOCAL, token.getIdentifier());
+        Variable lhs = new Variable(scope, token.getIdentifier(), idx);
         LshiftAssignStmt lshiftAssignStmt = new LshiftAssignStmt(lhs, rhs);
         setSourceCodeInfo(lshiftAssignStmt, sign);
         return lshiftAssignStmt;
       }
       case ASSIGN_RSHIFT -> {
         IRNode<Instruction> rhs = expression();
-        Variable lhs = new Variable(Scope.LOCAL, token.getIdentifier());
+        Variable lhs = new Variable(scope, token.getIdentifier(), idx);
         RshiftAssignStmt rshiftAssignStmt = new RshiftAssignStmt(lhs, rhs);
         setSourceCodeInfo(rshiftAssignStmt, sign);
         return rshiftAssignStmt;
       }
       case ASSIGN_U_RSHIFT -> {
         IRNode<Instruction> rhs = expression();
-        Variable lhs = new Variable(Scope.LOCAL, token.getIdentifier());
+        Variable lhs = new Variable(scope, token.getIdentifier(), idx);
         ULshiftAssignStmt uLshiftAssignStmt = new ULshiftAssignStmt(lhs, rhs);
         setSourceCodeInfo(uLshiftAssignStmt, sign);
         return uLshiftAssignStmt;

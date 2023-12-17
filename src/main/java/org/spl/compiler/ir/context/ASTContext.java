@@ -4,11 +4,12 @@ import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.block.ProgramBlock;
 import org.spl.vm.objects.SPLObject;
+import org.spl.vm.objects.SPLStringObject;
 
 import java.util.List;
 import java.util.Map;
 
-public interface ASTContext<E> {
+public interface ASTContext<T> {
 
   void increaseStackSize();
 
@@ -20,9 +21,9 @@ public interface ASTContext<E> {
 
   String getFileName();
 
-  void addInstruction(E instruction, int lineNo, int columnNo, int len) throws SPLSyntaxError;
+  void addInstruction(T instruction, int lineNo, int columnNo, int len) throws SPLSyntaxError;
 
-  void add(E instruction, int lineNo, int columnNo, int len) throws SPLSyntaxError;
+  void add(T instruction, int lineNo, int columnNo, int len) throws SPLSyntaxError;
 
   int addVarName(Object o);
 
@@ -38,9 +39,9 @@ public interface ASTContext<E> {
 
   int getStackSize();
 
-  E getInstruction(int index);
+  T getInstruction(int index);
 
-  void visit(IRNode<E> node) throws SPLSyntaxError;
+  void visit(IRNode<T> node) throws SPLSyntaxError;
 
   void addSymbol(String name);
 
@@ -56,9 +57,9 @@ public interface ASTContext<E> {
 
   int getNumberOfArgs();
 
-  void generateByteCodes(IRNode<E> node) throws SPLSyntaxError;
+  void generateByteCodes(IRNode<T> node) throws SPLSyntaxError;
 
-  List<E> getInstructions();
+  List<T> getInstructions();
 
   int getCodeSize();
 
@@ -96,6 +97,10 @@ public interface ASTContext<E> {
 
   void setCoName(String coName);
 
+  boolean isInFunction();
+  
+  ASTContext<T>  getPreviousContext();
+
   record JumpTableEntry(int startPc, int endPc, int targetPc) {
 
     @Override
@@ -111,4 +116,7 @@ public interface ASTContext<E> {
       return pc >= startPc && pc <= endPc;
     }
   }
+
+  boolean requestClosure(String var);
+  Map<String, Integer> getClosureMap();
 }

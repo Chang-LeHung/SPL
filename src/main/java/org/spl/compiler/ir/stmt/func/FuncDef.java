@@ -18,8 +18,14 @@ public class FuncDef extends AbstractIR<Instruction> {
   private final int idxInVarNames;
   private final List<IRNode<Instruction>> defaults;
   private List<IRNode<Instruction>> children;
+  private final List<IRNode<Instruction>> closures;
 
-  public FuncDef(String funcName, int idxInConstants, int idxInVarNames, List<IRNode<Instruction>> defaults) {
+  public FuncDef(List<IRNode<Instruction>> closures,
+                 String funcName,
+                 int idxInConstants,
+                 int idxInVarNames,
+                 List<IRNode<Instruction>> defaults) {
+    this.closures = closures;
     this.funcName = funcName;
     this.idxInConstants = idxInConstants;
     this.idxInVarNames = idxInVarNames;
@@ -32,6 +38,7 @@ public class FuncDef extends AbstractIR<Instruction> {
    */
   public FuncDef(int idxInConstants, String name) {
     this.funcName = name;
+    this.closures = List.of();
     this.idxInConstants = idxInConstants;
     this.idxInVarNames = -1;
     this.defaults = List.of();
@@ -59,10 +66,11 @@ public class FuncDef extends AbstractIR<Instruction> {
   }
 
   @Override
-  public void preVisiting(ASTContext<Instruction> context) {
+  public void postVisiting(ASTContext<Instruction> context) {
     context.increaseStackSize();
     context.decreaseStackSize();
     context.decreaseStackSize(defaults.size());
+    context.decreaseStackSize(closures.size());
     context.increaseStackSize();
     if (idxInVarNames != -1)
       context.decreaseStackSize();
@@ -71,8 +79,10 @@ public class FuncDef extends AbstractIR<Instruction> {
   @Override
   public List<IRNode<Instruction>> getChildren() {
     if (children == null) {
+      Collections.reverse(defaults);
+      Collections.reverse(closures);
       children = new ArrayList<>(defaults);
-      Collections.reverse(children);
+      children.addAll(closures);
     }
     return children;
   }

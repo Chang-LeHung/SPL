@@ -72,7 +72,9 @@ public enum OpCode {
   NEXT,
   EXEC_MATCH,
   LONG_JUMP,
-  STORE_EXC_VAL;
+  STORE_EXC_VAL,
+  LOAD_CLOSURE,
+  STORE_CLOSURE;
   public final byte val;
 
   OpCode() {

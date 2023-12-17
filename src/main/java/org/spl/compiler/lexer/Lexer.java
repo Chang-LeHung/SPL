@@ -61,7 +61,7 @@ public class Lexer {
 
   private char nextChar(StringBuilder builder) {
     if (offset >= code.length()) {
-      builder.append(0);
+      builder.append((char) 0);
       return 0;
     }
     char last = 0;
@@ -80,12 +80,14 @@ public class Lexer {
 
   private void stepBack() {
     assert offset > 0;
-    offset--;
-    if (code.charAt(offset - 1) == '\n') {
-      lineNo--;
-      columnNo = sourceCode.get(lineNo - 1).length() + 1;
-    } else {
-      columnNo--;
+    if (offset < code.length()) {
+      offset--;
+      if (code.charAt(offset - 1) == '\n') {
+        lineNo--;
+        columnNo = sourceCode.get(lineNo - 1).length() + 1;
+      } else {
+        columnNo--;
+      }
     }
   }
 
@@ -539,9 +541,7 @@ public class Lexer {
   }
 
   private void stepBack(StringBuilder builder) {
-    if (offset != code.length()) {
-      stepBack();
-    }
+    stepBack();
     builder.delete(builder.length() - 1, builder.length());
   }
 

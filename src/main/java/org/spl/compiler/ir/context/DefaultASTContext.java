@@ -17,6 +17,7 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
   private final List<E> instructions;
   private final List<JumpTableEntry> jumpTable;
   private final Map<Object, Integer> varnames;
+  private final Map<String, Integer> closures;
   private final Map<SPLObject, Integer> constants;
   private final ByteArrayOutputStream code;
   private final ByteArrayOutputStream debugInfo;
@@ -36,6 +37,8 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
   private int args;
   private ProgramBlock pb;
   private boolean inTry = false;
+  private boolean inFunc = false;
+  private DefaultASTContext<E> prev;
 
   public DefaultASTContext(String filename, List<String> sourceCode) {
     this.filename = filename;
@@ -56,6 +59,7 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
     constants = new HashMap<>();
     jumpTable = new ArrayList<>();
     started = false;
+    closures = new HashMap<>();
   }
 
 
@@ -241,7 +245,10 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
 
   @Override
   public int getSymbolIndex(String name) {
-    return varnames.get(name);
+    Integer integer = varnames.get(name);
+    if (integer != null)
+      return integer;
+    return -1;
   }
 
   public Map<Object, Integer> getVarnames() {
@@ -353,6 +360,69 @@ public class DefaultASTContext<E extends Instruction> implements Visitor<E>, AST
   @Override
   public void setCoName(String coName) {
     this.coName = coName;
+  }
+
+  @Override
+  public boolean isInFunction() {
+    return inFunc;
+  }
+
+  @Override
+  public ASTContext<E> getPreviousContext() {
+    return prev;
+  }
+
+  @Override
+  public boolean requestClosure(String var) {
+    if (inFunc) {
+      if (varnames.containsKey(var))
+        return true;
+      else {
+        if (prev != null) {
+          if (prev.requestClosure(var)) {
+            closures.put(var, closures.size());
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public Map<String, Integer> getClosureMap() {
+    return closures;
+  }
+
+  public int loadClosureVar(String var) {
+    if (inFunc) {
+      if (closures.containsKey(var)) {
+        return closures.get(var);
+      } else {
+        if (prev != null && prev.requestClosure(var)) {
+          closures.put(var, closures.size());
+          return closures.get(var);
+        }
+      }
+    }
+    // not found
+    return -1;
+  }
+
+  public boolean isInFunc() {
+    return inFunc;
+  }
+
+  public void setInFunc(boolean inFunc) {
+    this.inFunc = inFunc;
+  }
+
+  public DefaultASTContext<E> getPrev() {
+    return prev;
+  }
+
+  public void setPrev(DefaultASTContext<E> prev) {
+    this.prev = prev;
   }
 }
 

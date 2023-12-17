@@ -34,6 +34,9 @@ public class AssignStmt extends AbstractIR<Instruction> {
       case GLOBAL -> {
         context.add(new Instruction(OpCode.STORE_GLOBAL, idx), getLineNo(), getColumnNo(), getLen());
       }
+      case CLOSURE -> {
+        context.add(new Instruction(OpCode.STORE_CLOSURE, idx), getLineNo(), getColumnNo(), getLen());
+      }
       case OTHERS -> {
         // fallback to STORE
         context.add(new Instruction(OpCode.STORE, idx), getLineNo(), getColumnNo(), getLen());
