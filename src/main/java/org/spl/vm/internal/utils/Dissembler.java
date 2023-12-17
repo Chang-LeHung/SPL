@@ -265,7 +265,7 @@ public class Dissembler extends SPLObject {
           ins = new Instruction(OpCode.DUP, getOparg());
         }
         case INPLACE_TRUE_DIV -> {
-          ins = new Instruction(OpCode.INPLACE_TRUE_DIV, 0);
+          ins = new Instruction(OpCode.INPLACE_TRUE_DIV, getOparg());
         }
         case LOAD_GLOBAL -> {
           ins = new Instruction(OpCode.LOAD_GLOBAL, getOparg());

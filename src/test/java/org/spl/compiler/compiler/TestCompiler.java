@@ -214,6 +214,12 @@ public class TestCompiler {
   }
 
   @Test
+  public void testTrueDiv() throws SPLInternalException, SPLSyntaxError, IOException {
+    DefaultEval eval = run("arithmetic/testTrueDiv.spl");
+    System.out.println(Arrays.toString(eval.getConstants()));
+  }
+
+  @Test
   public void testList() throws SPLInternalException, SPLSyntaxError, IOException {
     DefaultEval eval = run("datastruct/list.spl");
     System.out.println(Arrays.toString(eval.getConstants()));

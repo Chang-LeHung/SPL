@@ -818,6 +818,7 @@ public class Lexer {
           token == TOKEN_TYPE.ASSIGN_OR ||
           token == TOKEN_TYPE.ASSIGN_XOR ||
           token == TOKEN_TYPE.ASSIGN_POWER ||
+          token == TOKEN_TYPE.ASSIGN_TRUE_DIV ||
           token == TOKEN_TYPE.ASSIGN_INVERT;
     }
 
