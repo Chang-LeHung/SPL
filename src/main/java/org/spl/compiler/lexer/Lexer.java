@@ -19,6 +19,7 @@ public class Lexer {
   private final List<Token> tokens;
   private final StringBuilder code;
   private final List<String> sourceCode;
+  private boolean EOF;
   private int offset;
   private int lineNo = 1;
   private int columnNo = 0;
@@ -62,6 +63,7 @@ public class Lexer {
   private char nextChar(StringBuilder builder) {
     if (offset >= code.length()) {
       builder.append((char) 0);
+      EOF = true;
       return 0;
     }
     char last = 0;
@@ -80,7 +82,7 @@ public class Lexer {
 
   private void stepBack() {
     assert offset > 0;
-    if (offset < code.length()) {
+    if (!EOF) {
       offset--;
       if (code.charAt(offset - 1) == '\n') {
         lineNo--;
@@ -419,17 +421,16 @@ public class Lexer {
               // <<=
               token = new Token(TOKEN_TYPE.ASSIGN_LSHIFT, "<<=");
             } else {
-              stepBack();
+              stepBack(builder);
               token = new Token(TOKEN_TYPE.LSHIFT, "<<");
             }
           } else {
-            stepBack();
+            stepBack(builder);
             token = new Token(TOKEN_TYPE.LT, "<");
           }
           injectTokensAndClearBuilder(token);
           tokens.add(token);
           c = nextChar(builder);
-          columnNo--;
           state = CHAR_TYPE.INIT;
         }
         case AND -> {
@@ -462,7 +463,7 @@ public class Lexer {
             token = new Token(TOKEN_TYPE.CONDITIONAL_OR, "||");
           } else {
             // |
-            stepBack();
+            stepBack(builder);
             token = new Token(TOKEN_TYPE.OR, "|");
           }
           injectTokensAndClearBuilder(token);
