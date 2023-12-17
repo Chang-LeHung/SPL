@@ -521,6 +521,13 @@ public class SPLParser extends AbstractSyntaxParser {
           return store;
         }
       }
+    } else if (exp instanceof ArrayStyle lhs) {
+      Lexer.Token sign = tokenFlow.peek();
+      tokenFlow.next();
+      IRNode<Instruction> rhs = expression();
+      ArrayStyleStore storeAttr = new ArrayStyleStore(lhs.getLhs(), lhs.getSub(), rhs, sign.token);
+      setSourceCodeInfo(storeAttr, sign);
+      return storeAttr;
     } else {
       throwSyntaxError("Illegal statement, expected assignment or expression", tokenFlow.peek());
     }

@@ -7,3 +7,19 @@ data = {1: 2}
 
 data["age"] = 10
 print(data)
+data["age"] += 10
+print(data)
+data["age"] -= 10
+print(data)
+data["age"] *= 10
+print(data)
+data["age"] %= 7
+print(data)
+data["age"] &= 10
+print(data)
+data["age"] |= 10
+print(data)
+data["age"] ^= 10
+print(data)
+data["age"] /= 10
+print(data)

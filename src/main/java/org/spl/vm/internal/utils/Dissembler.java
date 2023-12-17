@@ -81,9 +81,14 @@ public class Dissembler extends SPLObject {
         }
         case SUBSCRIBE -> {
           ins = new Instruction(OpCode.SUBSCRIBE, 0);
+          pc++;
         }
         case NEG -> {
           ins = new Instruction(OpCode.NEG, 0);
+          pc++;
+        }
+        case DUP2 -> {
+          ins = new Instruction(OpCode.DUP2, 0);
           pc++;
         }
         case MOD -> {

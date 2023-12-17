@@ -481,6 +481,20 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               SPLObject t = evalStack[top - 1];
               evalStack[top++] = t;
             }
+            case DUP2 -> {
+              pc++;
+              for (int i = 0; i < 2; i++) {
+                SPLObject t = evalStack[top - 2];
+                evalStack[top++] = t;
+              }
+            }
+            case SUBSCRIBE_STORE -> {
+              pc++;
+              SPLObject val = evalStack[--top];
+              SPLObject sub = evalStack[--top];
+              SPLObject obj = evalStack[--top];
+              obj.__setAttr__(sub, val);
+            }
             case BUILD_LIST -> {
               int arg = getOparg();
               top -= arg;

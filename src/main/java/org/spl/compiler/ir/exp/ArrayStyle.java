@@ -21,6 +21,14 @@ public class ArrayStyle extends AbstractIR<Instruction> {
     this.sub = sub;
   }
 
+  public IRNode<Instruction> getLhs() {
+    return lhs;
+  }
+
+  public IRNode<Instruction> getSub() {
+    return sub;
+  }
+
   @Override
   public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
     context.addInstruction(new Instruction(OpCode.SUBSCRIBE), getLineNo(), getColumnNo(), getLen());

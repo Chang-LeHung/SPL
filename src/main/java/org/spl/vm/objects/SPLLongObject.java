@@ -72,7 +72,7 @@ public class SPLLongObject extends SPLObject {
     if (rhs instanceof SPLLongObject l) {
       if (l.getVal() == 0)
         return SPLErrorUtils.splErrorFormat(new SPLZeroDivisionError("division by zero"));
-      return create(val / l.val);
+      return new SPLFloatObject((double) val / l.val);
     } else if (rhs instanceof SPLFloatObject f) {
       if (f.getVal() == 0)
         return SPLErrorUtils.splErrorFormat(new SPLZeroDivisionError("division by zero"));

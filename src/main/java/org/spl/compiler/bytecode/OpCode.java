@@ -56,6 +56,7 @@ public enum OpCode {
   STORE_ATTR,
   POP,
   DUP,
+  DUP2,
   JUMP_FALSE,
   JMP_TRUE_NO_POP,
   JUMP_UNCON_FORWARD,
