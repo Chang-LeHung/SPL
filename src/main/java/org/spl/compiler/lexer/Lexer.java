@@ -112,6 +112,7 @@ public class Lexer {
             case '-' -> state = CHAR_TYPE.MINUS;
             case '*' -> state = CHAR_TYPE.MUL;
             case '#' -> state = CHAR_TYPE.HASH;
+            case '@' -> state = CHAR_TYPE.AT;
             case '/' -> state = CHAR_TYPE.DIV;
             case '%' -> state = CHAR_TYPE.MOD;
             case '=' -> state = CHAR_TYPE.ASSIGN;
@@ -147,6 +148,13 @@ public class Lexer {
             c = nextChar(builder);
           }
           state = CHAR_TYPE.INIT;
+        }
+        case AT -> {
+          Token token = new Token(TOKEN_TYPE.AT, "@");
+          tokens.add(token);
+          injectTokensAndClearBuilder(token);
+          state = CHAR_TYPE.INIT;
+          c = nextChar(builder);
         }
         case LBRACKET -> {
           Token token = new Token(TOKEN_TYPE.LBRACKET, "[");
@@ -550,11 +558,11 @@ public class Lexer {
   }
 
   private enum CHAR_TYPE {
-    INIT, DOT, NEWLINE, COLON, BRACKET, COMMA, IDENTIFIER, NUMBER, QUOTATION, PLUS, MINUS, MUL, DIV, MOD, ASSIGN, HASH, LT, GT, NE, AND, OR, XOR, NOT, POWER, INVERT, LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE, SEMICOLON
+    INIT, DOT, NEWLINE, COLON, BRACKET, COMMA, IDENTIFIER, NUMBER, QUOTATION, PLUS, MINUS, MUL, DIV, MOD, ASSIGN, AT, HASH, LT, GT, NE, AND, OR, XOR, NOT, POWER, INVERT, LPAREN, RPAREN, LBRACKET, RBRACKET, LBRACE, RBRACE, SEMICOLON
   }
 
   public enum TOKEN_TYPE {
-    EOF, NEWLINE, STARTER, // used only in the function doParse()
+    EOF, NEWLINE, STARTER, AT, // used only in the function doParse()
     COMMA, IDENTIFIER, LBRACKET, RBRACKET, TRUE, FALSE, COLON, IMPORT, INT, FLOAT, STRING, SEMICOLON, LEFT_PARENTHESES, RIGHT_PARENTHESES, PLUS, MINUS, MUL, DIV, TRUE_DIV, MOD, LSHIFT, RSHIFT, U_RSHIFT, // unconditional left shift
     ASSIGN, ASSIGN_TRUE_DIV, EQ, LT, GT, GE, LE, NE, AND, CONDITIONAL_AND, OR, CONDITIONAL_OR, POWER, XOR, NOT, INVERT, CONDITIONAL_NOT, ASSIGN_ADD, ARROW, ASSIGN_SUB, ASSIGN_MUL, ASSIGN_DIV, ASSIGN_POWER, ASSIGN_MOD, ASSIGN_INVERT, ASSIGN_LSHIFT, ASSIGN_RSHIFT, ASSIGN_U_RSHIFT, ASSIGN_AND, ASSIGN_OR, ASSIGN_XOR, IF, ELSE, DO, WHILE, FOR, BREAK, CONTINUE, RETURN, DOT, LBRACE, RBRACE, IN, CLASS, DEF, TRY, CATCH, FINALLY, GLOBAL, NONE,
   }
@@ -683,6 +691,9 @@ public class Lexer {
       return (Integer) (value);
     }
 
+    public boolean isAt() {
+      return token == TOKEN_TYPE.AT;
+    }
 
     public boolean isComma() {
       return token == TOKEN_TYPE.COMMA;

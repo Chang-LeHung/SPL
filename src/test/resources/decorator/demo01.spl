@@ -1,0 +1,19 @@
+
+
+
+def hello(func) {
+
+    def inner(param) {
+        func(param)
+    }
+
+    return inner
+}
+
+
+@hello
+def f(param) {
+    print(param * 2)
+}
+
+f(10)

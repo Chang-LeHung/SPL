@@ -11,6 +11,7 @@ import org.spl.compiler.ir.binaryop.*;
 import org.spl.compiler.ir.block.ProgramBlock;
 import org.spl.compiler.ir.context.DefaultASTContext;
 import org.spl.compiler.ir.exp.*;
+import org.spl.compiler.ir.stmt.Decorator;
 import org.spl.compiler.ir.stmt.assignstmt.*;
 import org.spl.compiler.ir.stmt.controlflow.*;
 import org.spl.compiler.ir.stmt.func.FuncDef;
@@ -42,6 +43,8 @@ import java.util.Map;
  *              | globalStmt
  *              | returnStmt
  *              | tryStmt
+ *              | decoratorStmt
+ * decorator    : '@' expression funcDef
  * tryStmt      : 'try' block ('catch' '(' IDENTIFIER IDENTIFIER ')' block) * ('finally' block)*
  * returnStmt   : 'return' expression?
  * globalStmt   : 'global' IDENTIFIER (',' IDENTIFIER)*
@@ -199,6 +202,8 @@ public class SPLParser extends AbstractSyntaxParser {
         return doWhileStatement();
       } else if (tokenFlow.peek().isFor()) {
         return forStatement();
+      } else if (tokenFlow.peek().isAt()) {
+        return atStatement();
       } else if (token.isBreak()) {
         tokenFlow.next();
         Break brk = new Break();
@@ -234,6 +239,18 @@ public class SPLParser extends AbstractSyntaxParser {
     }
     throwSyntaxError("Illegal statement, expected assignment or expression", tokenFlow.peek());
     return null;
+  }
+
+  private IRNode<Instruction> atStatement() throws SPLSyntaxError {
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.AT, "Expected  '@' instead of " + tokenFlow.peek().getValueAsString());
+    Lexer.Token token = tokenFlow.peek();
+    tokenFlow.next();
+    IRNode<Instruction> expr = expression();
+    iterateToEffectiveToken();
+    IRNode<Instruction> func = functionDefinition();
+    Decorator decorator = new Decorator((FuncDef) func, expr);
+    setSourceCodeInfo(decorator, token);
+    return decorator;
   }
 
   private IRNode<Instruction> tryStatement() throws SPLSyntaxError {
