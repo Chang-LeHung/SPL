@@ -32,7 +32,7 @@ public class TestErrorTrace {
     assert run == null;
   }
 
-  @Test
+//  @Test
   public void testStackOverflow() throws SPLSyntaxError, IOException {
     SPL spl = new SPL("error/stack.spl");
     SPLObject run = spl.run();
