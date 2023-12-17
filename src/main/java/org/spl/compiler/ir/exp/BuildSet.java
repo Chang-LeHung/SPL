@@ -27,6 +27,11 @@ public class BuildSet extends AbstractIR<Instruction> {
   }
 
   @Override
+  public void postVisiting(ASTContext<Instruction> context) {
+    context.increaseStackSize();
+  }
+
+  @Override
   public List<IRNode<Instruction>> getChildren() {
     return children;
   }

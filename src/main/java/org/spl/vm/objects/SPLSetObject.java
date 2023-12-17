@@ -109,7 +109,9 @@ public class SPLSetObject extends SPLObject {
       builder.append(o.__str__());
       builder.append(", ");
     }
-    builder.delete(builder.length() - 2, builder.length());
+    if (builder.length() > 2) {
+      builder.delete(builder.length() - 2, builder.length());
+    }
     builder.append("}");
     return new SPLStringObject(builder.toString());
   }
@@ -155,5 +157,10 @@ public class SPLSetObject extends SPLObject {
   @Override
   public SPLObject __getIterator__() throws SPLInternalException {
     return new SPLCommonIterator(set.stream().toList());
+  }
+
+  @Override
+  public SPLObject __setAttr__(SPLObject name, SPLObject value) throws SPLInternalException {
+    return SPLErrorUtils.splErrorFormat(new SPLTypeError("Cannot set attribute on a 'set' object"));
   }
 }

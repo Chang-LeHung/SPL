@@ -1,0 +1,6 @@
+
+
+data = {}
+
+data.age = 10
+print(data)
