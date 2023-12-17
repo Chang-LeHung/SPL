@@ -10,6 +10,7 @@ import org.spl.vm.exceptions.splexceptions.SPLTypeError;
 import org.spl.vm.internal.objs.SPLFuncObject;
 import org.spl.vm.internal.objs.SPLMethodWrapper;
 import org.spl.vm.types.SPLCommonType;
+import org.spl.vm.types.SPLObjectType;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
@@ -23,7 +24,11 @@ public class SPLObject implements SPLInterface {
   protected Map<SPLObject, SPLObject> attrs;
 
   public SPLObject(SPLCommonType type) {
-    this.type = type;
+    if (type == null) {
+      this.type = SPLObjectType.getInstance();
+    } else {
+      this.type = type;
+    }
     attrs = new HashMap<>();
   }
 
@@ -34,136 +39,136 @@ public class SPLObject implements SPLInterface {
 
   @Override
   public SPLObject __add__(SPLObject rhs) throws SPLInternalException {
-    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation '+' not implemented"));
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented(type.getName() + "'s operation '+' not implemented"));
   }
 
   @Override
   public SPLObject __sub__(SPLObject rhs) throws SPLInternalException {
-    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation '-' not implemented"));
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented(type.getName() + "'s '-' not implemented"));
   }
 
   @Override
   public SPLObject __mul__(SPLObject rhs) throws SPLInternalException {
-    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation '*' not implemented"));
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented(type.getName() + "'s '*' not implemented"));
   }
 
   @Override
   public SPLObject __div__(SPLObject rhs) throws SPLInternalException {
-    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation '/' not implemented"));
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented(type.getName() + "'s '/' not implemented"));
   }
 
   @Override
   public SPLObject __trueDiv__(SPLObject rhs) throws SPLInternalException {
-    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation '//' not implemented"));
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented(type.getName() + "'s '//' not implemented"));
   }
 
   @Override
   public SPLObject __mod__(SPLObject rhs) throws SPLInternalException {
-    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation '%' not implemented"));
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented(type.getName() + "'s '%' not implemented"));
   }
 
   @Override
   public SPLObject __pow__(SPLObject rhs) throws SPLInternalException {
-    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation '**' not implemented"));
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented(type.getName() + "'s '**' not implemented"));
   }
 
   @Override
   public SPLObject __lshift__(SPLObject rhs) throws SPLInternalException {
-    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation '<<' not implemented"));
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented(type.getName() + "'s '<<' not implemented"));
   }
 
   @Override
   public SPLObject __URshift__(SPLObject rhs) throws SPLInternalException {
     return SPLErrorUtils
-        .splErrorFormat(new SPLNotImplemented("operation '>>=' not implemented"));
+        .splErrorFormat(new SPLNotImplemented(type.getName() + "'s '>>=' not implemented"));
   }
 
   @Override
   public SPLObject __rshift__(SPLObject rhs) throws SPLInternalException {
     return SPLErrorUtils
-        .splErrorFormat(new SPLNotImplemented("operation '>>' not implemented"));
+        .splErrorFormat(new SPLNotImplemented(type.getName() + "'s '>>' not implemented"));
   }
 
 
   @Override
   public SPLObject __and__(SPLObject rhs) throws SPLInternalException {
-    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation '&' not implemented"));
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented(type.getName() + "'s '&' not implemented"));
   }
 
   @Override
   public SPLObject __or__(SPLObject rhs) throws SPLInternalException {
-    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation '|' not implemented"));
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented(type.getName() + "'s '|' not implemented"));
   }
 
 
   @Override
   public SPLObject __not__() throws SPLInternalException {
-    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation '~' not implemented"));
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented(type.getName() + "'s '~' not implemented"));
   }
 
   @Override
   public SPLObject __xor__(SPLObject rhs) throws SPLInternalException {
-    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation '^' not implemented"));
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented(type.getName() + "'s '^' not implemented"));
   }
 
 
   @Override
   public SPLObject __neg__() throws SPLInternalException {
-    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation '-' not implemented"));
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented(type.getName() + "'s '-' not implemented"));
   }
 
   @Override
   public SPLObject __eq__(SPLObject rhs) throws SPLInternalException {
-    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation '==' not implemented"));
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented(type.getName() + "'s '==' not implemented"));
   }
 
   @Override
   public SPLObject __ne__(SPLObject rhs) throws SPLInternalException {
-    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation '!=' not implemented"));
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented(type.getName() + "'s '!=' not implemented"));
   }
 
   @Override
   public SPLObject __lt__(SPLObject rhs) throws SPLInternalException {
     return SPLErrorUtils
-        .splErrorFormat(new SPLNotImplemented("operation '<' not implemented"));
+        .splErrorFormat(new SPLNotImplemented(type.getName() + "'s '<' not implemented"));
   }
 
   @Override
   public SPLObject __gt__(SPLObject rhs) throws SPLInternalException {
-    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation '>' not implemented"));
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented(type.getName() + "'s '>' not implemented"));
   }
 
   @Override
   public SPLObject __le__(SPLObject rhs) throws SPLInternalException {
     return SPLErrorUtils
-        .splErrorFormat(new SPLNotImplemented("operation '<=' not implemented"));
+        .splErrorFormat(new SPLNotImplemented(type.getName() + "'s '<=' not implemented"));
   }
 
   @Override
   public SPLObject __ge__(SPLObject rhs) throws SPLInternalException {
     return SPLErrorUtils
-        .splErrorFormat(new SPLNotImplemented("operation '>=' not implemented"));
+        .splErrorFormat(new SPLNotImplemented(type.getName() + "'s '>=' not implemented"));
   }
 
   @Override
   public SPLObject __conditionalAnd__(SPLObject rhs) throws SPLInternalException {
-    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation '&&' not implemented"));
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented(type.getName() + "'s '&&' not implemented"));
   }
 
   @Override
   public SPLObject __conditionalOr__(SPLObject rhs) throws SPLInternalException {
-    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation '||' not implemented"));
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented(type.getName() + "'s '||' not implemented"));
   }
 
   @Override
   public SPLObject __invert__() throws SPLInternalException {
-    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation '~' not implemented"));
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented(type.getName() + "'s '~' not implemented"));
   }
 
   @Override
   public SPLObject __call__(SPLObject... args) throws SPLInternalException {
     return SPLErrorUtils
-        .splErrorFormat(new SPLNotImplemented("operation 'call' not implemented"));
+        .splErrorFormat(new SPLNotImplemented(type.getName() + "'s 'call' not implemented"));
   }
 
   @Override
@@ -222,7 +227,7 @@ public class SPLObject implements SPLInterface {
 
   @Override
   public SPLObject __getIterator__() throws SPLInternalException {
-    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented("operation 'getIterator' not implemented"));
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented(type.getName() + "'s 'getIterator' not implemented"));
   }
 
   @Override
