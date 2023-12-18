@@ -16,8 +16,8 @@ import static org.spl.compiler.ir.Op.NOP;
 public class Variable extends AbstractIR<Instruction> implements RValue<Instruction> {
 
   private final String name;
-  private int idx;
   private final IRNode<Instruction> rValue;
+  private int idx;
   private Scope scope;
   private List<IRNode<Instruction>> children;
 

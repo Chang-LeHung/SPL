@@ -15,15 +15,15 @@ public class SPLStringType extends SPLCommonType {
     return SelfHolder.instance;
   }
 
-  private static class SelfHolder {
-    public static final SPLStringType instance = new SPLStringType(null);
-  }
-
   @Override
   public SPLObject __call__(SPLObject... args) throws SPLInternalException {
     if (args.length == 1) {
       return args[0].__str__();
     }
     return SPLErrorUtils.splErrorFormat(new SPLRuntimeException("Invalid number of arguments for str function"));
+  }
+
+  private static class SelfHolder {
+    public static final SPLStringType instance = new SPLStringType(null);
   }
 }

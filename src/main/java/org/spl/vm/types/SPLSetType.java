@@ -20,10 +20,6 @@ public class SPLSetType extends SPLCommonType {
     return SelfHolder.instance;
   }
 
-  private static class SelfHolder {
-    public static final SPLSetType instance = new SPLSetType(null, "Set", SPLSetObject.class);
-  }
-
   @Override
   @SPLExportMethod
   public SPLObject __call__(SPLObject... args) throws SPLInternalException {
@@ -42,7 +38,12 @@ public class SPLSetType extends SPLCommonType {
         }
       } while (n != SPLStopIteration.getInstance());
       return new SPLSetObject(res);
-    } catch (Exception ignore){}
+    } catch (Exception ignore) {
+    }
     return SPLErrorUtils.splErrorFormat(new SPLTypeError(o.__str__() + " can not be transformed into  a list"));
+  }
+
+  private static class SelfHolder {
+    public static final SPLSetType instance = new SPLSetType(null, "Set", SPLSetObject.class);
   }
 }

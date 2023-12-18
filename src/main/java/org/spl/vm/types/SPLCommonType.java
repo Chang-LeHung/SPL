@@ -13,9 +13,9 @@ import java.util.HashMap;
 
 public class SPLCommonType extends SPLObject {
 
-  protected SPLCommonType base;
   protected final String name;
   protected final Class<? extends SPLObject> clazz;
+  protected SPLCommonType base;
 
   public SPLCommonType(SPLCommonType type, String name, Class<? extends SPLObject> clazz) {
     super(type);

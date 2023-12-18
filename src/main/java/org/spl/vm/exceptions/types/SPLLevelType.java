@@ -2,7 +2,6 @@ package org.spl.vm.exceptions.types;
 
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.exceptions.splexceptions.SPLLevelObject;
-import org.spl.vm.objects.SPLCommonIterator;
 import org.spl.vm.objects.SPLObject;
 import org.spl.vm.types.SPLCommonType;
 

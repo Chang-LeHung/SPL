@@ -8,11 +8,11 @@ public class SPLClassBuildErrorType extends SPLCommonType {
     super(null, "ClassBuildError", SPLClassBuildError.class);
   }
 
+  public static SPLClassBuildErrorType getInstance() {
+    return SelfHolder.INSTANCE;
+  }
 
   private static class SelfHolder {
     private static final SPLClassBuildErrorType INSTANCE = new SPLClassBuildErrorType();
-  }
-  public static SPLClassBuildErrorType getInstance() {
-    return SelfHolder.INSTANCE;
   }
 }

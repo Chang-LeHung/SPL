@@ -7,7 +7,6 @@ import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.block.ProgramBlock;
 import org.spl.compiler.ir.context.ASTContext;
 import org.spl.vm.objects.SPLObject;
-import org.spl.vm.objects.SPLStringObject;
 
 import java.util.ArrayList;
 import java.util.List;

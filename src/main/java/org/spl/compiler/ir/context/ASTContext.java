@@ -4,7 +4,6 @@ import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.block.ProgramBlock;
 import org.spl.vm.objects.SPLObject;
-import org.spl.vm.objects.SPLStringObject;
 
 import java.util.List;
 import java.util.Map;
@@ -98,8 +97,12 @@ public interface ASTContext<T> {
   void setCoName(String coName);
 
   boolean isInFunction();
-  
-  ASTContext<T>  getPreviousContext();
+
+  ASTContext<T> getPreviousContext();
+
+  boolean requestClosure(String var);
+
+  Map<String, Integer> getClosureMap();
 
   record JumpTableEntry(int startPc, int endPc, int targetPc) {
 
@@ -116,7 +119,4 @@ public interface ASTContext<T> {
       return pc >= startPc && pc <= endPc;
     }
   }
-
-  boolean requestClosure(String var);
-  Map<String, Integer> getClosureMap();
 }

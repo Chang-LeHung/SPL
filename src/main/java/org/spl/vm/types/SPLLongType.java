@@ -15,10 +15,6 @@ public class SPLLongType extends SPLCommonType {
     return SelfHolder.instance;
   }
 
-  private static class SelfHolder {
-    static final SPLLongType instance = new SPLLongType(null);
-  }
-
   @Override
   @SPLExportMethod
   public SPLObject __call__(SPLObject... args) throws SPLInternalException {
@@ -35,5 +31,9 @@ public class SPLLongType extends SPLCommonType {
       }
     }
     return SPLErrorUtils.splErrorFormat(new SPLTypeError(type.getName() + "'s can not be transformed into long(int)"));
+  }
+
+  private static class SelfHolder {
+    static final SPLLongType instance = new SPLLongType(null);
   }
 }

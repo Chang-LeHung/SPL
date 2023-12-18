@@ -210,8 +210,7 @@ public class SPLParser extends AbstractSyntaxParser {
         return atStatement();
       } else if (tokenFlow.peek().isClass()) {
         return classDefStmt();
-      }
-      else if (token.isBreak()) {
+      } else if (token.isBreak()) {
         tokenFlow.next();
         Break brk = new Break();
         setSourceCodeInfo(brk, token);
@@ -283,10 +282,10 @@ public class SPLParser extends AbstractSyntaxParser {
     context.addSymbol(className);
     int vd = context.getVarNameIndex(className);
     int sd = -1;
-    if (superClassName!= null) {
-     context.addVarName(superClassName);
-     context.addSymbol(superClassName);
-     sd = context.getVarNameIndex(superClassName);
+    if (superClassName != null) {
+      context.addVarName(superClassName);
+      context.addSymbol(superClassName);
+      sd = context.getVarNameIndex(superClassName);
     }
     ClassDefinition classDefinition = new ClassDefinition(cd, vd, sd);
     setSourceCodeInfo(classDefinition, token);

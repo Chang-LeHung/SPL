@@ -21,10 +21,6 @@ public class SPLListType extends SPLCommonType {
     return SelfHolder.instance;
   }
 
-  private static class SelfHolder {
-    public static SPLListType instance = new SPLListType();
-  }
-
   @Override
   @SPLExportMethod
   public SPLObject __call__(SPLObject... args) throws SPLInternalException {
@@ -43,7 +39,12 @@ public class SPLListType extends SPLCommonType {
         }
       } while (n != SPLStopIteration.getInstance());
       return new SPLListObject(res);
-    } catch (Exception ignore){}
+    } catch (Exception ignore) {
+    }
     return SPLErrorUtils.splErrorFormat(new SPLTypeError(o.__str__() + " can not be transformed into  a list"));
+  }
+
+  private static class SelfHolder {
+    public static SPLListType instance = new SPLListType();
   }
 }

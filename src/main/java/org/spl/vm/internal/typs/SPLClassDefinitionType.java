@@ -8,11 +8,11 @@ public class SPLClassDefinitionType extends SPLCommonType {
     super(null, "ClassDefinition", SPLClassDefinition.class);
   }
 
-  private static class SelfHolder {
-    public static final SPLClassDefinitionType INSTANCE = new SPLClassDefinitionType();
-  }
-
   public static SPLClassDefinitionType getInstance() {
     return SelfHolder.INSTANCE;
+  }
+
+  private static class SelfHolder {
+    public static final SPLClassDefinitionType INSTANCE = new SPLClassDefinitionType();
   }
 }

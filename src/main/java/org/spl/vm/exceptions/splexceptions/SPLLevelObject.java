@@ -3,7 +3,6 @@ package org.spl.vm.exceptions.splexceptions;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.objects.SPLCommonIterator;
 import org.spl.vm.objects.SPLObject;
-import org.spl.vm.objects.SPLStringObject;
 import org.spl.vm.types.SPLCommonType;
 
 public class SPLLevelObject extends SPLObject {

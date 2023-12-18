@@ -501,7 +501,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               pc++;
               SPLObject superClass = evalStack[--top];
               SPLObject definition = evalStack[--top];
-              if (definition instanceof SPLClassDefinition cf &&  superClass instanceof SPLCommonType st) {
+              if (definition instanceof SPLClassDefinition cf && superClass instanceof SPLCommonType st) {
                 SPLCommonType res = cf.buildType(st);
                 evalStack[top++] = res;
                 continue;

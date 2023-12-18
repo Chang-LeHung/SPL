@@ -16,10 +16,6 @@ public class SPLDictType extends SPLCommonType {
     return SelfHolder.INSTANCE;
   }
 
-  private static class SelfHolder {
-    public static final SPLDictType INSTANCE = new SPLDictType(null, "dict", SPLDictObject.class);
-  }
-
   @Override
   @SPLExportMethod
   public SPLObject __call__(SPLObject... args) throws SPLInternalException {
@@ -27,5 +23,9 @@ public class SPLDictType extends SPLCommonType {
       return new SPLDictObject();
     }
     return SPLErrorUtils.splErrorFormat(new SPLTypeError("Cannot call " + getType() + " with " + args.length + " arguments"));
+  }
+
+  private static class SelfHolder {
+    public static final SPLDictType INSTANCE = new SPLDictType(null, "dict", SPLDictObject.class);
   }
 }
