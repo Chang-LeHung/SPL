@@ -5,6 +5,7 @@ import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.internal.typs.SPLFuncType;
 import org.spl.vm.internal.utils.Dissembler;
 import org.spl.vm.interpreter.DefaultEval;
+import org.spl.vm.interpreter.ThreadState;
 import org.spl.vm.objects.SPLNoneObject;
 import org.spl.vm.objects.SPLObject;
 import org.spl.vm.objects.SPLStringObject;
@@ -95,7 +96,13 @@ public class SPLFuncObject extends SPLObject {
       locals.put(new SPLStringObject(parameters.get(i)), args[i]);
     }
     assert globals != null;
-    return new DefaultEval(name, locals, globals, codeObject).evalFrame();
+    DefaultEval frame = new DefaultEval(name, locals, globals, codeObject);
+    ThreadState ts = ThreadState.get();
+    SPLFrameObject currentFrame = ts.getCurrentFrame();
+    ts.setCurrentFrame(frame);
+    SPLObject res = frame.evalFrame();
+    ts.setCurrentFrame(currentFrame);
+    return res;
   }
 
   @SPLExportMethod

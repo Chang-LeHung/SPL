@@ -100,4 +100,8 @@ public class SPLFrameObject extends SPLObject {
   public List<String> getSourceCode() {
     return codeObject.getSourceCode();
   }
+
+  SPLObject getFrameFirstArgument() {
+    return locals.get(varnames[0]);
+  }
 }

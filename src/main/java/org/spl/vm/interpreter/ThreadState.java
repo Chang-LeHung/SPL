@@ -4,6 +4,7 @@ import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.exceptions.splexceptions.SPLException;
 import org.spl.vm.exceptions.splexceptions.SPLStackOverflowError;
+import org.spl.vm.internal.objs.SPLFrameObject;
 import org.spl.vm.types.SPLCommonType;
 
 public class ThreadState {
@@ -20,6 +21,7 @@ public class ThreadState {
   private SPLCommonType execType;
   private SPLException execVal;
   private SPLTraceBackObject trace;
+  private SPLFrameObject currentFrame;
 
   public ThreadState() {
     callStackSize = 0;
@@ -85,5 +87,13 @@ public class ThreadState {
 
   public void setTrace(SPLTraceBackObject trace) {
     this.trace = trace;
+  }
+
+  public SPLFrameObject getCurrentFrame() {
+    return currentFrame;
+  }
+
+  public void setCurrentFrame(SPLFrameObject currentFrame) {
+    this.currentFrame = currentFrame;
   }
 }
