@@ -137,7 +137,7 @@ public class SPLDictObject extends SPLObject {
   }
 
   @Override
-  public SPLObject __getIterator__() throws SPLInternalException {
+  public SPLCommonIterator __getIterator__() throws SPLInternalException {
     return new SPLCommonIterator(
         dict.entrySet().stream()
             .map(x -> new SPLPair(x.getKey(), x.getValue()))

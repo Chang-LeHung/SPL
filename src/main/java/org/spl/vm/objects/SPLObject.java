@@ -166,9 +166,9 @@ public class SPLObject implements SPLInterface {
   }
 
   @Override
+  @SPLExportMethod
   public SPLObject __call__(SPLObject... args) throws SPLInternalException {
-    return SPLErrorUtils
-        .splErrorFormat(new SPLNotImplemented(type.getName() + "'s 'call' not implemented"));
+    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented(type.getName() + "'s '()' not implemented"));
   }
 
   @Override
@@ -226,8 +226,8 @@ public class SPLObject implements SPLInterface {
   }
 
   @Override
-  public SPLObject __getIterator__() throws SPLInternalException {
-    return SPLErrorUtils.splErrorFormat(new SPLNotImplemented(type.getName() + "'s 'getIterator' not implemented"));
+  public SPLCommonIterator __getIterator__() throws SPLInternalException {
+    return (SPLCommonIterator) SPLErrorUtils.splErrorFormat(new SPLNotImplemented(type.getName() + "'s 'getIterator' not implemented"));
   }
 
   @Override

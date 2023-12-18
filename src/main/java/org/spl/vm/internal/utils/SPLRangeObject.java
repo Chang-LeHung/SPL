@@ -21,7 +21,7 @@ public class SPLRangeObject extends SPLObject {
   }
 
   @Override
-  public SPLObject __getIterator__() throws SPLInternalException {
+  public SPLCommonIterator __getIterator__() throws SPLInternalException {
     ArrayList<SPLObject> container = new ArrayList<>();
     for (int i = start; i < end; i += step) {
       container.add(SPLLongObject.create(i));

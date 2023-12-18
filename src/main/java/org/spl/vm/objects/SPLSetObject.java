@@ -155,7 +155,7 @@ public class SPLSetObject extends SPLObject {
   }
 
   @Override
-  public SPLObject __getIterator__() throws SPLInternalException {
+  public SPLCommonIterator __getIterator__() throws SPLInternalException {
     return new SPLCommonIterator(set.stream().toList());
   }
 

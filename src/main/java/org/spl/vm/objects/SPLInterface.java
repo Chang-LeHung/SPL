@@ -1,5 +1,6 @@
 package org.spl.vm.objects;
 
+import org.spl.vm.annotations.SPLExportMethod;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.types.SPLCommonType;
 
@@ -118,6 +119,7 @@ public interface SPLInterface {
 
   SPLObject __invert__() throws SPLInternalException;
 
+  @SPLExportMethod
   SPLObject __call__(SPLObject... args) throws SPLInternalException;
 
   SPLObject __str__();
@@ -137,5 +139,5 @@ public interface SPLInterface {
 
   SPLObject __subscribe__(SPLObject args) throws SPLInternalException;
 
-  SPLObject __getIterator__() throws SPLInternalException;
+  SPLCommonIterator __getIterator__() throws SPLInternalException;
 }

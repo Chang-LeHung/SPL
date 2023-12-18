@@ -21,6 +21,7 @@ import org.spl.vm.internal.utils.Dissembler;
 import org.spl.vm.internal.utils.SPLRangeObject;
 import org.spl.vm.interpreter.DefaultEval;
 import org.spl.vm.objects.*;
+import org.spl.vm.types.*;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -55,6 +56,12 @@ public class Builtin {
     register("exp");
     register("exit");
     register("dis");
+    register("int", SPLLongType.getInstance());
+    register("float", SPlFloatType.getInstance());
+    register("list", SPLListType.getInstance());
+    register("dict", SPLDictType.getInstance());
+    register("set", SPLSetType.getInstance());
+    register("str", SPLStringType.getInstance());
   }
 
 
@@ -69,6 +76,10 @@ public class Builtin {
       dict.put(new SPLStringObject(name), m);
     } catch (NoSuchMethodException ignore) {
     }
+  }
+
+  private static void register(String name, SPLObject m) {
+    dict.put(new SPLStringObject(name), m);
   }
 
   public static void addObject(SPLStringObject name, SPLObject o) {

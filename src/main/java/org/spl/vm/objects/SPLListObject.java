@@ -103,8 +103,8 @@ public class SPLListObject extends SPLObject {
   }
 
   @Override
-  public SPLObject __getIterator__() throws SPLInternalException {
-    return new SPLListIterator(new ArrayList<>(container));
+  public SPLCommonIterator __getIterator__() throws SPLInternalException {
+    return new SPLCommonIterator(new ArrayList<>(container));
   }
 
   public static class SPLListIteratorType extends SPLCommonType {

@@ -23,4 +23,12 @@ public class DataStructTest {
     System.out.println(spl.getCode().getMaxStackSize());
     spl.run();
   }
+
+  @Test
+  public void testTypes() throws SPLSyntaxError, IOException {
+    SPL spl = new SPL("datastruct/type.spl");
+    spl.dis();
+    System.out.println(spl.getCode().getMaxStackSize());
+    spl.run();
+  }
 }

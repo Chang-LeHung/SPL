@@ -109,7 +109,7 @@ public class SPLStringObject extends SPLObject {
   }
 
   @Override
-  public SPLObject __getIterator__() throws SPLInternalException {
+  public SPLCommonIterator __getIterator__() throws SPLInternalException {
     ArrayList<SPLStringObject> subs = new ArrayList<>();
     for (int i = 0; i < msg.length(); i++) {
       subs.add(new SPLStringObject(msg.substring(i, i + 1)));

@@ -1,0 +1,6 @@
+
+
+
+data = "hello world"
+print(list(data))
+print(list(range(10)))
