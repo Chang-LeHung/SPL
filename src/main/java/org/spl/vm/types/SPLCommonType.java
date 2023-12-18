@@ -75,6 +75,12 @@ public class SPLCommonType extends SPLObject {
 
   @Override
   public SPLObject __getMethod__(SPLObject name) throws SPLInternalException {
+    if (attrs != null && attrs.containsKey(name)) {
+      SPLObject func = attrs.get(name);
+      if (func instanceof SPLFuncObject) {
+        return func;
+      }
+    }
     SPLObject res = getFromCache(name);
     if (res != null) return res;
     try {
@@ -83,13 +89,15 @@ public class SPLCommonType extends SPLObject {
         methods.put(name, method);
         return new SPLCallObject(method, null, true);
       }
-      // check super class only single inheritance allowed in SPL
+    } catch (NoSuchMethodException ignore) {
+    }
+    // check super class only single inheritance allowed in SPL
+    if (base != null) { // SPLObjectType's type
       res = base.__getMethod__(name);
       if (res != null) {
         methods.put(name, res);
         return res;
       }
-    } catch (NoSuchMethodException ignore) {
     }
     return SPLErrorUtils.splErrorFormat(new SPLRuntimeException("Not found an attribute or method  named '" + name + "'"));
   }

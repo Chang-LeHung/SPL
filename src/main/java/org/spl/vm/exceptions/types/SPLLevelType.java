@@ -28,4 +28,12 @@ public class SPLLevelType extends SPLCommonType {
     splObject.__call__(newArgs);
     return res;
   }
+
+  @Override
+  public SPLObject __getMethod__(SPLObject name) throws SPLInternalException {
+    if (attrs != null && attrs.containsKey(name)) {
+      return attrs.get(name);
+    }
+    return super.__getMethod__(name);
+  }
 }

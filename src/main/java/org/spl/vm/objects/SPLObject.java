@@ -232,12 +232,6 @@ public class SPLObject implements SPLInterface {
 
   @Override
   public SPLObject __getMethod__(SPLObject name) throws SPLInternalException {
-    if (attrs != null && attrs.containsKey(name)) {
-      SPLObject res = attrs.get(name);
-      if (res instanceof SPLFuncObject) {
-        return res;
-      }
-    }
     SPLObject method = type.__getMethod__(name);
     if (method instanceof SPLCallObject callable) {
       callable.setStatic(false);
