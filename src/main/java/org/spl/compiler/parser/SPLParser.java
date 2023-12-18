@@ -261,6 +261,9 @@ public class SPLParser extends AbstractSyntaxParser {
       tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.IDENTIFIER, "Expected super class name instead of " + tokenFlow.peek().getValueAsString());
       superClassName = tokenFlow.peek().getIdentifier();
       tokenFlow.next();
+      if (tokenFlow.peek().isComma()) {
+        throwSyntaxError("Only single inheritance is allowed in SPL", tokenFlow.peek());
+      }
       tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RIGHT_PARENTHESES, "Expected ')' instead of " + tokenFlow.peek().getValueAsString());
       tokenFlow.next();
     }
