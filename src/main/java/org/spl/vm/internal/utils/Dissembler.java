@@ -203,6 +203,9 @@ public class Dissembler extends SPLObject {
           ins = new Instruction(OpCode.NE, 0);
           pc++;
         }
+        case BUILD_CLASS -> {
+          ins = new Instruction(OpCode.BUILD_CLASS, getOparg());
+        }
         case AND -> {
           ins = new Instruction(OpCode.AND, 0);
           pc++;

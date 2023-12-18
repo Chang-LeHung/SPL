@@ -45,16 +45,29 @@ public class InteractiveShell {
 
   private static List<String> getCompletes() {
     ArrayList<String> completer = locals.keySet().stream()
-        .map(SPLObject::__str__)
+        .map(splObject -> {
+          try {
+            return splObject.__str__();
+          } catch (SPLInternalException e) {
+            throw new RuntimeException(e);
+          }
+        })
         .map(SPLObject::toString).collect(Collectors.toCollection(ArrayList::new));
     completer.add("exit");
-    completer.addAll(Builtin
+    List<String> list = new ArrayList<>();
+    for (SPLObject splObject : Builtin
         .getDict()
-        .keySet()
-        .stream()
-        .map(SPLObject::__str__)
-        .map(SPLObject::toString)
-        .toList());
+        .keySet()) {
+      SPLObject str__;
+      try {
+        str__ = splObject.__str__();
+      } catch (SPLInternalException e) {
+        throw new RuntimeException(e);
+      }
+      String string = str__.toString();
+      list.add(string);
+    }
+    completer.addAll(list);
     completer.add("clear");
     completer.add("begin");
     completer.add("end");

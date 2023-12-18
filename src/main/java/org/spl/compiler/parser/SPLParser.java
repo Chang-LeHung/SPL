@@ -11,6 +11,7 @@ import org.spl.compiler.ir.binaryop.*;
 import org.spl.compiler.ir.block.ProgramBlock;
 import org.spl.compiler.ir.context.DefaultASTContext;
 import org.spl.compiler.ir.exp.*;
+import org.spl.compiler.ir.stmt.ClassDefinition;
 import org.spl.compiler.ir.stmt.Decorator;
 import org.spl.compiler.ir.stmt.assignstmt.*;
 import org.spl.compiler.ir.stmt.controlflow.*;
@@ -21,6 +22,7 @@ import org.spl.compiler.ir.unaryop.*;
 import org.spl.compiler.ir.vals.*;
 import org.spl.compiler.lexer.Lexer;
 import org.spl.vm.internal.SPLCodeObjectBuilder;
+import org.spl.vm.internal.objs.SPLClassDefinition;
 import org.spl.vm.internal.objs.SPLCodeObject;
 import org.spl.vm.internal.objs.SPLFuncObject;
 import org.spl.vm.objects.*;
@@ -44,6 +46,8 @@ import java.util.Map;
  *              | returnStmt
  *              | tryStmt
  *              | decoratorStmt
+ *              | classDef
+ * classDef     : 'class' IDENTIFIER ('(' IDENTIFIER ')') ?'{' classBody '}
  * decorator    : '@' expression funcDef
  * tryStmt      : 'try' block ('catch' '(' IDENTIFIER IDENTIFIER ')' block) * ('finally' block)*
  * returnStmt   : 'return' expression?
@@ -204,7 +208,10 @@ public class SPLParser extends AbstractSyntaxParser {
         return forStatement();
       } else if (tokenFlow.peek().isAt()) {
         return atStatement();
-      } else if (token.isBreak()) {
+      } else if (tokenFlow.peek().isClass()) {
+        return classDefStmt();
+      }
+      else if (token.isBreak()) {
         tokenFlow.next();
         Break brk = new Break();
         setSourceCodeInfo(brk, token);
@@ -239,6 +246,48 @@ public class SPLParser extends AbstractSyntaxParser {
     }
     throwSyntaxError("Illegal statement, expected assignment or expression", tokenFlow.peek());
     return null;
+  }
+
+  private IRNode<Instruction> classDefStmt() throws SPLSyntaxError {
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.CLASS, "Expected 'class' instead of " + tokenFlow.peek().getValueAsString());
+    Lexer.Token token = tokenFlow.peek();
+    tokenFlow.next();
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.IDENTIFIER, "Expected class name instead of " + tokenFlow.peek().getValueAsString());
+    String className = tokenFlow.peek().getIdentifier();
+    String superClassName = null;
+    tokenFlow.next();
+    if (tokenFlow.peek().isLEFT_PARENTHESES()) {
+      tokenFlow.next();
+      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.IDENTIFIER, "Expected super class name instead of " + tokenFlow.peek().getValueAsString());
+      superClassName = tokenFlow.peek().getIdentifier();
+      tokenFlow.next();
+      tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.RIGHT_PARENTHESES, "Expected ')' instead of " + tokenFlow.peek().getValueAsString());
+      tokenFlow.next();
+    }
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.LBRACE, "Expected '{' instead of " + tokenFlow.peek().getValueAsString());
+    var classContext = new DefaultASTContext<>(filename, getSourceCode());
+    classContext.setFirstLineNo(tokenFlow.peek().getLineNo());
+    DefaultASTContext<Instruction> old = context;
+    context = classContext;
+    IRNode<Instruction> block = block();
+    classContext.generateByteCodes(block);
+    SPLCodeObject classBody = SPLCodeObjectBuilder.build(classContext);
+    SPLClassDefinition classDef = new SPLClassDefinition(classBody, className);
+    context = old;
+    context.addConstantObject(classDef);
+    int cd = context.getConstantObjectIndex(classDef);
+    context.addVarName(className);
+    context.addSymbol(className);
+    int vd = context.getVarNameIndex(className);
+    int sd = -1;
+    if (superClassName!= null) {
+     context.addVarName(superClassName);
+     context.addSymbol(superClassName);
+     sd = context.getVarNameIndex(superClassName);
+    }
+    ClassDefinition classDefinition = new ClassDefinition(cd, vd, sd);
+    setSourceCodeInfo(classDefinition, token);
+    return classDefinition;
   }
 
   private IRNode<Instruction> atStatement() throws SPLSyntaxError {

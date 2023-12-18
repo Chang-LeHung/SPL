@@ -105,10 +105,8 @@ public class Lexer {
         case INIT -> {
           switch (c) {
             case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' -> state = CHAR_TYPE.NUMBER;
-            case 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-                'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-                'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-                'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '_' -> state = CHAR_TYPE.IDENTIFIER;
+            case 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '_' ->
+                state = CHAR_TYPE.IDENTIFIER;
             case '"', '\'' -> state = CHAR_TYPE.QUOTATION;
             case '+' -> state = CHAR_TYPE.PLUS;
             case '-' -> state = CHAR_TYPE.MINUS;
@@ -565,7 +563,7 @@ public class Lexer {
   public enum TOKEN_TYPE {
     EOF, NEWLINE, STARTER, AT, // used only in the function doParse()
     COMMA, IDENTIFIER, LBRACKET, RBRACKET, TRUE, FALSE, COLON, IMPORT, INT, FLOAT, STRING, SEMICOLON, LEFT_PARENTHESES, RIGHT_PARENTHESES, PLUS, MINUS, MUL, DIV, TRUE_DIV, MOD, LSHIFT, RSHIFT, U_RSHIFT, // unconditional left shift
-    ASSIGN, ASSIGN_TRUE_DIV, EQ, LT, GT, GE, LE, NE, AND, CONDITIONAL_AND, OR, CONDITIONAL_OR, POWER, XOR, NOT, INVERT, CONDITIONAL_NOT, ASSIGN_ADD, ARROW, ASSIGN_SUB, ASSIGN_MUL, ASSIGN_DIV, ASSIGN_POWER, ASSIGN_MOD, ASSIGN_INVERT, ASSIGN_LSHIFT, ASSIGN_RSHIFT, ASSIGN_U_RSHIFT, ASSIGN_AND, ASSIGN_OR, ASSIGN_XOR, IF, ELSE, DO, WHILE, FOR, BREAK, CONTINUE, RETURN, DOT, LBRACE, RBRACE, IN, CLASS, DEF, TRY, CATCH, FINALLY, GLOBAL, NONE,
+    ASSIGN, ASSIGN_TRUE_DIV, EQ, LT, GT, GE, LE, NE, AND, CONDITIONAL_AND, OR, CONDITIONAL_OR, POWER, XOR, NOT, INVERT, CONDITIONAL_NOT, ASSIGN_ADD, ARROW, ASSIGN_SUB, ASSIGN_MUL, ASSIGN_DIV, ASSIGN_POWER, ASSIGN_MOD, ASSIGN_INVERT, ASSIGN_LSHIFT, ASSIGN_RSHIFT, ASSIGN_U_RSHIFT, ASSIGN_AND, ASSIGN_OR, ASSIGN_XOR, IF, ELSE, DO, WHILE, TYPE, CLASS, FOR, BREAK, CONTINUE, RETURN, DOT, LBRACE, RBRACE, IN, DEF, TRY, CATCH, FINALLY, GLOBAL, NONE,
   }
 
   public static class TokenType extends SPLCommonType {
@@ -805,21 +803,7 @@ public class Lexer {
     }
 
     public boolean isASSIGN() {
-      return token == TOKEN_TYPE.ASSIGN ||
-          token == TOKEN_TYPE.ASSIGN_ADD ||
-          token == TOKEN_TYPE.ASSIGN_SUB ||
-          token == TOKEN_TYPE.ASSIGN_MUL ||
-          token == TOKEN_TYPE.ASSIGN_DIV ||
-          token == TOKEN_TYPE.ASSIGN_MOD ||
-          token == TOKEN_TYPE.ASSIGN_LSHIFT ||
-          token == TOKEN_TYPE.ASSIGN_RSHIFT ||
-          token == TOKEN_TYPE.ASSIGN_U_RSHIFT ||
-          token == TOKEN_TYPE.ASSIGN_AND ||
-          token == TOKEN_TYPE.ASSIGN_OR ||
-          token == TOKEN_TYPE.ASSIGN_XOR ||
-          token == TOKEN_TYPE.ASSIGN_POWER ||
-          token == TOKEN_TYPE.ASSIGN_TRUE_DIV ||
-          token == TOKEN_TYPE.ASSIGN_INVERT;
+      return token == TOKEN_TYPE.ASSIGN || token == TOKEN_TYPE.ASSIGN_ADD || token == TOKEN_TYPE.ASSIGN_SUB || token == TOKEN_TYPE.ASSIGN_MUL || token == TOKEN_TYPE.ASSIGN_DIV || token == TOKEN_TYPE.ASSIGN_MOD || token == TOKEN_TYPE.ASSIGN_LSHIFT || token == TOKEN_TYPE.ASSIGN_RSHIFT || token == TOKEN_TYPE.ASSIGN_U_RSHIFT || token == TOKEN_TYPE.ASSIGN_AND || token == TOKEN_TYPE.ASSIGN_OR || token == TOKEN_TYPE.ASSIGN_XOR || token == TOKEN_TYPE.ASSIGN_POWER || token == TOKEN_TYPE.ASSIGN_TRUE_DIV || token == TOKEN_TYPE.ASSIGN_INVERT;
     }
 
     public boolean isPureAssign() {
@@ -827,9 +811,7 @@ public class Lexer {
     }
 
     public boolean isConstant() {
-      return token == TOKEN_TYPE.INT ||
-          token == TOKEN_TYPE.FLOAT ||
-          token == TOKEN_TYPE.STRING;
+      return token == TOKEN_TYPE.INT || token == TOKEN_TYPE.FLOAT || token == TOKEN_TYPE.STRING;
     }
 
     public boolean isPower() {
@@ -854,6 +836,14 @@ public class Lexer {
 
     public boolean isLBRACE() {
       return token == TOKEN_TYPE.LBRACE;
+    }
+
+    public boolean isClass() {
+      return token == TOKEN_TYPE.CLASS;
+    }
+
+    public boolean isType() {
+      return token == TOKEN_TYPE.TYPE;
     }
 
     public boolean isRBRACKET() {

@@ -102,7 +102,7 @@ public class SPLSetObject extends SPLObject {
   }
 
   @Override
-  public SPLObject __str__() {
+  public SPLObject __str__() throws SPLInternalException {
     StringBuilder builder = new StringBuilder();
     builder.append("{");
     for (SPLObject o : set) {

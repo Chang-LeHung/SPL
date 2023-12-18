@@ -172,12 +172,12 @@ public class SPLObject implements SPLInterface {
   }
 
   @Override
-  public SPLObject __str__() {
+  public SPLObject __str__() throws SPLInternalException {
     return new SPLStringObject(this.toString());
   }
 
 
-  private SPLObject loadAttributeFromClass(Class<?> clazz, SPLObject name) {
+  private SPLObject loadAttributeFromClass(Class<?> clazz, SPLObject name) throws SPLInternalException {
     var sn = name.__str__().toString();
     try {
       Field filed = clazz.getDeclaredField(sn);
@@ -208,7 +208,7 @@ public class SPLObject implements SPLInterface {
         return res;
       }
     }
-    return __getMethod__(name);
+    return type.__getAttr__(name);
   }
 
   @Override

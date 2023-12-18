@@ -81,13 +81,15 @@ public class SPLBoolObject extends SPLObject {
 
   @Override
   public SPLObject __str__() {
-    return getTrue() == this ? SelfHolder.True : SelfHolder.False;
+    return getTrue() == this ? SelfHolder.sTrue : SelfHolder.sFalse;
   }
 
   public static class SelfHolder {
     public static SPLBoolObject TRUE = new SPLBoolObject(true);
     public static SPLBoolObject FALSE = new SPLBoolObject(false);
     public static SPLBoolObject True = TRUE;
+    public static SPLStringObject sTrue = new SPLStringObject("true");
+    public static SPLStringObject sFalse = new SPLStringObject("false");
     public static SPLBoolObject False = FALSE;
   }
 }

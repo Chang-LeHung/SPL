@@ -4,8 +4,10 @@ import org.spl.compiler.ir.context.ASTContext;
 import org.spl.vm.builtin.Builtin;
 import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
+import org.spl.vm.exceptions.splexceptions.SPLClassBuildError;
 import org.spl.vm.exceptions.splexceptions.SPLRuntimeException;
 import org.spl.vm.interfaces.SPLIterator;
+import org.spl.vm.internal.objs.SPLClassDefinition;
 import org.spl.vm.internal.objs.SPLCodeObject;
 import org.spl.vm.internal.objs.SPLFrameObject;
 import org.spl.vm.internal.objs.SPLFuncObject;
@@ -494,6 +496,17 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               SPLObject sub = evalStack[--top];
               SPLObject obj = evalStack[--top];
               obj.__setAttr__(sub, val);
+            }
+            case BUILD_CLASS -> {
+              pc++;
+              SPLObject superClass = evalStack[--top];
+              SPLObject definition = evalStack[--top];
+              if (definition instanceof SPLClassDefinition cf &&  superClass instanceof SPLCommonType st) {
+                SPLCommonType res = cf.buildType(st);
+                evalStack[top++] = res;
+                continue;
+              }
+              SPLErrorUtils.splErrorFormat(new SPLClassBuildError("Illegal arguments for class creation"));
             }
             case BUILD_LIST -> {
               int arg = getOparg();

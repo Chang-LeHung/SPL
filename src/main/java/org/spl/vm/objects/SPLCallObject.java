@@ -39,7 +39,11 @@ public class SPLCallObject extends SPLObject {
     if (isStatic) {
       return "NativeMethod-Static{" + method.getName() + "}";
     }
-    return "NativeMethod{" + method.getName() + "}, Self is \"" + self.__str__() + "\"";
+    try {
+      return "NativeMethod{" + method.getName() + "}, Self is \"" + self.__str__() + "\"";
+    } catch (SPLInternalException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override

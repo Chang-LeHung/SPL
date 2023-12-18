@@ -56,6 +56,7 @@ public class Builtin {
     register("exp");
     register("exit");
     register("dis");
+    register("object", SPLObjectType.getInstance());
     register("int", SPLLongType.getInstance());
     register("float", SPlFloatType.getInstance());
     register("list", SPLListType.getInstance());
@@ -98,7 +99,7 @@ public class Builtin {
     return dict.put(key, value);
   }
 
-  public static SPLObject print(SPLObject... args) {
+  public static SPLObject print(SPLObject... args) throws SPLInternalException {
     for (SPLObject arg : args) {
       System.out.print(arg.__str__());
     }

@@ -15,4 +15,11 @@ public class ObjectSystemTest {
     spl.dis();
     spl.run();
   }
+
+  @Test
+  public void testClass01() throws SPLInternalException, SPLSyntaxError, IOException {
+    SPL spl = new SPL("object/demo01.spl");
+    spl.dis();
+    spl.run();
+  }
 }

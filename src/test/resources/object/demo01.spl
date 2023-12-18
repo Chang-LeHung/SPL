@@ -1,0 +1,33 @@
+
+
+
+class A {
+
+
+    def __init__(self, a, b) {
+        print(a, b)
+    }
+
+}
+
+o = A(10, 20)
+
+
+class B(object) {
+
+
+    def __init__(self, a, b) {
+        print(a*b)
+        self.a = a
+        self.b = b
+    }
+
+    def __str__(self) {
+        return "a = " + self.a + ", b = " + self.b
+    }
+}
+
+
+o = B(10, 20)
+
+print("o = ", o)

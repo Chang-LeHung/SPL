@@ -74,7 +74,13 @@ public class SPLListObject extends SPLObject {
   public SPLObject __str__() {
     StringBuilder builder = new StringBuilder();
     builder.append("[");
-    container.forEach(x -> builder.append(x.__str__()).append(", "));
+    container.forEach(x -> {
+      try {
+        builder.append(x.__str__()).append(", ");
+      } catch (SPLInternalException e) {
+        throw new RuntimeException(e);
+      }
+    });
     if (builder.length() > 2)
       builder.delete(builder.length() - 2, builder.length());
     builder.append("]");

@@ -24,10 +24,8 @@ public class SPLStringObject extends SPLObject {
 
   @Override
   public SPLObject __add__(SPLObject rhs) throws SPLInternalException {
-    if (rhs instanceof SPLStringObject s) {
-      return new SPLStringObject(msg + s.getVal());
-    }
-    return SPLErrorUtils.splErrorFormat(new SPLTypeError("can not apply operator '+' on str and " + rhs.getType().getName()));
+    SPLObject splObject = rhs.__str__();
+    return new SPLStringObject(msg + splObject.__str__());
   }
 
   @Override

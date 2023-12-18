@@ -76,7 +76,8 @@ public enum OpCode {
   LONG_JUMP,
   STORE_EXC_VAL,
   LOAD_CLOSURE,
-  STORE_CLOSURE;
+  STORE_CLOSURE,
+  BUILD_CLASS;
   public final byte val;
 
   OpCode() {
