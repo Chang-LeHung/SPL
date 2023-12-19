@@ -54,4 +54,18 @@ public class ObjectSystemTest {
       System.err.println(error.getMessage());
     }
   }
+
+  @Test
+  public void testMagicFunction() throws SPLSyntaxError, IOException {
+    SPL spl = new SPL("object/add.spl");
+    spl.dis();
+    spl.run();
+  }
+
+  @Test
+  public void testDisAddIns() throws SPLSyntaxError, IOException {
+    SPL spl = new SPL("object/insadd.spl");
+    spl.dis();
+    spl.run();
+  }
 }

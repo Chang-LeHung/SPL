@@ -9,6 +9,7 @@ import org.spl.vm.exceptions.splexceptions.SPLNotImplemented;
 import org.spl.vm.exceptions.splexceptions.SPLTypeError;
 import org.spl.vm.internal.objs.SPLFuncObject;
 import org.spl.vm.internal.objs.SPLMethodWrapper;
+import org.spl.vm.interpreter.ThreadState;
 import org.spl.vm.types.SPLCommonType;
 import org.spl.vm.types.SPLObjectType;
 
@@ -209,6 +210,8 @@ public class SPLObject implements SPLInterface {
     try {
       return __getMethod__(name);
     } catch (Exception ignore) {
+    } finally {
+      ThreadState.clearThreadState();
     }
     return type.__getAttr__(name);
   }
@@ -262,5 +265,13 @@ public class SPLObject implements SPLInterface {
   @Override
   public String toString() {
     return String.format("<object %s @0x%s>", getType().getName(), Integer.toHexString(hashCode()));
+  }
+
+  public Map<SPLObject, SPLObject> getAttrs() {
+    return attrs;
+  }
+
+  public SPLObject getAttrFromAttrs(SPLObject name) {
+    return attrs.get(name);
   }
 }

@@ -6,6 +6,7 @@ import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.exceptions.splexceptions.SPLAttributeError;
 import org.spl.vm.internal.objs.SPLFuncObject;
+import org.spl.vm.interpreter.ThreadState;
 import org.spl.vm.objects.SPLCallObject;
 import org.spl.vm.objects.SPLObject;
 import org.spl.vm.objects.SPLStaticMethodWrapper;
@@ -73,6 +74,8 @@ public class SPLCommonType extends SPLObject {
     try {
       return super.__getAttr__(name);
     } catch (Exception ignore) {
+    } finally {
+      ThreadState.clearThreadState();
     }
     if (base != null)
       return base.__getAttr__(name);
@@ -96,6 +99,8 @@ public class SPLCommonType extends SPLObject {
         return new SPLCallObject(method, null, true);
       }
     } catch (NoSuchMethodException ignore) {
+    } finally {
+      ThreadState.clearThreadState();
     }
     // check super class only single inheritance allowed in SPL
     if (base != null) { // SPLObjectType's type is null
