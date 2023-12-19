@@ -1,0 +1,18 @@
+#!/bin/bash
+
+echo "Start to install SPL ..."
+
+if [ ! -d "$HOME/.spl" ]; then
+  mkdir "$HOME/.spl"
+  mkdir "$HOME/.spl/bin"
+  mkdir "$HOME/.spl/jar"
+fi
+
+cp ./target/SPL-1.0-SNAPSHOT-jar-with-dependencies.jar "$HOME/.spl/jar/SPL.jar"
+
+echo "#!/bin/bash" > "$HOME/.spl/bin/spl"
+echo "exec $JAVA_HOME/bin/java -jar $HOME/.spl/jar/SPL.jar \"\$@\"" >> "$HOME/.spl/bin/spl"
+
+chmod +x "$HOME/.spl/bin/spl"
+
+echo "SPL installed successfully!"
