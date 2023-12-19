@@ -43,4 +43,15 @@ public class ObjectSystemTest {
     spl.dis();
     spl.run();
   }
+
+  @Test
+  public void testMultiInheritance() throws IOException {
+    try {
+      SPL spl = new SPL("object/single.spl");
+      spl.dis();
+      spl.run();
+    } catch (SPLSyntaxError error) {
+      System.err.println(error.getMessage());
+    }
+  }
 }
