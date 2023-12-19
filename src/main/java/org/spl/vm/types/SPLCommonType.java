@@ -8,6 +8,7 @@ import org.spl.vm.exceptions.splexceptions.SPLRuntimeException;
 import org.spl.vm.internal.objs.SPLFuncObject;
 import org.spl.vm.objects.SPLCallObject;
 import org.spl.vm.objects.SPLObject;
+import org.spl.vm.objects.SPLStaticMethodWrapper;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
@@ -78,7 +79,7 @@ public class SPLCommonType extends SPLObject {
   public SPLObject __getMethod__(SPLObject name) throws SPLInternalException {
     if (attrs != null && attrs.containsKey(name)) {
       SPLObject func = attrs.get(name);
-      if (func instanceof SPLFuncObject) {
+      if (func instanceof SPLFuncObject || func instanceof SPLStaticMethodWrapper) {
         return func;
       }
     }

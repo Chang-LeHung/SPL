@@ -24,8 +24,15 @@ public class ObjectSystemTest {
   }
 
   @Test
-  public void testInheritance() throws SPLInternalException, SPLSyntaxError, IOException {
+  public void testInheritance() throws SPLSyntaxError, IOException {
     SPL spl = new SPL("object/demo02.spl");
+    spl.dis();
+    spl.run();
+  }
+
+  @Test
+  public void testStatic() throws SPLSyntaxError, IOException {
+    SPL spl = new SPL("object/static.spl");
     spl.dis();
     spl.run();
   }

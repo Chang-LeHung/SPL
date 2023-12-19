@@ -57,6 +57,7 @@ public class Builtin {
     register("exit");
     register("dis");
     register("object", SPLObjectType.getInstance());
+    register("static", SPLStaticMethodWrapperType.getInstance());
     register("int", SPLLongType.getInstance());
     register("float", SPlFloatType.getInstance());
     register("list", SPLListType.getInstance());

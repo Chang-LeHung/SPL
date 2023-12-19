@@ -239,6 +239,8 @@ public class SPLObject implements SPLInterface {
       return callable;
     } else if (method instanceof SPLFuncObject callable) {
       return new SPLMethodWrapper(callable, this);
+    } else if (method instanceof SPLStaticMethodWrapper callable) {
+      return callable;
     }
     return SPLErrorUtils.splErrorFormat(new SPLAttributeError("can not find an attribute or method '" + name + "'"));
   }
