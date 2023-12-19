@@ -13,7 +13,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __add__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__add__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__add__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__add__(rhs);
     }
@@ -23,7 +27,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __sub__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__sub__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__sub__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__sub__(rhs);
     }
@@ -32,7 +40,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __mul__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__mul__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__mul__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__mul__(rhs);
     }
@@ -41,7 +53,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __div__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__div__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__div__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__div__(rhs);
     }
@@ -50,7 +66,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __trueDiv__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__trueDiv__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__trueDiv__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__trueDiv__(rhs);
     }
@@ -59,7 +79,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __mod__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__mod__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__mod__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__mod__(rhs);
     }
@@ -68,7 +92,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __pow__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__pow__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__pow__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__pow__(rhs);
     }
@@ -77,7 +105,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __and__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__and__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__and__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__and__(rhs);
     }
@@ -86,7 +118,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __lt__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__lt__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__lt__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__lt__(rhs);
     }
@@ -95,7 +131,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __call__(SPLObject... args) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__call__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__call__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__call__(args);
     }
@@ -104,7 +144,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __xor__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__xor__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__xor__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__xor__(rhs);
     }
@@ -113,7 +157,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __lshift__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__lshift__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__lshift__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__lshift__(rhs);
     }
@@ -122,7 +170,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __URshift__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__URshift__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__URshift__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__URshift__(rhs);
     }
@@ -131,7 +183,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __rshift__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__rshift__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__rshift__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__rshift__(rhs);
     }
@@ -141,7 +197,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __not__() throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__not__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__not__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__not__();
     }
@@ -150,7 +210,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __invert__() throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__invert__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__invert__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__invert__();
     }
@@ -159,7 +223,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __neg__() throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__neg__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__neg__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__neg__();
     }
@@ -168,7 +236,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __eq__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__eq__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__eq__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__eq__(rhs);
     }
@@ -177,7 +249,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __ne__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__ne__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__ne__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__ne__(rhs);
     }
@@ -187,7 +263,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __gt__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__gt__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__gt__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__gt__(rhs);
     }
@@ -196,7 +276,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __or__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__or__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__or__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__or__(rhs);
     }
@@ -207,7 +291,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __le__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__le__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__le__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__le__(rhs);
     }
@@ -217,7 +305,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __ge__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__ge__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__ge__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__ge__(rhs);
     }
@@ -227,7 +319,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __conditionalAnd__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__conditionalAnd__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__conditionalAnd__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__conditionalAnd__(rhs);
     }
@@ -237,7 +333,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __conditionalOr__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__conditionalOr__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__conditionalOr__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__conditionalOr__(rhs);
     }
@@ -248,7 +348,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __str__() throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__str__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__str__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__str__();
     }
@@ -258,7 +362,11 @@ public class SPLLevelObject extends SPLObject {
   @Override
   public SPLObject __setAttr__(SPLObject name, SPLObject value) throws SPLInternalException {
     try {
-      SPLObject func = type.__getAttr__(__setAttr__);
+      SPLObject func = null;
+    try {
+      func = type.__getAttr__(__setAttr__);
+    } catch (Exception ignore) {
+    }
       if (func == null) {
         return super.__setAttr__(name, value);
       }
@@ -271,7 +379,11 @@ public class SPLLevelObject extends SPLObject {
   @Override
   public SPLObject __subscribe__(SPLObject args) throws SPLInternalException {
     try {
-      SPLObject func = type.__getAttr__(__subscribe__);
+      SPLObject func = null;
+    try {
+      func = type.__getAttr__(__subscribe__);
+    } catch (Exception ignore) {
+    }
       if (func == null) {
         return super.__subscribe__(args);
       }
@@ -295,7 +407,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLCommonIterator __getIterator__() throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__getIterator__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__getIterator__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__getIterator__();
     }
@@ -304,7 +420,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __inplaceAdd__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__inplaceAdd__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__inplaceAdd__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__inplaceAdd__(rhs);
     }
@@ -313,7 +433,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __inplaceSub__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__inplaceSub__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__inplaceSub__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__inplaceSub__(rhs);
     }
@@ -322,7 +446,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __inplaceMul__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__inplaceMul__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__inplaceMul__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__inplaceMul__(rhs);
     }
@@ -331,7 +459,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __inplaceDiv__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__inplaceDiv__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__inplaceDiv__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__inplaceDiv__(rhs);
     }
@@ -340,7 +472,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __inplaceTrueDiv__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__inplaceTrueDiv__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__inplaceTrueDiv__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__inplaceTrueDiv__(rhs);
     }
@@ -350,7 +486,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __inplaceMod__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__inplaceMod__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__inplaceMod__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__inplaceMod__(rhs);
     }
@@ -359,7 +499,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __inplacePow__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__inplacePow__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__inplacePow__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__inplacePow__(rhs);
     }
@@ -368,7 +512,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __inplaceLshift__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__inplaceLshift__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__inplaceLshift__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__inplaceLshift__(rhs);
     }
@@ -377,7 +525,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __inplaceRshift__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__inplaceRshift__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__inplaceRshift__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__inplaceRshift__(rhs);
     }
@@ -386,7 +538,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __inplaceURshift__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__inplaceURshift__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__inplaceURshift__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__inplaceURshift__(rhs);
     }
@@ -395,7 +551,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __inplaceAnd__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__inplaceAnd__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__inplaceAnd__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__inplaceAnd__(rhs);
     }
@@ -404,7 +564,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __inplaceOr__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__inplaceOr__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__inplaceOr__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__inplaceOr__(rhs);
     }
@@ -413,7 +577,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __inplaceXor__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__inplaceXor__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__inplaceXor__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__inplaceXor__(rhs);
     }
@@ -422,7 +590,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __inplaceConditionalAnd__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__inplaceConditionalAnd__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__inplaceConditionalAnd__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__inplaceConditionalAnd__(rhs);
     }
@@ -431,7 +603,11 @@ public class SPLLevelObject extends SPLObject {
 
   @Override
   public SPLObject __inplaceConditionalOr__(SPLObject rhs) throws SPLInternalException {
-    SPLObject func = type.__getAttr__(__inplaceConditionalOr__);
+    SPLObject func = null;
+    try {
+      func = type.__getAttr__(__inplaceConditionalOr__);
+    } catch (Exception ignore) {
+    }
     if (func == null) {
       return super.__inplaceConditionalOr__(rhs);
     }
