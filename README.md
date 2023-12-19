@@ -14,6 +14,7 @@ If you are interested in this programming language, here is a quick start tutori
 -   Prerequisites
     -   JDK 17 or above.
     -   Unix-like OS.
+    -   If you only have a Windows system, you can access SPL by WSL(Windows Subsystem for Linux). Perhaps `gitbash` is OK as well.
 
 -   Download and Installation
 
