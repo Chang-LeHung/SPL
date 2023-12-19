@@ -34,5 +34,13 @@ echo "export PATH=\$PATH:~/.spl/bin" >> ~/.zshrc
 echo "export PATH=\$PATH:~/.spl/bin" >> ~/.bashrc
 ```
 
+-   Refreshing Environment Variables
+
+```bash
+source ~/.bashrc
+or
+source ~/.zshrc
+```
+
 Ensure to include `~/.spl/bin` in your `PATH` environment variable. Once those initial steps are done, you'll have full access to the capabilities of SPL.
 
