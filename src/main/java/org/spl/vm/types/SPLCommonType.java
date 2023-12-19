@@ -3,6 +3,7 @@ package org.spl.vm.types;
 import org.spl.vm.annotations.SPLExportMethod;
 import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
+import org.spl.vm.exceptions.splexceptions.SPLAttributeError;
 import org.spl.vm.exceptions.splexceptions.SPLRuntimeException;
 import org.spl.vm.internal.objs.SPLFuncObject;
 import org.spl.vm.objects.SPLCallObject;
@@ -92,13 +93,13 @@ public class SPLCommonType extends SPLObject {
     } catch (NoSuchMethodException ignore) {
     }
     // check super class only single inheritance allowed in SPL
-    if (base != null) { // SPLObjectType's type
+    if (base != null) { // SPLObjectType's type is null
       res = base.__getMethod__(name);
       if (res != null) {
         methods.put(name, res);
         return res;
       }
     }
-    return SPLErrorUtils.splErrorFormat(new SPLRuntimeException("Not found an attribute or method  named '" + name + "'"));
+    return SPLErrorUtils.splErrorFormat(new SPLAttributeError("Not found an attribute or method  named '" + name + "'"));
   }
 }
