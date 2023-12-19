@@ -4,7 +4,6 @@ import org.spl.vm.annotations.SPLExportMethod;
 import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.exceptions.splexceptions.SPLAttributeError;
-import org.spl.vm.exceptions.splexceptions.SPLRuntimeException;
 import org.spl.vm.internal.objs.SPLFuncObject;
 import org.spl.vm.objects.SPLCallObject;
 import org.spl.vm.objects.SPLObject;

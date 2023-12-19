@@ -12,10 +12,6 @@ public class SPLStaticMethodWrapperType extends SPLCommonType {
     super(null, "SPLStaticMethodWrapper", SPLStaticMethodWrapper.class);
   }
 
-  private static class SelfHolder {
-    public static final SPLStaticMethodWrapperType INSTANCE = new SPLStaticMethodWrapperType();
-  }
-
   public static SPLStaticMethodWrapperType getInstance() {
     return SelfHolder.INSTANCE;
   }
@@ -29,5 +25,9 @@ public class SPLStaticMethodWrapperType extends SPLCommonType {
       }
     }
     return SPLErrorUtils.splErrorFormat(new SPLTypeError("static method wrapper takes a function as argument"));
+  }
+
+  private static class SelfHolder {
+    public static final SPLStaticMethodWrapperType INSTANCE = new SPLStaticMethodWrapperType();
   }
 }
