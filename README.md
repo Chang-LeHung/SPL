@@ -1,7 +1,7 @@
 # SPL
 A comprehensive compiler and interpreter implementation.(Educational Project)
 
-The SPL aims to assist compiler and programming language enthusiasts in better understanding programs. It currently supports the most common syntax, drawing inspiration from the syntax designs of Java, Python, and JavaScript.
+The SPL aims to assist compiler and programming language enthusiasts in better understanding programs. It currently supports the most common syntax, drawing inspiration from the syntax designs of C/C++, Java, Python, and JavaScript.
 
 ## Basics
 
@@ -289,4 +289,174 @@ TypeError:Can not add "[1, 2, 3, 4]" to "world"
 The reason for the program crash was that the addition operations involving `hello(2) + "world"` and `hello(2)` were without any issues, hence we marked the `+` operator.
 
 ![function_dis](docs/imgs/traceback.png)
+
+### Object System
+
+####  Basics
+
+The object system of SPL is similar to Python. You can define a class like below:
+
+```spl
+class A {
+
+    def __init__(self, a, b) {
+        print(a, b)
+    }
+
+    def inA(self) {
+        print(self, ", in A")
+    }
+
+}
+```
+
+The method `__init__` is the constructor of class A, which will be called when creating a class object.
+
+In SPL, each object possesses a distinct attribute called `type` that indicates the object's type. Additionally, every class features a unique attribute named `base`, pointing to its base class.
+
+![base](docs/imgs/base.png)
+
+#### Inheritances 
+
+SPL follows a single inheritance model where only one superclass can be inherited. In cases where there's no explicitly defined superclass, the default one used is the `object` class. If you define a class with multiple super classes, the compiler will throw an SyntaxError during compilation.
+
+```spl
+class A(int, float) {}
+```
+
+![inheritance](docs/imgs/inheritance.png)
+
+Let's implement an example with inheritance: 
+
+```spl
+class A {
+
+    def __init__(self, a, b) {
+        print(a, b)
+    }
+
+    def inA(self) {
+        print(self, ", in A")
+    }
+}
+
+o = A(10, 20)
+
+class B(A) {
+
+    def __init__(self, a, b) {
+        print(a*b)
+        self.a = a
+        self.b = b
+    }
+
+    def __str__(self) {
+        return "a = " + self.a + ", b = " + self.b
+    }
+}
+
+o = B(10, 20)
+o.inA() # call the super classs's method
+
+```
+
+#### Static stuffs
+
+In SPL, you can define a static attribute just like Python:
+
+```spl
+class A {
+
+    data = "Data in A"
+
+    def __init__(self, a, b) {
+        print(a, b)
+    }
+
+
+    def inA(self) {
+        print(self, ", in A")
+    }
+
+}
+print(A.data)
+```
+
+Additional, you can define a static method use the decorator `static`:
+
+```spl
+class A {
+
+    def __init__(self, a, b) {
+        print(a, b)
+    }
+
+    def inA(self) {
+        print(self, ", in A")
+    }
+
+    @static
+    def staticDemo() {
+        print("staticDemo")
+    }
+}
+
+```
+
+#### Object System(Data Model)
+
+In SPL, many magic functions are specifically tied to different operators. For instance, operators like +, -, /, and * each correspond to their unique magical function within the language.
+
+Some of the magic functions are as follows:
+
+| Magic method         | Operator  |
+| -------------------- | --------- |
+| \_\_add\_\_          | +         |
+| \_\_sub\_\_          | -         |
+| \_\_mul\_\_          | *         |
+| \_\_div\_\_      | /         |
+| \_\_truediv\_\_ | //        |
+| \_\_mod\_\_          | %         |
+| \_\_power_\_         | **        |
+| \_\_lshift\_\_       | <<        |
+| \_\_rshift\_\_       | >>        |
+| \_\_and\_\_          | &         |
+| \_\_or\_\_           | \|        |
+| \_\_xor\_\_          | ^         |
+| \_\_neg\_\_          | -         |
+| \_\_pos\_\_          | +         |
+| \_\_invert\_\_       | ~         |
+| \_\_lt\_\_           | <         |
+| \_\_le\_\_           | <=        |
+| \_\_eq\_\_           | ==        |
+| \_\_ne\_\_           | !=        |
+| \_\_gt\_\_           | >         |
+| \_\_ge\_\_           | >=        |
+
+This is an example to implement magic functions of specific operators:
+
+```spl
+class Add {
+
+    def __init__(self, a) {
+        self.a = a
+    }
+
+    def __add__(self, rhs) {
+        self.a += rhs.a
+        return self
+    }
+
+
+    def __str__(self) {
+        return "Add(a=" + self.a + ")"
+    }
+}
+
+a = Add(1)
+b = Add(2)
+c = a + b
+print(c)
+
+```
 
