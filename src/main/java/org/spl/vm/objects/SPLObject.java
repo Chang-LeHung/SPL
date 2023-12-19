@@ -196,16 +196,14 @@ public class SPLObject implements SPLInterface {
       return attrs.get(name);
     } else {
       // load from this class
-      SPLObject res = loadAttributeFromClass(getClass(), name);
-      if (res != null) {
-        attrs.put(name, res);
-        return res;
-      }
-      // load from super class
-      res = loadAttributeFromClass(getClass().getSuperclass(), name);
-      if (res != null) {
-        attrs.put(name, res);
-        return res;
+      Class<?> clazz = getClass();
+      while (SPLObject.class.isAssignableFrom(clazz)) {
+        SPLObject res = loadAttributeFromClass(clazz, name);
+        if (res != null) {
+          attrs.put(name, res);
+          return res;
+        }
+        clazz = clazz.getSuperclass();
       }
     }
     try {

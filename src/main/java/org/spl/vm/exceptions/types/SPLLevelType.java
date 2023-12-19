@@ -22,10 +22,12 @@ public class SPLLevelType extends SPLCommonType {
   public SPLObject __call__(SPLObject... args) throws SPLInternalException {
     SPLObject splObject = attrs.get(__init__);
     SPLLevelObject res = new SPLLevelObject(this);
-    SPLObject[] newArgs = new SPLObject[args.length + 1];
-    newArgs[0] = res;
-    System.arraycopy(args, 0, newArgs, 1, args.length);
-    splObject.__call__(newArgs);
+    if (splObject != null) {
+      SPLObject[] newArgs = new SPLObject[args.length + 1];
+      newArgs[0] = res;
+      System.arraycopy(args, 0, newArgs, 1, args.length);
+      splObject.__call__(newArgs);
+    }
     return res;
   }
 }
