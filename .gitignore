@@ -39,3 +39,4 @@ build/
 src/test/java/test
 tools
 *.dot
+dots/*
