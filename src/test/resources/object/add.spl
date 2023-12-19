@@ -1,0 +1,24 @@
+
+
+
+class Add {
+
+    def __init__(self, a) {
+        self.a = a
+    }
+
+    def __add__(self, rhs) {
+        self.a += rhs.a
+        return self
+    }
+
+
+    def __str__(self) {
+        return "Add(a=" + self.a + ")"
+    }
+}
+
+a = Add(1)
+b = Add(2)
+c = a + b
+print(c)

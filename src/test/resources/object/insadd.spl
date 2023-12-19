@@ -1,0 +1,12 @@
+
+
+self = {
+    "a": 100
+}
+rhs = {
+    "a": 200
+}
+self.a += rhs.a
+
+print(self)
+print(rhs)
