@@ -1,5 +1,6 @@
 package org.spl.vm.types;
 
+import org.spl.vm.annotations.SPLExportField;
 import org.spl.vm.annotations.SPLExportMethod;
 import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
@@ -16,6 +17,7 @@ public class SPLCommonType extends SPLObject {
 
   protected final String name;
   protected final Class<? extends SPLObject> clazz;
+  @SPLExportField
   protected SPLCommonType base;
 
   public SPLCommonType(SPLCommonType type, String name, Class<? extends SPLObject> clazz) {
@@ -68,13 +70,13 @@ public class SPLCommonType extends SPLObject {
 
   @Override
   public SPLObject __getAttr__(SPLObject name) throws SPLInternalException {
-    if (attrs != null && attrs.containsKey(name)) {
-      return attrs.get(name);
+    try {
+      return super.__getAttr__(name);
+    } catch (Exception ignore) {
     }
-    if (base != null && base.attrs != null && base.attrs.containsKey(name)) {
-      return base.attrs.get(name);
-    }
-    return __getMethod__(name);
+    if (base != null)
+      return base.__getAttr__(name);
+    return SPLErrorUtils.splErrorFormat(new SPLAttributeError("Not found an attribute or method  named '" + name + "'"));
   }
 
   @Override

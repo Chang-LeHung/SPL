@@ -177,7 +177,7 @@ public class SPLObject implements SPLInterface {
   }
 
 
-  private SPLObject loadAttributeFromClass(Class<?> clazz, SPLObject name) throws SPLInternalException {
+  protected SPLObject loadAttributeFromClass(Class<?> clazz, SPLObject name) throws SPLInternalException {
     var sn = name.__str__().toString();
     try {
       Field filed = clazz.getDeclaredField(sn);
@@ -207,6 +207,10 @@ public class SPLObject implements SPLInterface {
         attrs.put(name, res);
         return res;
       }
+    }
+    try {
+      return __getMethod__(name);
+    } catch (Exception ignore) {
     }
     return type.__getAttr__(name);
   }

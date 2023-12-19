@@ -284,14 +284,13 @@ public class SPLLevelObject extends SPLObject {
   @Override
   public SPLObject __getAttr__(SPLObject name) throws SPLInternalException {
     try {
-      SPLObject func = type.__getAttr__(__getAttr__);
-      if (func == null) {
-        return super.__getAttr__(name);
+      SPLObject callable = type.__getMethod__(name);
+      if (callable != null) {
+        return callable.__call__(this, name);
       }
-      return func.__call__(this, name);
     } catch (Exception ignore) {
-      return super.__getAttr__(name);
     }
+    return super.__getAttr__(name);
   }
 
   @Override
