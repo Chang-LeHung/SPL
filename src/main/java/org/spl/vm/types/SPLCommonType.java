@@ -71,6 +71,9 @@ public class SPLCommonType extends SPLObject {
     if (attrs != null && attrs.containsKey(name)) {
       return attrs.get(name);
     }
+    if (base != null && base.attrs != null && base.attrs.containsKey(name)) {
+      return base.attrs.get(name);
+    }
     return __getMethod__(name);
   }
 

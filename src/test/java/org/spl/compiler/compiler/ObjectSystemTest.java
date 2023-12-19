@@ -36,4 +36,11 @@ public class ObjectSystemTest {
     spl.dis();
     spl.run();
   }
+
+  @Test
+  public void testStaticAttr() throws SPLSyntaxError, IOException {
+    SPL spl = new SPL("object/classAttr.spl");
+    spl.dis();
+    spl.run();
+  }
 }

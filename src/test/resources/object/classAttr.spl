@@ -1,0 +1,45 @@
+
+
+
+class A {
+
+    data = "Data in A"
+
+    def __init__(self, a, b) {
+        print(a, b)
+    }
+
+
+    def inA(self) {
+        print(self, ", in A")
+    }
+
+}
+
+o = A(10, 20)
+
+
+class B(A) {
+
+    bb = "data in B"
+
+    def __init__(self, a, b) {
+        print(a*b)
+        self.a = a
+        self.b = b
+    }
+
+    def __str__(self) {
+        return "a = " + self.a + ", b = " + self.b
+    }
+}
+
+
+o = B(10, 20)
+
+o.inA()
+print(o.data)
+print(o.bb)
+print(B.bb)
+print(B.data)
+print(A.data)
