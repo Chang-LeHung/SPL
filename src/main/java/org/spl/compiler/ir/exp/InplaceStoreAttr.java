@@ -3,18 +3,25 @@ package org.spl.compiler.ir.exp;
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.bytecode.OpCode;
 import org.spl.compiler.exceptions.SPLSyntaxError;
+import org.spl.compiler.ir.AbstractIR;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.Op;
 import org.spl.compiler.ir.context.ASTContext;
 
 import java.util.List;
 
-public class InplaceStoreAttr extends StoreAttr {
+public class InplaceStoreAttr extends AbstractIR<Instruction> {
 
+  private final IRNode<Instruction> lhs;
+  private final IRNode<Instruction> rhs;
+  private final int attrIndex;
+  private List<IRNode<Instruction>> children;
   private Op op;
 
   public InplaceStoreAttr(IRNode<Instruction> lhs, IRNode<Instruction> rhs, int attrIndex, String name, Op op) {
-    super(lhs, rhs, attrIndex, name);
+    this.lhs = lhs;
+    this.rhs = rhs;
+    this.attrIndex = attrIndex;
     this.op = op;
   }
 
@@ -26,8 +33,14 @@ public class InplaceStoreAttr extends StoreAttr {
     this.op = op;
   }
 
+
   @Override
   public void codeGen(ASTContext<Instruction> context) throws SPLSyntaxError {
+    lhs.accept(context);
+    context.addInstruction(new Instruction(OpCode.DUP), getLineNo(), getColumnNo(), getLen());
+    context.increaseStackSize();
+    context.addInstruction(new Instruction(OpCode.LOAD_ATTR, attrIndex), getLineNo(), getColumnNo(), getLen());
+    rhs.accept(context);
     switch (op) {
       case ASSIGN_ADD -> {
         context.addInstruction(new Instruction(OpCode.INPLACE_ADD, 0), getLineNo(), getColumnNo(), getLen());
@@ -69,13 +82,21 @@ public class InplaceStoreAttr extends StoreAttr {
         context.addInstruction(new Instruction(OpCode.INPLACE_POWER, 0), getLineNo(), getColumnNo(), getLen());
       }
     }
-    super.codeGen(context);
+    context.decreaseStackSize(2);
+    context.increaseStackSize();
+    context.addInstruction(new Instruction(OpCode.STORE_ATTR, attrIndex), getLineNo(), getColumnNo(), getLen());
+    context.decreaseStackSize(2);
+  }
+
+  @Override
+  public boolean isStatement() {
+    return true;
   }
 
   @Override
   public List<IRNode<Instruction>> getChildren() {
     if (children == null) {
-      children = List.of(lhs, rhs);
+      children = List.of();
     }
     return children;
   }

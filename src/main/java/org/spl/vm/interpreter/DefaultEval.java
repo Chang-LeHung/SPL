@@ -402,7 +402,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             case STORE_ATTR -> {
               int arg = getOparg();
               SPLObject o = evalStack[--top];
-              o.__setAttr__(varnames[arg], evalStack[--top]);
+              evalStack[--top].__setAttr__(varnames[arg], o);
             }
             case LOAD_ATTR -> { // LOAD_ATTR
               int arg = getOparg();

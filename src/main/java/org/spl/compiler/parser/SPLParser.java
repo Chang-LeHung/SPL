@@ -456,117 +456,78 @@ public class SPLParser extends AbstractSyntaxParser {
         }
         case ASSIGN_ADD -> {
           IRNode<Instruction> rhs = expression();
-          IRNode<Instruction> o = lhs.getLhs();
-          Dup newLhs = new Dup(o);
-          lhs.setLhs(newLhs);
           InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_ADD);
           setSourceCodeInfo(store, sign);
           return store;
         }
         case ASSIGN_SUB -> {
           IRNode<Instruction> rhs = expression();
-          IRNode<Instruction> o = lhs.getLhs();
-          Dup newLhs = new Dup(o);
-          lhs.setLhs(newLhs);
           InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_SUB);
           setSourceCodeInfo(store, sign);
           return store;
         }
         case ASSIGN_MUL -> {
           IRNode<Instruction> rhs = expression();
-          IRNode<Instruction> o = lhs.getLhs();
-          Dup newLhs = new Dup(o);
-          lhs.setLhs(newLhs);
           InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_MUL);
           setSourceCodeInfo(store, sign);
           return store;
         }
         case ASSIGN_DIV -> {
           IRNode<Instruction> rhs = expression();
-          IRNode<Instruction> o = lhs.getLhs();
-          Dup newLhs = new Dup(o);
-          lhs.setLhs(newLhs);
           InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_DIV);
           setSourceCodeInfo(store, sign);
           return store;
         }
         case ASSIGN_TRUE_DIV -> {
           IRNode<Instruction> rhs = expression();
-          IRNode<Instruction> o = lhs.getLhs();
-          Dup newLhs = new Dup(o);
-          lhs.setLhs(newLhs);
           InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_TRUE_DIV);
           setSourceCodeInfo(store, sign);
           return store;
         }
         case ASSIGN_POWER -> {
           IRNode<Instruction> rhs = expression();
-          IRNode<Instruction> o = lhs.getLhs();
-          Dup newLhs = new Dup(o);
-          lhs.setLhs(newLhs);
           InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_POWER);
           setSourceCodeInfo(store, sign);
           return store;
         }
         case ASSIGN_MOD -> {
           IRNode<Instruction> rhs = expression();
-          IRNode<Instruction> o = lhs.getLhs();
-          Dup newLhs = new Dup(o);
-          lhs.setLhs(newLhs);
           InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_MOD);
           setSourceCodeInfo(store, sign);
           return store;
         }
         case ASSIGN_OR -> {
           IRNode<Instruction> rhs = expression();
-          IRNode<Instruction> o = lhs.getLhs();
-          Dup newLhs = new Dup(o);
-          lhs.setLhs(newLhs);
           InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_OR);
           setSourceCodeInfo(store, sign);
           return store;
         }
         case ASSIGN_AND -> {
           IRNode<Instruction> rhs = expression();
-          IRNode<Instruction> o = lhs.getLhs();
-          Dup newLhs = new Dup(o);
-          lhs.setLhs(newLhs);
           InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_AND);
           setSourceCodeInfo(store, sign);
           return store;
         }
         case ASSIGN_XOR -> {
           IRNode<Instruction> rhs = expression();
-          IRNode<Instruction> o = lhs.getLhs();
-          Dup newLhs = new Dup(o);
-          lhs.setLhs(newLhs);
           InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_XOR);
           setSourceCodeInfo(store, sign);
           return store;
         }
         case ASSIGN_LSHIFT -> {
           IRNode<Instruction> rhs = expression();
-          IRNode<Instruction> o = lhs.getLhs();
-          Dup newLhs = new Dup(o);
-          lhs.setLhs(newLhs);
           InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_LSHIFT);
           setSourceCodeInfo(store, sign);
           return store;
         }
         case ASSIGN_RSHIFT -> {
           IRNode<Instruction> rhs = expression();
-          IRNode<Instruction> o = lhs.getLhs();
-          Dup newLhs = new Dup(o);
-          lhs.setLhs(newLhs);
           InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_RSHIFT);
           setSourceCodeInfo(store, sign);
           return store;
         }
         case ASSIGN_U_RSHIFT -> {
           IRNode<Instruction> rhs = expression();
-          IRNode<Instruction> o = lhs.getLhs();
-          Dup newLhs = new Dup(o);
-          lhs.setLhs(newLhs);
           InplaceStoreAttr store = new InplaceStoreAttr(lhs.getLhs(), rhs, lhs.getAttrIndex(), lhs.getName(), Op.ASSIGN_U_RSHIFT);
           setSourceCodeInfo(store, sign);
           return store;

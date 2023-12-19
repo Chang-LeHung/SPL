@@ -31,7 +31,7 @@ public class StoreAttr extends AbstractIR<Instruction> {
   @Override
   public List<IRNode<Instruction>> getChildren() {
     if (children == null) {
-      children = List.of(rhs, lhs);
+      children = List.of(lhs, rhs);
     }
     return children;
   }
