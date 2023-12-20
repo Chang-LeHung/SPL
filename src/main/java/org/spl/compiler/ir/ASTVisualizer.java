@@ -264,7 +264,6 @@ public class ASTVisualizer {
       Object o = new Object();
       builder.append(String.format("\t%d [label=\"%s\"]\n", o.hashCode(), forStmt.getName()));
       builder.append(String.format("\t%d -> %d [label=\"iterable\"]\n", node.hashCode(), o.hashCode()));
-      visit(forStmt.getExpression());
       IRNode<Instruction> expression = forStmt.getExpression();
       if (expression != null) {
         builder.append(String.format("\t%d -> %d [label=\"in\"]\n", o.hashCode(), expression.hashCode()));
