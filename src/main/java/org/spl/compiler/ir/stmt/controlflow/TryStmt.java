@@ -95,6 +95,18 @@ public class TryStmt extends AbstractIR<Instruction> {
     restoreTryState(context, oldState);
   }
 
+  public IRNode<Instruction> getTryBlock() {
+    return tryBlock;
+  }
+
+  public List<IRNode<Instruction>> getCatchBlock() {
+    return catchBlock;
+  }
+
+  public IRNode<Instruction> getFinallyBlock() {
+    return finallyBlock;
+  }
+
   @Override
   public boolean isStatement() {
     return true;

@@ -62,6 +62,8 @@ public class ASTVisualizer {
     if (node instanceof Pop)
       return;
     builder.append(String.format("\t%d [label=\"%s\"]\n", node.hashCode(), getLabel(node)));
+    if (isExceptBlock(node)) return;
+    if (isTryStmtAndDo(node)) return;
     if (isForStmtAndDo(node)) return;
     if (isLoadAttrAndDo(node)) return;
     if (isLoadMethodAndDo(node)) return;
@@ -86,6 +88,50 @@ public class ASTVisualizer {
       builder.append(String.format("\t%d -> %d\n", node.hashCode(), child.hashCode()));
       visit(child);
     }
+  }
+
+  private boolean isExceptBlock(IRNode<?> node) {
+    if (node instanceof ExceptBlock exceptBlock) {
+      builder.append(String.format("\t%d [label=\"CatchBlock\"]\n", exceptBlock.hashCode()));
+      String exceptName = exceptBlock.getExceptName();
+      String storeName = exceptBlock.getStoreName();
+      Object o = new Object();
+      builder.append(String.format("\t%d [label=\"%s\"]\n", o.hashCode(), exceptName));
+      builder.append(String.format("\t%d -> %d[label=\"Exception\"]\n", exceptBlock.hashCode(), o.hashCode()));
+      o = new Object();
+      builder.append(String.format("\t%d [label=\"%s\"]\n", o.hashCode(), storeName));
+      builder.append(String.format("\t%d -> %d\n", exceptBlock.hashCode(), o.hashCode()));
+      if (exceptBlock.getBlock()!= null) {
+        builder.append(String.format("\t%d -> %d\n", exceptBlock.hashCode(), exceptBlock.getBlock().hashCode()));
+        visit(exceptBlock.getBlock());
+      }
+      return true;
+    }
+    return false;
+  }
+
+  private boolean isTryStmtAndDo(IRNode<?> node) {
+    if (node instanceof TryStmt tryStmt) {
+      builder.append(String.format("\t%d [label=\"%s\"]\n", tryStmt.hashCode(), "Try"));
+      IRNode<Instruction> tryBlock = tryStmt.getTryBlock();
+      if (tryBlock != null) {
+        builder.append(String.format("\t%d -> %d[label=\"TryBlock\"]\n", tryStmt.hashCode(), tryBlock.hashCode()));
+        visit(tryBlock);
+      }
+      List<IRNode<Instruction>> ctbs = tryStmt.getCatchBlock();
+      if (ctbs != null)
+        for (IRNode<Instruction> catchBlock : ctbs) {
+          builder.append(String.format("\t%d -> %d[label=\"%s\"]\n", tryStmt.hashCode(), catchBlock.hashCode(), "CatchBlock"));
+          visit(catchBlock);
+        }
+      IRNode<Instruction> finallyBlock = tryStmt.getFinallyBlock();
+      if (finallyBlock!= null) {
+        builder.append(String.format("\t%d -> %d[label=\"%s\"]\n", tryStmt.hashCode(), finallyBlock.hashCode(), "Finally"));
+        visit(finallyBlock);
+      }
+      return true;
+    }
+    return false;
   }
 
   private boolean isWhileAndDo(IRNode<?> node) {
@@ -159,22 +205,22 @@ public class ASTVisualizer {
 
   private boolean isSubscribeStoreAndDo(IRNode<?> node) {
     if (node instanceof ArrayStyleStore array) {
-      builder.append(String.format("\t%d [label=\"%s\"]\n", node.hashCode(), getOperator( array.getOpCode())));
+      builder.append(String.format("\t%d [label=\"%s\"]\n", node.hashCode(), getOperator(array.getOpCode())));
       Object o = new Object();
       builder.append(String.format("\t%d [label=\"%s\"]\n", o.hashCode(), "[]"));
       builder.append(String.format("\t%d -> %d\n", node.hashCode(), o.hashCode()));
       IRNode<Instruction> obj = array.getObj();
-      if (obj!= null) {
+      if (obj != null) {
         builder.append(String.format("\t%d -> %d\n", o.hashCode(), obj.hashCode()));
         visit(obj);
       }
       IRNode<Instruction> sub = array.getSub();
-      if (sub!= null) {
+      if (sub != null) {
         builder.append(String.format("\t%d -> %d\n", o.hashCode(), sub.hashCode()));
         visit(sub);
       }
       IRNode<Instruction> value = array.getValue();
-      if (value!= null) {
+      if (value != null) {
         builder.append(String.format("\t%d -> %d\n", node.hashCode(), value.hashCode()));
         visit(value);
       }
