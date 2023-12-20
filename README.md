@@ -48,12 +48,8 @@ Ensure to include `~/.spl/bin` in your `PATH` environment variable. Once those i
 
 SPL offers an argument that aids in visualizing a program within an Abstract Syntax Tree (AST):
 
-```bash
-spl <xxx.spl> -o xxx.dot
-dot -Tsvg xxx.dot -o xxx.svg
-or
-dot -Tpdf xxx.dot -o xxx.pdf
-```
+-   Dump your program using SPL: `spl xxx.spl -o xxx.dot`.
+-   Generate a figure using [Graphviz](https://graphviz.org/) : `dot -Tsvg xxx.dot -o xxx.svg`
 
 Here's a demonstration:
 
