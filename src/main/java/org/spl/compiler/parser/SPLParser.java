@@ -8,6 +8,7 @@ import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.Op;
 import org.spl.compiler.ir.Scope;
 import org.spl.compiler.ir.binaryop.*;
+import org.spl.compiler.ir.block.Program;
 import org.spl.compiler.ir.block.ProgramBlock;
 import org.spl.compiler.ir.context.DefaultASTContext;
 import org.spl.compiler.ir.exp.*;
@@ -162,7 +163,7 @@ public class SPLParser extends AbstractSyntaxParser {
   }
 
   private IRNode<Instruction> program() throws SPLSyntaxError {
-    ProgramBlock block = new ProgramBlock();
+    Program block = new Program();
     boolean flag = false;
     tokenFlow.next();
     while (!tokenFlow.peek().isEOF()) {
@@ -287,7 +288,7 @@ public class SPLParser extends AbstractSyntaxParser {
       context.addSymbol(superClassName);
       sd = context.getVarNameIndex(superClassName);
     }
-    ClassDefinition classDefinition = new ClassDefinition(cd, vd, sd);
+    ClassDefinition classDefinition = new ClassDefinition(cd, vd, sd, block, className, superClassName);
     setSourceCodeInfo(classDefinition, token);
     return classDefinition;
   }
@@ -664,7 +665,7 @@ public class SPLParser extends AbstractSyntaxParser {
       setSourceCodeInfo(variable, token);
       closures.add(variable);
     }
-    FuncDef funcDef = new FuncDef(closures, funcName, idxInConstants, idxInVar, defaultParams);
+    FuncDef funcDef = new FuncDef(closures, block, funcName, parameters, idxInConstants, idxInVar, defaultParams);
     setSourceCodeInfo(funcDef, token);
     return funcDef;
   }
@@ -1336,7 +1337,7 @@ public class SPLParser extends AbstractSyntaxParser {
     SPLFuncObject func = new SPLFuncObject(params, codeObject);
     context.addConstantObject(func);
     int idx = context.getConstantObjectIndex(func);
-    FuncDef funcDef = new FuncDef(idx, func.getName());
+    FuncDef funcDef = new FuncDef(idx, params, func.getName(), block);
     setSourceCodeInfo(funcDef, tokenFlow.lookBack());
 //    InsVisitor insVisitor = new InsVisitor(auxContex.getVarnames(), auxContex.getConstantMap());
 //    auxContex.getInstructions().forEach(insVisitor::visit);

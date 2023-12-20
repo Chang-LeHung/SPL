@@ -11,6 +11,10 @@ public class FloatLiteral extends Literal {
     this.val = val;
   }
 
+  public float getVal() {
+    return val;
+  }
+
   @Override
   public boolean isFloatLiteral() {
     return true;

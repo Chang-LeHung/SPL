@@ -15,12 +15,14 @@ public class InplaceStoreAttr extends AbstractIR<Instruction> {
   private final IRNode<Instruction> lhs;
   private final IRNode<Instruction> rhs;
   private final int attrIndex;
+  private final String name;
   private List<IRNode<Instruction>> children;
   private Op op;
 
   public InplaceStoreAttr(IRNode<Instruction> lhs, IRNode<Instruction> rhs, int attrIndex, String name, Op op) {
     this.lhs = lhs;
     this.rhs = rhs;
+    this.name = name;
     this.attrIndex = attrIndex;
     this.op = op;
   }
@@ -86,6 +88,18 @@ public class InplaceStoreAttr extends AbstractIR<Instruction> {
     context.increaseStackSize();
     context.addInstruction(new Instruction(OpCode.STORE_ATTR, attrIndex), getLineNo(), getColumnNo(), getLen());
     context.decreaseStackSize(2);
+  }
+
+  public IRNode<Instruction> getLhs() {
+    return lhs;
+  }
+
+  public IRNode<Instruction> getRhs() {
+    return rhs;
+  }
+
+  public String getName() {
+    return name;
   }
 
   @Override

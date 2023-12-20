@@ -19,12 +19,18 @@ public class FuncDef extends AbstractIR<Instruction> {
   private final List<IRNode<Instruction>> defaults;
   private final List<IRNode<Instruction>> closures;
   private List<IRNode<Instruction>> children;
+  private final IRNode<Instruction> body;
+  private final List<String> args;
 
   public FuncDef(List<IRNode<Instruction>> closures,
+                 IRNode<Instruction> body,
                  String funcName,
+                 List<String> args,
                  int idxInConstants,
                  int idxInVarNames,
                  List<IRNode<Instruction>> defaults) {
+    this.body = body;
+    this.args = args;
     this.closures = closures;
     this.funcName = funcName;
     this.idxInConstants = idxInConstants;
@@ -36,7 +42,9 @@ public class FuncDef extends AbstractIR<Instruction> {
    * lambda expression
    * @param idxInConstants idx of function in constant table
    */
-  public FuncDef(int idxInConstants, String name) {
+  public FuncDef(int idxInConstants, List<String> args, String name, IRNode<Instruction> body) {
+    this.body = body;
+    this.args = args;
     this.funcName = name;
     this.closures = List.of();
     this.idxInConstants = idxInConstants;
@@ -85,6 +93,22 @@ public class FuncDef extends AbstractIR<Instruction> {
       children.addAll(closures);
     }
     return children;
+  }
+
+  public IRNode<Instruction> getBody() {
+    return body;
+  }
+
+  public List<IRNode<Instruction>> getDefaults() {
+    return defaults;
+  }
+
+  public List<IRNode<Instruction>> getClosures() {
+    return closures;
+  }
+
+  public List<String> getArgs() {
+    return args;
   }
 
   @Override

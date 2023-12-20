@@ -46,6 +46,14 @@ public class DoWhile extends AbstractIR<Instruction> {
     return List.of();
   }
 
+  public IRNode<Instruction> getBlock() {
+    return block;
+  }
+
+  public IRNode<Instruction> getCondition() {
+    return condition;
+  }
+
   @Override
   public boolean isStatement() {
     return true;

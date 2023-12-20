@@ -155,6 +155,22 @@ public class ArrayStyleStore extends AbstractIR<Instruction> {
     context.decreaseStackSize(3);
   }
 
+  public IRNode<Instruction> getObj() {
+    return obj;
+  }
+
+  public IRNode<Instruction> getSub() {
+    return sub;
+  }
+
+  public IRNode<Instruction> getValue() {
+    return value;
+  }
+
+  public Lexer.TOKEN_TYPE getOpCode() {
+    return opCode;
+  }
+
   @Override
   public boolean isStatement() {
     return true;

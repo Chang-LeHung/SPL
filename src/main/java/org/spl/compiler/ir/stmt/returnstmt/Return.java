@@ -13,7 +13,6 @@ import java.util.List;
 public class Return extends AbstractIR<Instruction> {
 
   private final IRNode<Instruction> expr;
-  private List<IRNode<Instruction>> children;
 
   public Return(IRNode<Instruction> expr) {
     this.expr = expr;
@@ -39,6 +38,15 @@ public class Return extends AbstractIR<Instruction> {
   @Override
   public List<IRNode<Instruction>> getChildren() {
     return List.of();
+  }
+
+  public IRNode<Instruction> getExpr() {
+    return expr;
+  }
+
+  @Override
+  public List<IRNode<Instruction>> getVisualizedChildren() {
+    return List.of(expr);
   }
 
   @Override

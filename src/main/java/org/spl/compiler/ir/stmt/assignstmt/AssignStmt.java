@@ -16,6 +16,7 @@ public class AssignStmt extends AbstractIR<Instruction> {
   private final Variable lhs;
   private final IRNode<Instruction> rhs;
   private List<IRNode<Instruction>> children;
+  private List<IRNode<Instruction>> visualizedChildren;
 
   public AssignStmt(Variable lhs, IRNode<Instruction> rhs) {
     this.lhs = lhs;
@@ -55,6 +56,14 @@ public class AssignStmt extends AbstractIR<Instruction> {
       children = List.of(rhs);
     }
     return children;
+  }
+
+  @Override
+  public List<IRNode<Instruction>> getVisualizedChildren() {
+    if (visualizedChildren == null) {
+      visualizedChildren = List.of(lhs, rhs);
+    }
+    return visualizedChildren;
   }
 
   @Override

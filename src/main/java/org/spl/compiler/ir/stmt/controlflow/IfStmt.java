@@ -53,6 +53,18 @@ public class IfStmt extends AbstractIR<Instruction> {
     return children;
   }
 
+  public IRNode<Instruction> getCondition() {
+    return condition;
+  }
+
+  public IRNode<Instruction> getThenBlock() {
+    return thenBlock;
+  }
+
+  public IRNode<Instruction> getElseBlock() {
+    return elseBlock;
+  }
+
   @Override
   public boolean isStatement() {
     return true;

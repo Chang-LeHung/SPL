@@ -11,6 +11,10 @@ public class IntLiteral extends Literal {
     this.val = val;
   }
 
+  public int getVal() {
+    return val;
+  }
+
   @Override
   public boolean isIntLiteral() {
     return true;

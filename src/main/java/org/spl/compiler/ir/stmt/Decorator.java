@@ -40,6 +40,14 @@ public class Decorator extends AbstractIR<Instruction> {
     return true;
   }
 
+  public FuncDef getFuncDef() {
+    return funcDef;
+  }
+
+  public IRNode<Instruction> getExpr() {
+    return expr;
+  }
+
   @Override
   public List<IRNode<Instruction>> getChildren() {
     if (children == null) {

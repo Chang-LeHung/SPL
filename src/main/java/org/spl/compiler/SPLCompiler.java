@@ -15,7 +15,7 @@ public class SPLCompiler {
 
   private final String filename;
   private ASTContext<Instruction> context;
-
+  private IRNode<?> ir;
   private SPLParser parser;
 
   public SPLCompiler(String filename) {
@@ -25,6 +25,7 @@ public class SPLCompiler {
   public SPLCodeObject compile() throws SPLSyntaxError, IOException {
     parser = new SPLParser(filename);
     IRNode<Instruction> ir = parser.buildAST();
+    this.ir = ir;
     parser.getContext().generateByteCodes(ir);
     context = parser.getContext();
     return SPLCodeObjectBuilder.build(parser.getContext());
@@ -36,5 +37,9 @@ public class SPLCompiler {
 
   public List<String> getSourceCode() {
     return parser.getSourceCode();
+  }
+
+  public IRNode<?> getIr() {
+    return ir;
   }
 }

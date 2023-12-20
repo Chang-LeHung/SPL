@@ -73,4 +73,7 @@ public interface IRNode<E> {
 
   List<IRNode<E>> getChildren();
 
+  default List<IRNode<E>> getVisualizedChildren() {
+    return getChildren();
+  }
 }

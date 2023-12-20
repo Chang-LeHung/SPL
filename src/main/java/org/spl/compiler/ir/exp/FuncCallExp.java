@@ -47,6 +47,14 @@ public class FuncCallExp extends AbstractIR<Instruction> {
     context.increaseStackSize(); // return val
   }
 
+  public List<IRNode<Instruction>> getArgs() {
+    return args;
+  }
+
+  public IRNode<Instruction> getLhs() {
+    return lhs;
+  }
+
   @Override
   public List<IRNode<Instruction>> getChildren() {
     if (children == null) {

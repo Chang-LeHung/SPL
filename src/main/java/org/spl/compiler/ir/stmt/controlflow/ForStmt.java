@@ -58,6 +58,23 @@ public class ForStmt extends AbstractIR<Instruction> {
     context.addInstruction(new Instruction(OpCode.JUMP_ABSOLUTE, start), getLineNo(), getColumnNo(), getLen());
   }
 
+
+  public IRNode<Instruction> getInitializer() {
+    return initializer;
+  }
+
+  public IRNode<Instruction> getCondition() {
+    return condition;
+  }
+
+  public IRNode<Instruction> getIncrement() {
+    return increment;
+  }
+
+  public IRNode<Instruction> getBody() {
+    return body;
+  }
+
   @Override
   public List<IRNode<Instruction>> getChildren() {
     return List.of();

@@ -36,6 +36,18 @@ public class StoreAttr extends AbstractIR<Instruction> {
     return children;
   }
 
+  public IRNode<Instruction> getLhs() {
+    return lhs;
+  }
+
+  public IRNode<Instruction> getRhs() {
+    return rhs;
+  }
+
+  public String getName() {
+    return name;
+  }
+
   @Override
   public boolean isStatement() {
     return true;

@@ -84,6 +84,14 @@ public class WhileStmt extends AbstractIR<Instruction> {
     }
   }
 
+  public IRNode<Instruction> getCondition() {
+    return condition;
+  }
+
+  public IRNode<Instruction> getBlock() {
+    return block;
+  }
+
   @Override
   public List<IRNode<Instruction>> getChildren() {
     return List.of();

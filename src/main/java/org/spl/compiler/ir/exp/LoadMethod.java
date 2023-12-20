@@ -35,6 +35,14 @@ public class LoadMethod extends AbstractIR<Instruction> {
     return children;
   }
 
+  public IRNode<Instruction> getLhs() {
+    return lhs;
+  }
+
+  public String getName() {
+    return name;
+  }
+
   @Override
   public boolean isStatement() {
     return true;

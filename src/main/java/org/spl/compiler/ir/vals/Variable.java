@@ -95,11 +95,6 @@ public class Variable extends AbstractIR<Instruction> implements RValue<Instruct
     return true;
   }
 
-  @Override
-  public int hashCode() {
-    return name.hashCode();
-  }
-
   public String getName() {
     return name;
   }
