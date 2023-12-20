@@ -44,3 +44,18 @@ source ~/.zshrc
 
 Ensure to include `~/.spl/bin` in your `PATH` environment variable. Once those initial steps are done, you'll have full access to the capabilities of SPL.
 
+## Visualizing your programs Using AST
+
+SPL offers an argument that aids in visualizing a program within an Abstract Syntax Tree (AST):
+
+```bash
+spl <xxx.spl> -o xxx.dot
+dot -Tsvg xxx.dot -o xxx.svg
+or
+dot -Tpdf xxx.dot -o xxx.pdf
+```
+
+Here's a demonstration:
+
+![res](docs/imgs/res.svg)
+
