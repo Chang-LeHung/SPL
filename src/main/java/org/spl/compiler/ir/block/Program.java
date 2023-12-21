@@ -26,10 +26,16 @@ public class Program extends AbstractIR<Instruction> {
     blocks.add(node);
   }
 
+  public IRNode<Instruction> getLast() {
+    if (blocks.size() == 0)
+      return null;
+    return blocks.get(blocks.size() - 1);
+  }
 
   public void addIRNode(IRNode<Instruction> node) {
     blocks.add(node);
   }
+
   @Override
   public List<IRNode<Instruction>> getChildren() {
     return blocks;
