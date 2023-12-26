@@ -237,15 +237,22 @@ public class SPLObject implements SPLInterface {
 
   @Override
   public SPLObject __getMethod__(SPLObject name) throws SPLInternalException {
-    SPLObject method = type.__getMethod__(name);
-    if (method instanceof SPLCallObject callable) {
-      callable.setStatic(false);
-      callable.setSelf(this);
-      return callable;
-    } else if (method instanceof SPLFuncObject callable) {
-      return new SPLMethodWrapper(callable, this);
-    } else if (method instanceof SPLStaticMethodWrapper callable) {
-      return callable;
+    try {
+      SPLObject method = type.__getMethod__(name);
+      if (method instanceof SPLCallObject callable) {
+        callable.setStatic(false);
+        callable.setSelf(this);
+        return callable;
+      } else if (method instanceof SPLFuncObject callable) {
+        return new SPLMethodWrapper(callable, this);
+      } else if (method instanceof SPLStaticMethodWrapper callable) {
+        return callable;
+      }
+    } catch (Exception ignore) {
+    }
+    // fall back to self
+    if (attrs.containsKey(name)) {
+      return attrs.get(name);
     }
     return SPLErrorUtils.splErrorFormat(new SPLAttributeError("can not find an attribute or method '" + name + "'"));
   }
