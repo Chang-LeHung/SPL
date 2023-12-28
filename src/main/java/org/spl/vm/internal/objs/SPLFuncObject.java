@@ -1,7 +1,9 @@
 package org.spl.vm.internal.objs;
 
 import org.spl.vm.annotations.SPLExportMethod;
+import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
+import org.spl.vm.exceptions.splexceptions.SPLRuntimeException;
 import org.spl.vm.internal.typs.SPLFuncType;
 import org.spl.vm.internal.utils.Dissembler;
 import org.spl.vm.interpreter.DefaultEval;
@@ -79,13 +81,13 @@ public class SPLFuncObject extends SPLObject {
   @Override
   public SPLObject __call__(SPLObject... args) throws SPLInternalException {
     if (args.length + defaults.size() < parameters.size()) {
-      throw new SPLInternalException(
+     return SPLErrorUtils.splErrorFormat(new SPLRuntimeException(
           String.format("Invalid number of arguments, request %d parameters but only found %d arguments",
-              parameters.size() - defaults.size(), args.length));
+              parameters.size() - defaults.size(), args.length)));
     } else if (args.length > parameters.size()) {
-      throw new SPLInternalException(
+      return SPLErrorUtils.splErrorFormat(new SPLRuntimeException(
           String.format("Invalid number of arguments, request %d parameters but found %d arguments",
-              parameters.size() - defaults.size(), args.length));
+              parameters.size(), args.length)));
     }
     // pass function's parameters as locals
     Map<SPLObject, SPLObject> locals = new HashMap<>();
