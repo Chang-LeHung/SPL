@@ -159,7 +159,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               pc++;
               SPLObject o = evalStack[--top];
               SPLObject iterator = o.__getIterator__();
-              if (!(iterator instanceof SPLIterator)) {
+              if (iterator == null) {
                 SPLErrorUtils.splErrorFormat(new SPLRuntimeException(o.__str__() + " is not an iterator"));
               } else {
                 evalStack[top++] = iterator;
