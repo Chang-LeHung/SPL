@@ -287,7 +287,7 @@ File "src/test/resources/error/error02.spl", line 14, in <module>
 TypeError:Can not add "[1, 2, 3, 4]" to "world"
 ```
 
-The reason for the program crash was that the addition operations involving `hello(2) + "world"` and `hello(2)` were without any issues, hence we marked the `+` operator.
+The program crashed due to an issue with the addition operations involving `hello(2) + "world"` . Although `hello(2)` functioned without any problems, the combination with the `+` operator led to the crash."
 
 ![function_dis](../imgs/traceback.png)
 
