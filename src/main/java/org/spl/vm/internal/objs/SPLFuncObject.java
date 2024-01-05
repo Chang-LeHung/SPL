@@ -4,6 +4,7 @@ import org.spl.vm.annotations.SPLExportMethod;
 import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.exceptions.splexceptions.SPLRuntimeException;
+import org.spl.vm.interfaces.SPLContinuable;
 import org.spl.vm.internal.typs.SPLFuncType;
 import org.spl.vm.internal.utils.Dissembler;
 import org.spl.vm.interpreter.DefaultEval;
@@ -16,7 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SPLFuncObject extends SPLObject {
+public class SPLFuncObject extends SPLObject implements SPLContinuable {
   public static int anonymousCount = 0;
   private final List<String> parameters;
   private final String name;
@@ -26,6 +27,7 @@ public class SPLFuncObject extends SPLObject {
    * defaults will be set in runtime (in instruction MAKE_FUNCTION)
    */
   private List<SPLObject> defaults;
+  private DefaultEval evaluation;
 
   public SPLFuncObject(List<String> parameters, String name, SPLCodeObject codeObject) {
     super(SPLFuncType.getInstance());
@@ -99,6 +101,7 @@ public class SPLFuncObject extends SPLObject {
     }
     assert globals != null;
     DefaultEval frame = new DefaultEval(name, locals, globals, codeObject);
+    evaluation = frame;
     ThreadState ts = ThreadState.get();
     SPLFrameObject currentFrame = ts.getCurrentFrame();
     ts.setCurrentFrame(frame);
@@ -113,4 +116,13 @@ public class SPLFuncObject extends SPLObject {
     dissembler.prettyPrint();
     return SPLNoneObject.getInstance();
   }
+
+  @Override
+  public SPLObject resume() throws SPLInternalException {
+    ThreadState ts = ThreadState.get();
+    SPLFrameObject currentFrame = ts.getCurrentFrame();
+    ts.setCurrentFrame(evaluation);
+    SPLObject res = evaluation.resume();
+    ts.setCurrentFrame(currentFrame);
+    return res;  }
 }

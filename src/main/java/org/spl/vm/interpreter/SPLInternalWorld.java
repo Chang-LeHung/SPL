@@ -61,6 +61,9 @@ public class SPLInternalWorld {
       case WAITING -> {
         waiting.add(routine);
       }
+      case READY -> {
+        ready.add(routine);
+      }
     }
   }
 

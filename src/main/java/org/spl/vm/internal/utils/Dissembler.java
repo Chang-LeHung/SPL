@@ -124,6 +124,10 @@ public class Dissembler extends SPLObject {
           ins = new Instruction(OpCode.U_RSHIFT, 0);
           pc++;
         }
+        case YIELD -> {
+          ins = new Instruction(OpCode.YIELD, 0);
+          pc++;
+        }
         case INPLACE_LSHIFT -> {
           ins = new Instruction(OpCode.INPLACE_LSHIFT, 0);
           pc++;

@@ -6,12 +6,14 @@ import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.exceptions.splexceptions.SPLClassBuildError;
 import org.spl.vm.exceptions.splexceptions.SPLRuntimeException;
+import org.spl.vm.interfaces.SPLContinuable;
 import org.spl.vm.interfaces.SPLIterator;
 import org.spl.vm.internal.objs.SPLClassDefinition;
 import org.spl.vm.internal.objs.SPLCodeObject;
 import org.spl.vm.internal.objs.SPLFrameObject;
 import org.spl.vm.internal.objs.SPLFuncObject;
 import org.spl.vm.objects.*;
+import org.spl.vm.splroutine.SPLRoutineMarker;
 import org.spl.vm.types.SPLCommonType;
 
 import java.util.*;
@@ -20,6 +22,8 @@ import java.util.*;
 public class DefaultEval extends SPLFrameObject implements Evaluation {
 
   private final String name;
+  private boolean needsResume = false;
+  private SPLContinuable continuation;
 
   public DefaultEval(SPLCodeObject codeObj) throws SPLInternalException {
     super(codeObj);
@@ -408,16 +412,49 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               int arg = getOparg();
               evalStack[top - 1] = evalStack[top - 1].__getAttr__(varnames[arg]);
             }
+            case YIELD -> {
+              pc++;
+              return SPLRoutineMarker.READY;
+            }
             case CALL -> { // CALL
+              int ttop = top;
+              int tpc = pc - 1;
               int oparg = getOparg();
+              if (needsResume) {
+                ThreadState.increaseThreadCallStackSize();
+                SPLObject o = continuation.resume();
+                ThreadState.decreaseThreadCallStackSize();
+                if (!(o instanceof SPLRoutineMarker)) {
+                  needsResume = false;
+                  continuation = null;
+                  evalStack[top++] = o;
+                } else {
+                  pc = tpc;
+                  return o;
+                }
+                continue;
+              }
+
               SPLObject callable = evalStack[--top];
               SPLObject[] args = new SPLObject[oparg];
               for (int i = 0; i < oparg; i++) {
                 args[i] = evalStack[--top];
               }
               ThreadState.increaseThreadCallStackSize();
-              evalStack[top++] = callable.__call__(args);
+              SPLObject o = callable.__call__(args);
               ThreadState.decreaseThreadCallStackSize();
+              if (o instanceof SPLRoutineMarker marker) {
+                pc = tpc;
+                if (callable instanceof SPLContinuable continuable) {
+                  needsResume = true;
+                  continuation = continuable;
+                } else {
+                  top = ttop;
+                }
+                return marker;
+              } else {
+                evalStack[top++] = o;
+              }
             }
             case LOAD_CONST -> { // LOAD_CONST
               int oparg = getOparg();

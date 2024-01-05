@@ -1,15 +1,16 @@
 package org.spl.vm.internal.objs;
 
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
+import org.spl.vm.interfaces.SPLContinuable;
 import org.spl.vm.internal.typs.SPLMethodWrapperType;
 import org.spl.vm.objects.SPLObject;
 
-public class SPLMethodWrapper extends SPLObject {
+public class SPLMethodWrapper extends SPLObject implements SPLContinuable {
 
-  private final SPLObject func;
+  private final SPLFuncObject func;
   private SPLObject self;
 
-  public SPLMethodWrapper(SPLObject func, SPLObject self) {
+  public SPLMethodWrapper(SPLFuncObject func, SPLObject self) {
     super(SPLMethodWrapperType.getInstance());
     this.func = func;
     this.self = self;
@@ -29,5 +30,10 @@ public class SPLMethodWrapper extends SPLObject {
 
   public void setSelf(SPLObject self) {
     this.self = self;
+  }
+
+  @Override
+  public SPLObject resume() throws SPLInternalException {
+    return func.resume();
   }
 }

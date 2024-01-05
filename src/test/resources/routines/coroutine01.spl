@@ -1,0 +1,18 @@
+
+
+def world() {
+
+    print("In world")
+    yield
+    print("After yield")
+}
+
+def hello() {
+    world()
+    yield
+    world()
+}
+
+
+hello()
+world.dis()

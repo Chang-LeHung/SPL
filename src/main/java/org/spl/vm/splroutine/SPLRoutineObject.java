@@ -85,7 +85,7 @@ public class SPLRoutineObject extends SPLObject implements SPLRoutineInterface {
     try {
       SPLObject res = eval.resume();
       if (res instanceof SPLRoutineMarker marker) {
-        return state = marker.getState();
+        return marker.getState();
       }
       return state = SPLRoutineState.TERMINATED;
     } catch (SPLInternalException ignore) {

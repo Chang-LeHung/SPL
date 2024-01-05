@@ -14,6 +14,7 @@ import org.spl.compiler.ir.context.DefaultASTContext;
 import org.spl.compiler.ir.exp.*;
 import org.spl.compiler.ir.stmt.ClassDefinition;
 import org.spl.compiler.ir.stmt.Decorator;
+import org.spl.compiler.ir.stmt.YieldStmt;
 import org.spl.compiler.ir.stmt.assignstmt.*;
 import org.spl.compiler.ir.stmt.controlflow.*;
 import org.spl.compiler.ir.stmt.func.FuncDef;
@@ -48,6 +49,8 @@ import java.util.Map;
  *              | tryStmt
  *              | decoratorStmt
  *              | classDef
+ *              | yield
+ * yield        : 'yield'
  * classDef     : 'class' IDENTIFIER ('(' IDENTIFIER ')') ?'{' classBody '}
  * decorator    : '@' expression funcDef
  * tryStmt      : 'try' block ('catch' '(' IDENTIFIER IDENTIFIER ')' block) * ('finally' block)*
@@ -211,6 +214,8 @@ public class SPLParser extends AbstractSyntaxParser {
         return atStatement();
       } else if (tokenFlow.peek().isClass()) {
         return classDefStmt();
+      } else if (token.isYield()) {
+        return yieldStatement();
       } else if (token.isBreak()) {
         tokenFlow.next();
         Break brk = new Break();
@@ -246,6 +251,15 @@ public class SPLParser extends AbstractSyntaxParser {
     }
     throwSyntaxError("Illegal statement, expected assignment or expression", tokenFlow.peek());
     return null;
+  }
+
+  private IRNode<Instruction> yieldStatement() throws SPLSyntaxError {
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.YIELD, "Expected 'yield' instead of " + tokenFlow.peek().getValueAsString());
+    Lexer.Token token = tokenFlow.peek();
+    tokenFlow.next();
+    YieldStmt yieldStmt = new YieldStmt();
+    setSourceCodeInfo(yieldStmt, token);
+    return yieldStmt;
   }
 
   private IRNode<Instruction> classDefStmt() throws SPLSyntaxError {

@@ -563,7 +563,7 @@ public class Lexer {
   public enum TOKEN_TYPE {
     EOF, NEWLINE, STARTER, AT, // used only in the function doParse()
     COMMA, IDENTIFIER, LBRACKET, RBRACKET, TRUE, FALSE, COLON, IMPORT, INT, FLOAT, STRING, SEMICOLON, LEFT_PARENTHESES, RIGHT_PARENTHESES, PLUS, MINUS, MUL, DIV, TRUE_DIV, MOD, LSHIFT, RSHIFT, U_RSHIFT, // unconditional left shift
-    ASSIGN, ASSIGN_TRUE_DIV, EQ, LT, GT, GE, LE, NE, AND, CONDITIONAL_AND, OR, CONDITIONAL_OR, POWER, XOR, NOT, INVERT, CONDITIONAL_NOT, ASSIGN_ADD, ARROW, ASSIGN_SUB, ASSIGN_MUL, ASSIGN_DIV, ASSIGN_POWER, ASSIGN_MOD, ASSIGN_INVERT, ASSIGN_LSHIFT, ASSIGN_RSHIFT, ASSIGN_U_RSHIFT, ASSIGN_AND, ASSIGN_OR, ASSIGN_XOR, IF, ELSE, DO, WHILE, TYPE, CLASS, FOR, BREAK, CONTINUE, RETURN, DOT, LBRACE, RBRACE, IN, DEF, TRY, CATCH, FINALLY, GLOBAL, NONE,
+    ASSIGN, ASSIGN_TRUE_DIV, EQ, LT, GT, GE, LE, NE, AND, CONDITIONAL_AND, OR, CONDITIONAL_OR, POWER, XOR, NOT, INVERT, CONDITIONAL_NOT, ASSIGN_ADD, ARROW, ASSIGN_SUB, ASSIGN_MUL, ASSIGN_DIV, ASSIGN_POWER, ASSIGN_MOD, ASSIGN_INVERT, ASSIGN_LSHIFT, ASSIGN_RSHIFT, ASSIGN_U_RSHIFT, ASSIGN_AND, ASSIGN_OR, ASSIGN_XOR, IF, ELSE, DO, WHILE, TYPE, CLASS, FOR, BREAK, CONTINUE, RETURN, YIELD, DOT, LBRACE, RBRACE, IN, DEF, TRY, CATCH, FINALLY, GLOBAL, NONE,
   }
 
   public static class TokenType extends SPLCommonType {
@@ -657,6 +657,9 @@ public class Lexer {
           }
           case "return" -> {
             this.token = TOKEN_TYPE.RETURN;
+          }
+          case "yield" -> {
+            this.token = TOKEN_TYPE.YIELD;
           }
         }
       }
@@ -956,8 +959,11 @@ public class Lexer {
 
     public boolean isELSE() {
       return token == TOKEN_TYPE.ELSE;
-    }
+    };
 
+    public boolean isYield() {
+      return token ==  TOKEN_TYPE.YIELD;
+    }
     public boolean isDO() {
       return token == TOKEN_TYPE.DO;
     }

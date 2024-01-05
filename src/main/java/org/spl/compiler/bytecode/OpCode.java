@@ -77,7 +77,8 @@ public enum OpCode {
   STORE_EXC_VAL,
   LOAD_CLOSURE,
   STORE_CLOSURE,
-  BUILD_CLASS;
+  BUILD_CLASS,
+  YIELD;
   public final byte val;
 
   OpCode() {
