@@ -1,15 +1,14 @@
 package org.spl.vm.interpreter;
 
-import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.exceptions.splexceptions.SPLException;
-import org.spl.vm.exceptions.splexceptions.SPLStackOverflowError;
 import org.spl.vm.internal.objs.SPLFrameObject;
+import org.spl.vm.splroutine.SPLRoutineObject;
 import org.spl.vm.types.SPLCommonType;
 
 public class ThreadState {
 
-  public static int maxCallStackSize = 100;
+  private volatile SPLRoutineObject coroutine;
 
   public static ThreadLocal<ThreadState> tss;
 
@@ -17,27 +16,9 @@ public class ThreadState {
     tss = new ThreadLocal<>();
   }
 
-  private int callStackSize;
-  private SPLCommonType execType;
-  private SPLException execVal;
-  private SPLTraceBackObject trace;
-  private SPLFrameObject currentFrame;
-
-  public ThreadState() {
-    callStackSize = 0;
-  }
-
-  public static void increaseThreadCallStackSize() throws SPLInternalException {
-    get().increaseCallStackSize();
-  }
-
-  public static void decreaseThreadCallStackSize() {
-    get().decreaseCallStackSize();
-  }
-
   public static ThreadState get() {
     ThreadState ts = tss.get();
-    if (ts == null) {
+    if (null == ts) {
       ts = new ThreadState();
       tss.set(ts);
     }
@@ -48,52 +29,76 @@ public class ThreadState {
     tss.set(ts);
   }
 
-  public static void clearThreadState() {
-    get().setExecType(null);
-    get().setExecVal(null);
-    get().setTrace(null);
+  public SPLRoutineObject swapCurrentCoroutine(SPLRoutineObject coroutine) {
+    SPLRoutineObject old = this.coroutine;
+    this.coroutine = coroutine;
+    return old;
   }
 
-  public void increaseCallStackSize() throws SPLInternalException {
-    callStackSize++;
-    if (maxCallStackSize <= callStackSize) {
-      SPLErrorUtils.splErrorFormat(new SPLStackOverflowError("Stack Overflow"));
-    }
+  public SPLRoutineObject getCurrentRoutine() {
+    return coroutine;
   }
 
-  public void decreaseCallStackSize() {
-    callStackSize--;
+  public SPLRoutineObject getCoroutineOfCurrentThread() {
+    return get().getCurrentRoutine();
+  }
+
+  public static void clearCurrentCoroutineState() {
+    get().getCurrentRoutine().setExecType(null);
+    get().getCurrentRoutine().setExecVal(null);
+    get().getCurrentRoutine().setTrace(null);
+  }
+
+  public static void increaseThreadCallStackSize() throws SPLInternalException {
+    get().getCurrentRoutine().increaseCallStackSize();
+  }
+
+  public static void decreaseThreadCallStackSize() throws SPLInternalException {
+    get().getCurrentRoutine().decreaseCallStackSize();
+  }
+
+
+  public Evaluation getEval() {
+    return coroutine.getEval();
+  }
+
+  public int getCallStackSize() {
+    return coroutine.getCallStackSize();
   }
 
   public SPLCommonType getExecType() {
-    return execType;
-  }
-
-  public void setExecType(SPLCommonType execType) {
-    this.execType = execType;
+    return coroutine.getExecType();
   }
 
   public SPLException getExecVal() {
-    return execVal;
-  }
-
-  public void setExecVal(SPLException execVal) {
-    this.execVal = execVal;
+    return coroutine.getExecVal();
   }
 
   public SPLTraceBackObject getTrace() {
-    return trace;
-  }
-
-  public void setTrace(SPLTraceBackObject trace) {
-    this.trace = trace;
+    return coroutine.getTrace();
   }
 
   public SPLFrameObject getCurrentFrame() {
-    return currentFrame;
+    return coroutine.getCurrentFrame();
+  }
+
+  public void setExecType(SPLCommonType execType) {
+    coroutine.setExecType(execType);
+  }
+
+  public void setExecVal(SPLException execVal) {
+    coroutine.setExecVal(execVal);
+  }
+
+  public void setTrace(SPLTraceBackObject trace) {
+    coroutine.setTrace(trace);
   }
 
   public void setCurrentFrame(SPLFrameObject currentFrame) {
-    this.currentFrame = currentFrame;
+    coroutine.setCurrentFrame(currentFrame);
+  }
+
+  public void setCoroutine(SPLRoutineObject coroutine) {
+    this.coroutine = coroutine;
   }
 }

@@ -211,7 +211,7 @@ public class SPLObject implements SPLInterface {
       return __getMethod__(name);
     } catch (Exception ignore) {
     } finally {
-      ThreadState.clearThreadState();
+      ThreadState.clearCurrentCoroutineState();
     }
     return type.__getAttr__(name);
   }

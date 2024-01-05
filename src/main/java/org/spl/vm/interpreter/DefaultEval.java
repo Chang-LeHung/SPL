@@ -24,7 +24,7 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
   public DefaultEval(SPLCodeObject codeObj) throws SPLInternalException {
     super(codeObj);
     if (codeObj.getArgs() != 0) {
-      throw new SPLInternalException("SPLCodeObject's args must be zero");
+      throw new SPLInternalException("SPLCodeObject's args count must be zero");
     }
     name = "anonymous";
     Evaluation.init();
@@ -587,6 +587,11 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
       }
     }
     return SPLNoneObject.getInstance();
+  }
+
+  @Override
+  public SPLObject resume() throws SPLInternalException {
+    return evalFrame();
   }
 
   private int getOparg() {

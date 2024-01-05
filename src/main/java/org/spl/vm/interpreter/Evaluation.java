@@ -15,4 +15,6 @@ public interface Evaluation {
   }
 
   SPLObject evalFrame() throws SPLInternalException;
+
+  SPLObject resume() throws SPLInternalException;
 }

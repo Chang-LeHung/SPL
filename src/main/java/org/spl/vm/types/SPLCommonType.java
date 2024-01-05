@@ -75,7 +75,7 @@ public class SPLCommonType extends SPLObject {
       return super.__getAttr__(name);
     } catch (Exception ignore) {
     } finally {
-      ThreadState.clearThreadState();
+      ThreadState.clearCurrentCoroutineState();
     }
     if (base != null)
       return base.__getAttr__(name);
@@ -100,7 +100,7 @@ public class SPLCommonType extends SPLObject {
       }
     } catch (NoSuchMethodException ignore) {
     } finally {
-      ThreadState.clearThreadState();
+      ThreadState.clearCurrentCoroutineState();
     }
     // check super class only single inheritance allowed in SPL
     if (base != null) { // SPLObjectType's type is null

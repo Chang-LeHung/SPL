@@ -12,6 +12,7 @@ import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.internal.SPLCodeObjectBuilder;
 import org.spl.vm.internal.objs.SPLCodeObject;
 import org.spl.vm.interpreter.DefaultEval;
+import org.spl.vm.interpreter.SPL;
 import org.spl.vm.objects.SPLObject;
 import org.spl.vm.objects.SPLStringObject;
 
@@ -46,18 +47,7 @@ public class CodeObjectTest {
   @Test
   public void testEval() throws SPLSyntaxError, IOException, SPLInternalException {
     String resource = getResource("arithmetic/print.spl");
-    ArithmeticParser arithmeticParser = new ArithmeticParser(resource);
-    IRNode<Instruction> ir = arithmeticParser.buildAST();
-    DefaultASTContext<Instruction> context = arithmeticParser.getContext();
-    context.generateByteCodes(ir);
-    InsVisitor insVisitor = new InsVisitor(context.getVarnames(), context.getConstantMap());
-    context.getInstructions().forEach(x -> x.accept(insVisitor));
-    System.out.println(insVisitor);
-    System.out.println(context.getVarnames());
-    SPLCodeObject build = SPLCodeObjectBuilder.build(context);
-    System.out.println(build);
-    DefaultEval defaultEval = new DefaultEval(build);
-    defaultEval.evalFrame();
+    new SPL(resource).run();
   }
 
   @Test
@@ -79,19 +69,6 @@ public class CodeObjectTest {
   @Test
   public void testComplete() throws SPLSyntaxError, IOException, SPLInternalException {
     String resource = getResource("arithmetic/complete.spl");
-    ArithmeticParser arithmeticParser = new ArithmeticParser(resource);
-    System.out.println(arithmeticParser.getTokenFlow());
-    IRNode<Instruction> ir = arithmeticParser.buildAST();
-    DefaultASTContext<Instruction> context = arithmeticParser.getContext();
-    context.generateByteCodes(ir);
-    InsVisitor insVisitor = new InsVisitor(context.getVarnames(), context.getConstantMap());
-    context.getInstructions().forEach(x -> x.accept(insVisitor));
-    System.out.println(insVisitor);
-    System.out.println(context.getVarnames());
-    SPLCodeObject build = SPLCodeObjectBuilder.build(context);
-    System.out.println(build);
-    DefaultEval defaultEval = new DefaultEval(build);
-    System.out.println(context.getVarnames());
-    defaultEval.evalFrame();
+    new SPL(resource).run();
   }
 }

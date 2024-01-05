@@ -2,11 +2,14 @@ package org.spl.vm.interpreter;
 
 import org.spl.compiler.SPLCompiler;
 import org.spl.compiler.exceptions.SPLSyntaxError;
+import org.spl.vm.config.SPLConfigBuilder;
+import org.spl.vm.config.SPLConfiguration;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.internal.objs.SPLCodeObject;
 import org.spl.vm.internal.objs.SPLFrameObject;
 import org.spl.vm.internal.utils.Dissembler;
 import org.spl.vm.objects.SPLObject;
+import org.spl.vm.splroutine.SPLRoutineObject;
 
 import java.io.IOException;
 import java.net.URL;
@@ -59,18 +62,18 @@ public class SPL {
   }
 
   public SPLObject run() {
-    try {
-      return this.frame.evalFrame();
-    } catch (SPLInternalException ignore) {
-      printStackTrace();
-    }
+    SPLConfiguration build = SPLConfigBuilder.build();
+    SPLInternalWorld world = new SPLInternalWorld(build);
+    SPLInternalWorld.splWorld = world;
+    world.boot(frame);
     return null;
   }
 
-  private void printStackTrace() {
+  public static void printStackTrace() {
     // make content below printed in red
     System.err.print("\033[31m");
-    System.err.println("Traceback (most recent call last):");
+    SPLRoutineObject routine = ThreadState.get().getCurrentRoutine();
+    System.err.println(String.format("Traceback (most recent call last, %s):", routine.getName()));
     ThreadState ts = ThreadState.get();
     SPLTraceBackObject trace = ts.getTrace();
     assert trace != null;

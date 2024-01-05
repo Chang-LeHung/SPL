@@ -11,7 +11,6 @@ import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.IRNode;
 import org.spl.compiler.ir.block.Program;
-import org.spl.compiler.ir.block.ProgramBlock;
 import org.spl.compiler.ir.context.DefaultASTContext;
 import org.spl.compiler.ir.exp.LoadAttr;
 import org.spl.compiler.ir.exp.Pop;
@@ -90,7 +89,7 @@ public class InteractiveShell {
     SPLCodeObject code = compile(line);
     SPL spl = new SPL(filename, locals, locals, code);
     SPLObject o = spl.run();
-    ThreadState.clearThreadState();
+    ThreadState.clearCurrentCoroutineState();
     return o;
   }
 

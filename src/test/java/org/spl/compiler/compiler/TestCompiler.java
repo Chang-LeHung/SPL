@@ -1,19 +1,15 @@
 package org.spl.compiler.compiler;
 
 import org.junit.jupiter.api.Test;
-import org.spl.compiler.SPLCompiler;
 import org.spl.compiler.bytecode.Instruction;
 import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.IRNode;
-import org.spl.compiler.ir.context.ASTContext;
 import org.spl.compiler.ir.context.DefaultASTContext;
 import org.spl.compiler.lexer.Lexer;
 import org.spl.compiler.parser.SPLParser;
-import org.spl.compiler.tree.InsVisitor;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.internal.SPLCodeObjectBuilder;
 import org.spl.vm.internal.objs.SPLCodeObject;
-import org.spl.vm.internal.objs.SPLFuncObject;
 import org.spl.vm.internal.utils.Dissembler;
 import org.spl.vm.interpreter.DefaultEval;
 import org.spl.vm.interpreter.Evaluation;
@@ -35,54 +31,24 @@ public class TestCompiler {
 
   @Test
   public void testCall() throws SPLSyntaxError, IOException, SPLInternalException {
-    SPLCompiler compiler = new SPLCompiler(getResource("arithmetic/call.spl"));
-    SPLCodeObject code = compiler.compile();
-    DefaultEval defaultEval = new DefaultEval(code);
-    ASTContext<Instruction> context = compiler.getContext();
-    InsVisitor insVisitor = new InsVisitor(context.getVarnames(), context.getConstantMap());
-    context.getInstructions().forEach(insVisitor::visit);
-    System.out.println(insVisitor);
-    defaultEval.evalFrame();
+    run("arithmetic/call.spl");
   }
 
   @Test
   public void testIf() throws SPLSyntaxError, IOException, SPLInternalException {
-    SPLCompiler compiler = new SPLCompiler(getResource("controlflow/if.spl"));
-    SPLCodeObject code = compiler.compile();
-    ASTContext<Instruction> context = compiler.getContext();
-    InsVisitor insVisitor = new InsVisitor(context.getVarnames(), context.getConstantMap());
-    context.getInstructions().forEach(insVisitor::visit);
-    System.out.println(insVisitor);
-    System.out.println(context.getTopStackSize());
-    System.out.println(code);
-    Evaluation.init();
-    DefaultEval defaultEval = new DefaultEval(code);
-    defaultEval.evalFrame();
+    run("controlflow/if.spl");
   }
 
   @Test
   public void testCondition() throws SPLSyntaxError, IOException, SPLInternalException {
-    SPLCompiler compiler = new SPLCompiler(getResource("controlflow/condition.spl"));
-    SPLCodeObject code = compiler.compile();
-    ASTContext<Instruction> context = compiler.getContext();
-    InsVisitor insVisitor = new InsVisitor(context.getVarnames(), context.getConstantMap());
-    context.getInstructions().forEach(insVisitor::visit);
-    System.out.println(insVisitor);
-    System.out.println(context.getTopStackSize());
-    System.out.println(code);
-    DefaultEval defaultEval = new DefaultEval(code);
-    defaultEval.evalFrame();
+    run("controlflow/condition.spl");
   }
 
   public DefaultEval run(String filename) throws SPLSyntaxError, IOException, SPLInternalException {
-    SPLCompiler compiler = new SPLCompiler(getResource(filename));
-    Evaluation.init();
-    SPLCodeObject code = compiler.compile();
-    Dissembler dissembler = new Dissembler(code);
-    dissembler.prettyPrint();
-    DefaultEval defaultEval = new DefaultEval(code);
-    defaultEval.evalFrame();
-    return defaultEval;
+    filename = getResource(filename);
+    SPL spl = new SPL(filename);
+    spl.run();
+    return null;
   }
 
   @Test
@@ -117,28 +83,17 @@ public class TestCompiler {
 
   @Test
   public void testFunctionDef() throws SPLInternalException, SPLSyntaxError, IOException {
-    DefaultEval eval = run("function/basic.spl");
-    System.out.println(Arrays.toString(eval.getConstants()));
-    Dissembler dissembler = new Dissembler(((SPLFuncObject) eval.getConstants()[1]));
-    dissembler.prettyPrint();
+    run("function/basic.spl");
   }
 
   @Test
   public void testFunctionDefaultArg() throws SPLInternalException, SPLSyntaxError, IOException {
-    DefaultEval eval = run("function/defaultArg.spl");
-    System.out.println(Arrays.toString(eval.getConstants()));
-    Dissembler dissembler = new Dissembler(((SPLFuncObject) eval.getConstants()[2]));
-    dissembler.prettyPrint();
+    run("function/defaultArg.spl");
   }
 
   @Test
   public void testFunctionDefaultArg02() throws SPLInternalException, SPLSyntaxError, IOException {
-    try {
-      DefaultEval eval = run("function/defaultArg02.spl");
-    }catch (SPLSyntaxError e) {
-      System.err.println(e.getMessage());
-      e.printStackTrace();
-    }
+    run("function/defaultArg02.spl");
   }
 
   @Test
@@ -151,34 +106,22 @@ public class TestCompiler {
 
   @Test
   public void testFunctionReturn() throws SPLInternalException, SPLSyntaxError, IOException {
-    DefaultEval eval = run("function/fib.spl");
-    System.out.println(Arrays.toString(eval.getConstants()));
-    Dissembler dissembler = new Dissembler(((SPLFuncObject) eval.getConstants()[0]));
-    dissembler.prettyPrint();
+    run("function/fib.spl");
   }
 
   @Test
   public void testDefault03() throws SPLInternalException, SPLSyntaxError, IOException {
-    DefaultEval eval = run("function/default03.spl");
-    System.out.println(Arrays.toString(eval.getConstants()));
-    Dissembler dissembler = new Dissembler(((SPLFuncObject) eval.getConstants()[2]));
-    dissembler.prettyPrint();
+    run("function/default03.spl");
   }
 
   @Test
   public void testAnonymous01() throws SPLInternalException, SPLSyntaxError, IOException {
-    DefaultEval eval = run("function/anonymous01.spl");
-    System.out.println(Arrays.toString(eval.getConstants()));
-    Dissembler dissembler = new Dissembler(((SPLFuncObject) eval.getConstants()[0]));
-    dissembler.prettyPrint();
+    run("function/anonymous01.spl");
   }
 
   @Test
   public void testAnonymous02() throws SPLInternalException, SPLSyntaxError, IOException {
-    DefaultEval eval = run("function/anonymous02.spl");
-    System.out.println(Arrays.toString(eval.getConstants()));
-    Dissembler dissembler = new Dissembler(((SPLFuncObject) eval.getConstants()[0]));
-    dissembler.prettyPrint();
+    run("function/anonymous02.spl");
   }
 
   @Test
@@ -195,58 +138,42 @@ public class TestCompiler {
 
   @Test
   public void testStoreAttr() throws SPLInternalException, SPLSyntaxError, IOException {
-    Evaluation.init();
-    SPLParser parser = new SPLParser(getResource("attr/demo02.spl"));
-    IRNode<Instruction> ir = parser.buildAST();
-    DefaultASTContext<Instruction> context = parser.getContext();
-    context.generateByteCodes(ir);
-    SPLCodeObject code = SPLCodeObjectBuilder.build(context);
-    Dissembler dissembler = new Dissembler(code);
-    dissembler.prettyPrint();
-    System.out.println(Arrays.toString(code.getConstants()));
-    System.out.println(Arrays.toString(code.getVarnames()));
+    run("attr/demo02.spl");
   }
 
   @Test
   public void testAssign() throws SPLInternalException, SPLSyntaxError, IOException {
-    DefaultEval eval = run("attr/demo03.spl");
-    System.out.println(Arrays.toString(eval.getConstants()));
+    run("attr/demo03.spl");
   }
 
   @Test
   public void testTrueDiv() throws SPLInternalException, SPLSyntaxError, IOException {
-    DefaultEval eval = run("arithmetic/testTrueDiv.spl");
-    System.out.println(Arrays.toString(eval.getConstants()));
+    run("arithmetic/testTrueDiv.spl");
   }
 
   @Test
   public void testList() throws SPLInternalException, SPLSyntaxError, IOException {
-    DefaultEval eval = run("datastruct/list.spl");
-    System.out.println(Arrays.toString(eval.getConstants()));
+    run("datastruct/list.spl");
   }
 
   @Test
   public void testSet() throws SPLInternalException, SPLSyntaxError, IOException {
-    DefaultEval eval = run("datastruct/set.spl");
-    System.out.println(Arrays.toString(eval.getConstants()));
+    run("datastruct/set.spl");
   }
 
   @Test
   public void testDict() throws SPLInternalException, SPLSyntaxError, IOException {
-    DefaultEval eval = run("datastruct/dict.spl");
-    System.out.println(Arrays.toString(eval.getConstants()));
+    run("datastruct/dict.spl");
   }
 
   @Test
   public void testList02() throws SPLInternalException, SPLSyntaxError, IOException {
-    DefaultEval eval = run("datastruct/list02.spl");
-    System.out.println(Arrays.toString(eval.getConstants()));
+    run("datastruct/list02.spl");
   }
 
   @Test
   public void testList03() throws SPLInternalException, SPLSyntaxError, IOException {
-    DefaultEval eval = run("datastruct/list03.spl");
-    System.out.println(Arrays.toString(eval.getConstants()));
+    run("datastruct/list03.spl");
   }
 
   @Test
