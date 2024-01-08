@@ -55,6 +55,12 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
             case NOP -> { // NOP
               pc++;
             }
+            case IMPORT -> {
+              int arg = getOparg();
+              SPLStringObject mn = varnames[arg];
+              SPLModuleObject m = SPLInternalWorld.splWorld.loadModule(mn.getVal());
+              locals.put(mn, m);
+            }
             case ADD -> { // ADD
               pc++;
               SPLObject rhs = evalStack[--top];

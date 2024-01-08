@@ -1,9 +1,15 @@
 package org.spl.vm.interpreter;
 
 import org.spl.vm.config.SPLConfiguration;
+import org.spl.vm.exceptions.jexceptions.SPLInternalException;
+import org.spl.vm.impsys.SPLLoader;
+import org.spl.vm.objects.SPLModuleObject;
 import org.spl.vm.splroutine.SPLRoutineObject;
 
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -14,8 +20,12 @@ public class SPLInternalWorld {
   private SPLRoutineObject mainRoutine;
   private final BlockingQueue<SPLRoutineObject> ready;
   private final BlockingQueue<SPLRoutineObject> waiting;
+  private final ConcurrentHashMap<SPLRoutineObject, Long> timeWaiting;
   private final SPLConfiguration config;
   private final ReentrantLock lock;
+  private final SPLLoader loader;
+  private final Map<String, SPLModuleObject> modules;
+  private volatile boolean inChecking;
 
 
   public SPLInternalWorld(SPLConfiguration config) {
@@ -23,6 +33,10 @@ public class SPLInternalWorld {
     ready = new LinkedBlockingQueue<>();
     waiting = new LinkedBlockingQueue<>();
     lock = new ReentrantLock();
+    timeWaiting = new ConcurrentHashMap<>();
+    inChecking = false;
+    loader = new SPLLoader();
+    modules = new ConcurrentHashMap<>();
   }
 
   public int getMaxCallStackSize() {
@@ -61,29 +75,53 @@ public class SPLInternalWorld {
       case WAITING -> {
         waiting.add(routine);
       }
+      case TIME_WAITING -> {
+        timeWaiting.put(routine, System.currentTimeMillis());
+      }
       case READY -> {
         ready.add(routine);
       }
     }
   }
 
+  private void checkTimeWaitingRoutines() {
+    if (inChecking) return;
+    inChecking = true;
+    Set<Map.Entry<SPLRoutineObject, Long>> entries = timeWaiting.entrySet();
+    for (Map.Entry<SPLRoutineObject, Long> entry : entries) {
+      if (entry.getValue() <=  System.currentTimeMillis()) {
+        if (entries.remove(entry)) {
+          SPLRoutineObject routine = entry.getKey();
+          routine.setState(SPLRoutineObject.SPLRoutineState.READY);
+          ready.add(routine);
+        }
+      }
+    }
+    inChecking = false;
+  }
+
   private void controlCenter() {
     while (SPLRoutineObject.nonDaemonRoutineCount.get() != 0) {
+      checkTimeWaitingRoutines();
       SPLRoutineObject routine = ready.poll();
       if (routine == null) {
-        lock.lock();
-        try {
-          while (!waiting.isEmpty()) {
-            SPLRoutineObject o = waiting.poll();
-            o.setState(SPLRoutineObject.SPLRoutineState.READY);
-            ready.add(o);
-          }
-        } finally {
-          lock.unlock();
-        }
+        moveWaitingRoutineToReady();
         continue;
       }
       swapRoutine(routine);
+    }
+  }
+
+  private void moveWaitingRoutineToReady() {
+    lock.lock();
+    try {
+      while (!waiting.isEmpty()) {
+        SPLRoutineObject o = waiting.poll();
+        o.setState(SPLRoutineObject.SPLRoutineState.READY);
+        ready.add(o);
+      }
+    } finally {
+      lock.unlock();
     }
   }
 
@@ -102,12 +140,18 @@ public class SPLInternalWorld {
     }
   }
 
-
   public void addNewRoutine(SPLRoutineObject routine) {
     assert routine.getState() == SPLRoutineObject.SPLRoutineState.READY;
     ready.add(routine);
   }
 
+  public SPLModuleObject loadModule(String moduleName) throws SPLInternalException {
+    if (modules.containsKey(moduleName))
+      return modules.get(moduleName);
+    SPLModuleObject m = loader.load(moduleName);
+    modules.put(moduleName, m);
+    return m;
+  }
 
   private class SPLWorldWorker implements Runnable {
 

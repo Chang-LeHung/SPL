@@ -14,6 +14,7 @@ import org.spl.vm.types.SPLCommonType;
 import org.spl.vm.types.SPLObjectType;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -249,11 +250,23 @@ public class SPLObject implements SPLInterface {
         return callable;
       }
     } catch (Exception ignore) {
+      ThreadState.clearCurrentCoroutineState();
     }
     // fall back to self
     if (attrs.containsKey(name)) {
       return attrs.get(name);
     }
+
+    try {
+      Method method = this.getClass().getMethod(name.toString(), SPLObject[].class);
+      if (method.isAnnotationPresent(SPLExportMethod.class) && method.getReturnType().isAssignableFrom(SPLObject.class)) {
+        SPLCallObject callable = new SPLCallObject(method, this, false);
+        attrs.put(name, callable);
+        return callable;
+      }
+    } catch (NoSuchMethodException ignore) {
+    }
+
     return SPLErrorUtils.splErrorFormat(new SPLAttributeError("can not find an attribute or method '" + name + "'"));
   }
 

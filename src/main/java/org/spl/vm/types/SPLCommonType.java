@@ -99,8 +99,6 @@ public class SPLCommonType extends SPLObject {
         return new SPLCallObject(method, null, true);
       }
     } catch (NoSuchMethodException ignore) {
-    } finally {
-      ThreadState.clearCurrentCoroutineState();
     }
     // check super class only single inheritance allowed in SPL
     if (base != null) { // SPLObjectType's type is null

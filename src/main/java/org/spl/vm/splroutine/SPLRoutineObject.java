@@ -25,6 +25,8 @@ public class SPLRoutineObject extends SPLObject implements SPLRoutineInterface {
     READY,
     ERROR_OCCURRED,
     WAITING,
+    TIME_WAITING,
+    LOCK_WAITING,
     TERMINATED
   }
 

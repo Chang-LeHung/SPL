@@ -78,7 +78,8 @@ public enum OpCode {
   LOAD_CLOSURE,
   STORE_CLOSURE,
   BUILD_CLASS,
-  YIELD;
+  YIELD,
+  IMPORT;
   public final byte val;
 
   OpCode() {

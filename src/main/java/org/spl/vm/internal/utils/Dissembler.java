@@ -124,6 +124,9 @@ public class Dissembler extends SPLObject {
           ins = new Instruction(OpCode.U_RSHIFT, 0);
           pc++;
         }
+        case IMPORT -> {
+          ins = new Instruction(OpCode.IMPORT, getOparg());
+        }
         case YIELD -> {
           ins = new Instruction(OpCode.YIELD, 0);
           pc++;

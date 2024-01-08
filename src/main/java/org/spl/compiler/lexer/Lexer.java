@@ -845,6 +845,9 @@ public class Lexer {
       return token == TOKEN_TYPE.CLASS;
     }
 
+    public boolean isImport() {
+      return token == TOKEN_TYPE.IMPORT;
+    }
     public boolean isType() {
       return token == TOKEN_TYPE.TYPE;
     }

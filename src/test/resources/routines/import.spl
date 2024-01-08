@@ -1,0 +1,6 @@
+
+
+import vm
+
+print(vm)
+print(vm.spawn())

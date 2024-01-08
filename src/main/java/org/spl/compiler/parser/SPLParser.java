@@ -14,6 +14,7 @@ import org.spl.compiler.ir.context.DefaultASTContext;
 import org.spl.compiler.ir.exp.*;
 import org.spl.compiler.ir.stmt.ClassDefinition;
 import org.spl.compiler.ir.stmt.Decorator;
+import org.spl.compiler.ir.stmt.ImportStmt;
 import org.spl.compiler.ir.stmt.YieldStmt;
 import org.spl.compiler.ir.stmt.assignstmt.*;
 import org.spl.compiler.ir.stmt.controlflow.*;
@@ -50,6 +51,8 @@ import java.util.Map;
  *              | decoratorStmt
  *              | classDef
  *              | yield
+ *              | importStmt
+ * importStmt   : 'import' IDENTIFIER
  * yield        : 'yield'
  * classDef     : 'class' IDENTIFIER ('(' IDENTIFIER ')') ?'{' classBody '}
  * decorator    : '@' expression funcDef
@@ -214,6 +217,8 @@ public class SPLParser extends AbstractSyntaxParser {
         return atStatement();
       } else if (tokenFlow.peek().isClass()) {
         return classDefStmt();
+      } else if (tokenFlow.peek().isImport()) {
+        return importStmt();
       } else if (token.isYield()) {
         return yieldStatement();
       } else if (token.isBreak()) {
@@ -251,6 +256,20 @@ public class SPLParser extends AbstractSyntaxParser {
     }
     throwSyntaxError("Illegal statement, expected assignment or expression", tokenFlow.peek());
     return null;
+  }
+
+  private IRNode<Instruction> importStmt() throws SPLSyntaxError {
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.IMPORT, "Expected 'import' instead of " + tokenFlow.peek().getValueAsString());
+    Lexer.Token token = tokenFlow.peek();
+    tokenFlow.next();
+    tokenAssertion(tokenFlow.peek(), Lexer.TOKEN_TYPE.IDENTIFIER, "Expected package name instead of " + tokenFlow.peek().getValueAsString());
+    String packageName = tokenFlow.peek().getValueAsString();
+    tokenFlow.next();
+    context.addVarName(packageName);
+    context.addSymbol(packageName);
+    ImportStmt importStmt = new ImportStmt(context.getVarNameIndex(packageName), packageName);
+    setSourceCodeInfo(importStmt, token);
+    return importStmt;
   }
 
   private IRNode<Instruction> yieldStatement() throws SPLSyntaxError {

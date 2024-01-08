@@ -14,4 +14,10 @@ public class CoRoutine {
     SPL spl = new SPL("routines/coroutine01.spl");
     spl.run();
   }
+
+  @Test
+  public void testImport() throws SPLSyntaxError, IOException {
+    SPL spl = new SPL("routines/import.spl");
+    spl.run();
+  }
 }
