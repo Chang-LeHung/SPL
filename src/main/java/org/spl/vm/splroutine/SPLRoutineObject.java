@@ -5,6 +5,7 @@ import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
 import org.spl.vm.exceptions.splexceptions.SPLException;
 import org.spl.vm.exceptions.splexceptions.SPLStackOverflowError;
+import org.spl.vm.interfaces.SPLContinuable;
 import org.spl.vm.internal.objs.SPLFrameObject;
 import org.spl.vm.interpreter.Evaluation;
 import org.spl.vm.interpreter.SPL;
@@ -32,9 +33,11 @@ public class SPLRoutineObject extends SPLObject implements SPLRoutineInterface {
 
   public static AtomicInteger nonDaemonRoutineCount = new AtomicInteger(0);
 
+  public static AtomicInteger routineCount = new AtomicInteger(1);
+
   @SPLExportField
   private final SPLStringObject name;
-  private final Evaluation eval;
+  private final SPLContinuable eval;
   private volatile int priority;
   private volatile SPLRoutineState state;
   private volatile int callStackSize;
@@ -44,7 +47,7 @@ public class SPLRoutineObject extends SPLObject implements SPLRoutineInterface {
   private volatile SPLFrameObject currentFrame;
   private final boolean isDaemon;
 
-  public SPLRoutineObject(Evaluation eval, String name, boolean isDaemon) {
+  public SPLRoutineObject(SPLContinuable eval, String name, boolean isDaemon) {
     super(SPLRoutineType.getInstance());
     this.eval = eval;
     priority = 0;
@@ -56,11 +59,11 @@ public class SPLRoutineObject extends SPLObject implements SPLRoutineInterface {
     this.isDaemon = isDaemon;
   }
 
-  public SPLRoutineObject(Evaluation eval, String name) {
+  public SPLRoutineObject(SPLContinuable eval, String name) {
     this(eval, name, false);
   }
 
-  public SPLRoutineObject(Evaluation eval, int priority, String name, boolean isDaemon) {
+  public SPLRoutineObject(SPLContinuable eval, int priority, String name, boolean isDaemon) {
     super(SPLRoutineType.getInstance());
     this.eval = eval;
     this.priority = priority;
@@ -96,6 +99,14 @@ public class SPLRoutineObject extends SPLObject implements SPLRoutineInterface {
     return SPLRoutineState.ERROR_OCCURRED;
   }
 
+  public static void increaseRoutineCount() {
+    routineCount.incrementAndGet();
+  }
+
+  public static int getRoutineCount() {
+    return routineCount.get();
+  }
+
   @Override
   public void destroy() {
     if (!isDaemon)
@@ -118,7 +129,7 @@ public class SPLRoutineObject extends SPLObject implements SPLRoutineInterface {
       priority = 19;
   }
 
-  public Evaluation getEval() {
+  public SPLContinuable getEval() {
     return eval;
   }
 

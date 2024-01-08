@@ -6,10 +6,12 @@ import org.spl.vm.impsys.SPLLoader;
 import org.spl.vm.objects.SPLModuleObject;
 import org.spl.vm.splroutine.SPLRoutineObject;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -26,6 +28,7 @@ public class SPLInternalWorld {
   private final SPLLoader loader;
   private final Map<String, SPLModuleObject> modules;
   private volatile boolean inChecking;
+  private final Set<SPLWorldWorker> workers;
 
 
   public SPLInternalWorld(SPLConfiguration config) {
@@ -37,6 +40,7 @@ public class SPLInternalWorld {
     inChecking = false;
     loader = new SPLLoader();
     modules = new ConcurrentHashMap<>();
+    workers = new CopyOnWriteArraySet<>();
   }
 
   public int getMaxCallStackSize() {
@@ -75,9 +79,6 @@ public class SPLInternalWorld {
       case WAITING -> {
         waiting.add(routine);
       }
-      case TIME_WAITING -> {
-        timeWaiting.put(routine, System.currentTimeMillis());
-      }
       case READY -> {
         ready.add(routine);
       }
@@ -100,10 +101,26 @@ public class SPLInternalWorld {
     inChecking = false;
   }
 
+
+  private void adaptiveAddThread() {
+    boolean s = lock.tryLock();
+    if (!s) return;
+    try {
+      if (ready.size() > 1 && workers.size() < config.getMaxCoreThreads()) {
+        SPLWorldWorker worker = new SPLWorldWorker();
+        worker.start();
+        workers.add(worker);
+      }
+    } finally {
+      lock.unlock();
+    }
+  }
+
   private void controlCenter() {
     while (SPLRoutineObject.nonDaemonRoutineCount.get() != 0) {
       checkTimeWaitingRoutines();
       SPLRoutineObject routine = ready.poll();
+      adaptiveAddThread();
       if (routine == null) {
         moveWaitingRoutineToReady();
         continue;
@@ -140,7 +157,7 @@ public class SPLInternalWorld {
     }
   }
 
-  public void addNewRoutine(SPLRoutineObject routine) {
+  public void addReadyRoutine(SPLRoutineObject routine) {
     assert routine.getState() == SPLRoutineObject.SPLRoutineState.READY;
     ready.add(routine);
   }
@@ -153,11 +170,15 @@ public class SPLInternalWorld {
     return m;
   }
 
-  private class SPLWorldWorker implements Runnable {
+  public void addTimeWaitingRoutine(SPLRoutineObject routine,  long time) {
+    timeWaiting.put(routine, time);
+  }
+
+  private class SPLWorldWorker extends Thread {
 
     @Override
     public void run() {
-
+      controlCenter();
     }
   }
 

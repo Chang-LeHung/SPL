@@ -58,10 +58,6 @@ public class ThreadState {
   }
 
 
-  public Evaluation getEval() {
-    return coroutine.getEval();
-  }
-
   public int getCallStackSize() {
     return coroutine.getCallStackSize();
   }

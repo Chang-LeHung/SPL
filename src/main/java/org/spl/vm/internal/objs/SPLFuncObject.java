@@ -37,6 +37,15 @@ public class SPLFuncObject extends SPLObject implements SPLContinuable {
     this.codeObject.setName(new SPLStringObject(name));
   }
 
+  public SPLFuncObject(SPLFuncObject f) {
+    super(SPLFuncType.getInstance());
+    this.parameters = f.parameters;
+    this.name = f.name;
+    this.codeObject = f.codeObject;
+    this.globals = f.globals;
+    this.defaults = f.defaults;
+  }
+
   public SPLFuncObject(List<String> parameters, SPLCodeObject codeObject) {
     super(SPLFuncType.getInstance());
     this.parameters = parameters;
@@ -80,14 +89,14 @@ public class SPLFuncObject extends SPLObject implements SPLContinuable {
     this.globals = globals;
   }
 
-  @Override
-  public SPLObject __call__(SPLObject... args) throws SPLInternalException {
+
+  public void buildEval(SPLObject... args) throws SPLInternalException {
     if (args.length + defaults.size() < parameters.size()) {
-     return SPLErrorUtils.splErrorFormat(new SPLRuntimeException(
+      SPLErrorUtils.splErrorFormat(new SPLRuntimeException(
           String.format("Invalid number of arguments, request %d parameters but only found %d arguments",
               parameters.size() - defaults.size(), args.length)));
     } else if (args.length > parameters.size()) {
-      return SPLErrorUtils.splErrorFormat(new SPLRuntimeException(
+      SPLErrorUtils.splErrorFormat(new SPLRuntimeException(
           String.format("Invalid number of arguments, request %d parameters but found %d arguments",
               parameters.size(), args.length)));
     }
@@ -100,12 +109,16 @@ public class SPLFuncObject extends SPLObject implements SPLContinuable {
       locals.put(new SPLStringObject(parameters.get(i)), args[i]);
     }
     assert globals != null;
-    DefaultEval frame = new DefaultEval(name, locals, globals, codeObject);
-    evaluation = frame;
+    evaluation = new DefaultEval(name, locals, globals, codeObject);
+  }
+
+  @Override
+  public SPLObject __call__(SPLObject... args) throws SPLInternalException {
+    buildEval(args);
     ThreadState ts = ThreadState.get();
     SPLFrameObject currentFrame = ts.getCurrentFrame();
-    ts.setCurrentFrame(frame);
-    SPLObject res = frame.evalFrame();
+    ts.setCurrentFrame(evaluation);
+    SPLObject res = evaluation.evalFrame();
     ts.setCurrentFrame(currentFrame);
     return res;
   }
@@ -124,5 +137,7 @@ public class SPLFuncObject extends SPLObject implements SPLContinuable {
     ts.setCurrentFrame(evaluation);
     SPLObject res = evaluation.resume();
     ts.setCurrentFrame(currentFrame);
-    return res;  }
+    return res;
+  }
+
 }

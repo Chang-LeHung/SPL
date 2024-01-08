@@ -1,6 +1,15 @@
 
 
 import vm
+import time
 
-print(vm)
-print(vm.spawn())
+time.sleep(100)
+
+def hello() {
+    print("Hello, World!")
+    time.sleep(1000)
+}
+
+for i in range(10) {
+    print(i, vm.spawn(hello))
+}

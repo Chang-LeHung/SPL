@@ -2,11 +2,12 @@ package org.spl.vm.interpreter;
 
 import org.spl.compiler.bytecode.OpCode;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
+import org.spl.vm.interfaces.SPLContinuable;
 import org.spl.vm.objects.SPLObject;
 
 import java.util.Arrays;
 
-public interface Evaluation {
+public interface Evaluation extends SPLContinuable {
 
   OpCode[] opcode = new OpCode[256];
 
@@ -16,5 +17,4 @@ public interface Evaluation {
 
   SPLObject evalFrame() throws SPLInternalException;
 
-  SPLObject resume() throws SPLInternalException;
 }

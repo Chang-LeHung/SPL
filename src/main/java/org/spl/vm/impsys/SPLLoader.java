@@ -1,6 +1,8 @@
 package org.spl.vm.impsys;
 
+import org.spl.vm.exceptions.SPLErrorUtils;
 import org.spl.vm.exceptions.jexceptions.SPLInternalException;
+import org.spl.vm.exceptions.splexceptions.SPLImportError;
 import org.spl.vm.interfaces.SPLModuleInterface;
 import org.spl.vm.objects.SPLModuleObject;
 
@@ -44,6 +46,7 @@ public class SPLLoader {
   public SPLModuleObject load(String moduleName) throws SPLInternalException {
     SPLModuleObject res = searchSTLib(moduleName);
     if (res != null) return res;
+    SPLErrorUtils.splErrorFormat(new SPLImportError("Cannot find module \"" + moduleName + "\""));
     return null;
   }
 

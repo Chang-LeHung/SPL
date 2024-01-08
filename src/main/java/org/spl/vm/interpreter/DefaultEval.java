@@ -430,13 +430,13 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
                 ThreadState.increaseThreadCallStackSize();
                 SPLObject o = continuation.resume();
                 ThreadState.decreaseThreadCallStackSize();
-                if (!(o instanceof SPLRoutineMarker)) {
+                if (o instanceof SPLRoutineMarker marker && marker.isNeedReCall()) {
+                  pc = tpc;
+                  return o;
+                } else {
                   needsResume = false;
                   continuation = null;
                   evalStack[top++] = o;
-                } else {
-                  pc = tpc;
-                  return o;
                 }
                 continue;
               }
@@ -450,13 +450,18 @@ public class DefaultEval extends SPLFrameObject implements Evaluation {
               SPLObject o = callable.__call__(args);
               ThreadState.decreaseThreadCallStackSize();
               if (o instanceof SPLRoutineMarker marker) {
-                pc = tpc;
-                if (callable instanceof SPLContinuable continuable) {
-                  needsResume = true;
-                  continuation = continuable;
+                if (marker.isNeedReCall()) {
+                  pc = tpc;
+                  if (callable instanceof SPLContinuable continuable) {
+                    needsResume = true;
+                    continuation = continuable;
+                  } else {
+                    top = ttop;
+                  }
                 } else {
-                  top = ttop;
+                  top++;
                 }
+                marker.setNeedReCall(true);
                 return marker;
               } else {
                 evalStack[top++] = o;

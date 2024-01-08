@@ -4,6 +4,9 @@ import org.spl.vm.objects.SPLObject;
 
 public class SPLRoutineMarker extends SPLObject {
 
+
+  private boolean needReCall;
+
   private final SPLRoutineMarkerState state;
 
   public enum SPLRoutineMarkerState {
@@ -11,19 +14,22 @@ public class SPLRoutineMarker extends SPLObject {
     RUNNING,
     READY,
     WAITING,
+    TIME_WAITING,
     TERMINATED
   }
 
-  private SPLRoutineMarker(SPLRoutineMarkerState state) {
+  private SPLRoutineMarker(SPLRoutineMarkerState state, boolean needReCall) {
     super(SPLRoutineMarkerType.getInstance());
     this.state = state;
+    this.needReCall = needReCall;
   }
 
-  public static SPLRoutineMarker PSEUDO_BLOCKED = new SPLRoutineMarker(SPLRoutineMarkerState.BLOCKED);
-  public static SPLRoutineMarker RUNNING = new SPLRoutineMarker(SPLRoutineMarkerState.RUNNING);
-  public static SPLRoutineMarker WAITING = new SPLRoutineMarker(SPLRoutineMarkerState.WAITING);
-  public static SPLRoutineMarker READY = new SPLRoutineMarker(SPLRoutineMarkerState.READY);
-  public static SPLRoutineMarker TERMINATED = new SPLRoutineMarker(SPLRoutineMarkerState.TERMINATED);
+  public static SPLRoutineMarker PSEUDO_BLOCKED = new SPLRoutineMarker(SPLRoutineMarkerState.BLOCKED, true);
+  public static SPLRoutineMarker RUNNING = new SPLRoutineMarker(SPLRoutineMarkerState.RUNNING, true);
+  public static SPLRoutineMarker WAITING = new SPLRoutineMarker(SPLRoutineMarkerState.WAITING, true);
+  public static SPLRoutineMarker TIME_WAITING = new SPLRoutineMarker(SPLRoutineMarkerState.TIME_WAITING, false);
+  public static SPLRoutineMarker READY = new SPLRoutineMarker(SPLRoutineMarkerState.READY, true);
+  public static SPLRoutineMarker TERMINATED = new SPLRoutineMarker(SPLRoutineMarkerState.TERMINATED, false);
 
   public SPLRoutineObject.SPLRoutineState getState() {
     switch (state) {
@@ -36,6 +42,9 @@ public class SPLRoutineMarker extends SPLObject {
       case TERMINATED -> {
         return SPLRoutineObject.SPLRoutineState.TERMINATED;
       }
+      case TIME_WAITING -> {
+        return SPLRoutineObject.SPLRoutineState.TIME_WAITING;
+      }
       case READY -> {
         return SPLRoutineObject.SPLRoutineState.READY;
       }
@@ -43,5 +52,13 @@ public class SPLRoutineMarker extends SPLObject {
         return SPLRoutineObject.SPLRoutineState.RUNNING;
       }
     }
+  }
+
+  public boolean isNeedReCall() {
+    return needReCall;
+  }
+
+  public void setNeedReCall(boolean needReCall) {
+    this.needReCall = needReCall;
   }
 }
