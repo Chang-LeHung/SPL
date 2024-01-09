@@ -4,7 +4,6 @@ import org.spl.compiler.SPLCompiler;
 import org.spl.compiler.exceptions.SPLSyntaxError;
 import org.spl.compiler.ir.ASTVisualizer;
 import org.spl.vm.internal.shell.InteractiveShell;
-import org.spl.vm.objects.SPLObject;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -66,8 +65,8 @@ public class SPLMain {
     if (args.length == 1) {
       try {
         SPL spl = new SPL(args[0]);
-        SPLObject run = spl.run();
-        if (run == null) {
+        spl.run();
+        if (SPLInternalWorld.splWorld.hasError) {
           Runtime.getRuntime().exit(-1);
         }
       } catch (SPLSyntaxError | IOException e) {

@@ -94,6 +94,7 @@ public class SPLRoutineObject extends SPLObject implements SPLRoutineInterface {
       }
       return state = SPLRoutineState.TERMINATED;
     } catch (SPLInternalException ignore) {
+      SPLInternalWorld.splWorld.hasError = true;
       SPL.printStackTrace();
     }
     return SPLRoutineState.ERROR_OCCURRED;

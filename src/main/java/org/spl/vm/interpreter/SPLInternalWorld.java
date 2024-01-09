@@ -29,6 +29,7 @@ public class SPLInternalWorld {
   private final Map<String, SPLModuleObject> modules;
   private volatile boolean inChecking;
   private final Set<SPLWorldWorker> workers;
+  public boolean hasError;
 
 
   public SPLInternalWorld(SPLConfiguration config) {
