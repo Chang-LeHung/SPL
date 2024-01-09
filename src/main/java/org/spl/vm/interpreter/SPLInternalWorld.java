@@ -161,6 +161,7 @@ public class SPLInternalWorld {
   public void addReadyRoutine(SPLRoutineObject routine) {
     assert routine.getState() == SPLRoutineObject.SPLRoutineState.READY;
     ready.add(routine);
+    adaptiveAddThread();
   }
 
   public SPLModuleObject loadModule(String moduleName) throws SPLInternalException {
