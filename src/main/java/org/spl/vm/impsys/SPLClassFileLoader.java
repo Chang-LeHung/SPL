@@ -16,7 +16,7 @@ public class SPLClassFileLoader extends ClassLoader {
     URL resource = Thread.currentThread().getContextClassLoader().getResource(name);
     if (resource == null)
       return null;
-    try (FileInputStream stream = new FileInputStream(resource.getPath())) {
+    try (FileInputStream stream = new FileInputStream(name)) {
       byte[] code = stream.readAllBytes();
       if (name.charAt(0) == '/')
         name = name.substring(1);

@@ -33,7 +33,7 @@ public class SPLLoader {
   private SPLModuleObject searchSTLib(String name) {
     Path path = Paths.get(STLIB_NAME, name, "ModuleMain");
     try {
-      Class<?> clazz = loader.loadClass(path + ".class");
+      Class<?> clazz = Class.forName(path.toString().replace('/', '.'));
       if (SPLModuleObject.class.isAssignableFrom(clazz) && SPLModuleInterface.class.isAssignableFrom(clazz)) {
         return (SPLModuleObject) clazz.getConstructor().newInstance();
       }
