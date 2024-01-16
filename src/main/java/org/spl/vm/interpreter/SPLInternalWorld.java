@@ -6,7 +6,6 @@ import org.spl.vm.impsys.SPLLoader;
 import org.spl.vm.objects.SPLModuleObject;
 import org.spl.vm.splroutine.SPLRoutineObject;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
@@ -19,7 +18,6 @@ public class SPLInternalWorld {
 
   public static SPLInternalWorld splWorld;
   public static String mainRoutineName = "main";
-  private SPLRoutineObject mainRoutine;
   private final BlockingQueue<SPLRoutineObject> ready;
   private final BlockingQueue<SPLRoutineObject> waiting;
   private final ConcurrentHashMap<SPLRoutineObject, Long> timeWaiting;
@@ -27,9 +25,10 @@ public class SPLInternalWorld {
   private final ReentrantLock lock;
   private final SPLLoader loader;
   private final Map<String, SPLModuleObject> modules;
-  private volatile boolean inChecking;
   private final Set<SPLWorldWorker> workers;
   public boolean hasError;
+  private SPLRoutineObject mainRoutine;
+  private volatile boolean inChecking;
 
 
   public SPLInternalWorld(SPLConfiguration config) {
@@ -91,7 +90,7 @@ public class SPLInternalWorld {
     inChecking = true;
     Set<Map.Entry<SPLRoutineObject, Long>> entries = timeWaiting.entrySet();
     for (Map.Entry<SPLRoutineObject, Long> entry : entries) {
-      if (entry.getValue() <=  System.currentTimeMillis()) {
+      if (entry.getValue() <= System.currentTimeMillis()) {
         if (entries.remove(entry)) {
           SPLRoutineObject routine = entry.getKey();
           routine.setState(SPLRoutineObject.SPLRoutineState.READY);
@@ -172,8 +171,12 @@ public class SPLInternalWorld {
     return m;
   }
 
-  public void addTimeWaitingRoutine(SPLRoutineObject routine,  long time) {
+  public void addTimeWaitingRoutine(SPLRoutineObject routine, long time) {
     timeWaiting.put(routine, time);
+  }
+
+  public SPLRoutineObject getMainRoutine() {
+    return mainRoutine;
   }
 
   private class SPLWorldWorker extends Thread {
@@ -182,9 +185,5 @@ public class SPLInternalWorld {
     public void run() {
       controlCenter();
     }
-  }
-
-  public SPLRoutineObject getMainRoutine() {
-    return mainRoutine;
   }
 }

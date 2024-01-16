@@ -19,25 +19,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class SPLRoutineObject extends SPLObject implements SPLRoutineInterface {
 
-  public enum SPLRoutineState {
-    INIT,
-    RUNNING,
-    BLOCKED,
-    READY,
-    ERROR_OCCURRED,
-    WAITING,
-    TIME_WAITING,
-    LOCK_WAITING,
-    TERMINATED
-  }
-
   public static AtomicInteger nonDaemonRoutineCount = new AtomicInteger(0);
-
   public static AtomicInteger routineCount = new AtomicInteger(1);
-
   @SPLExportField
   private final SPLStringObject name;
   private final SPLContinuable eval;
+  private final boolean isDaemon;
   private volatile int priority;
   private volatile SPLRoutineState state;
   private volatile int callStackSize;
@@ -45,8 +32,6 @@ public class SPLRoutineObject extends SPLObject implements SPLRoutineInterface {
   private volatile SPLException execVal;
   private volatile SPLTraceBackObject trace;
   private volatile SPLFrameObject currentFrame;
-  private final boolean isDaemon;
-
   public SPLRoutineObject(SPLContinuable eval, String name, boolean isDaemon) {
     super(SPLRoutineType.getInstance());
     this.eval = eval;
@@ -80,6 +65,14 @@ public class SPLRoutineObject extends SPLObject implements SPLRoutineInterface {
     this(eval, priority, name, false);
   }
 
+  public static void increaseRoutineCount() {
+    routineCount.incrementAndGet();
+  }
+
+  public static int getRoutineCount() {
+    return routineCount.get();
+  }
+
   @Override
   public void init() {
 
@@ -98,14 +91,6 @@ public class SPLRoutineObject extends SPLObject implements SPLRoutineInterface {
       SPL.printStackTrace();
     }
     return SPLRoutineState.ERROR_OCCURRED;
-  }
-
-  public static void increaseRoutineCount() {
-    routineCount.incrementAndGet();
-  }
-
-  public static int getRoutineCount() {
-    return routineCount.get();
   }
 
   @Override
@@ -142,16 +127,32 @@ public class SPLRoutineObject extends SPLObject implements SPLRoutineInterface {
     return execType;
   }
 
+  public void setExecType(SPLCommonType execType) {
+    this.execType = execType;
+  }
+
   public SPLException getExecVal() {
     return execVal;
+  }
+
+  public void setExecVal(SPLException execVal) {
+    this.execVal = execVal;
   }
 
   public SPLTraceBackObject getTrace() {
     return trace;
   }
 
+  public void setTrace(SPLTraceBackObject trace) {
+    this.trace = trace;
+  }
+
   public SPLFrameObject getCurrentFrame() {
     return currentFrame;
+  }
+
+  public void setCurrentFrame(SPLFrameObject currentFrame) {
+    this.currentFrame = currentFrame;
   }
 
   @Override
@@ -162,7 +163,6 @@ public class SPLRoutineObject extends SPLObject implements SPLRoutineInterface {
   public void setState(SPLRoutineState state) {
     this.state = state;
   }
-
 
   public void increaseCallStackSize() throws SPLInternalException {
     if (callStackSize < SPLInternalWorld.splWorld.getMaxCallStackSize()) {
@@ -180,22 +180,6 @@ public class SPLRoutineObject extends SPLObject implements SPLRoutineInterface {
     }
   }
 
-  public void setExecType(SPLCommonType execType) {
-    this.execType = execType;
-  }
-
-  public void setExecVal(SPLException execVal) {
-    this.execVal = execVal;
-  }
-
-  public void setTrace(SPLTraceBackObject trace) {
-    this.trace = trace;
-  }
-
-  public void setCurrentFrame(SPLFrameObject currentFrame) {
-    this.currentFrame = currentFrame;
-  }
-
   public SPLStringObject getName() {
     return name;
   }
@@ -203,5 +187,17 @@ public class SPLRoutineObject extends SPLObject implements SPLRoutineInterface {
   public boolean isMainRoutine() {
     assert SPLInternalWorld.splWorld != null;
     return SPLInternalWorld.splWorld.getMainRoutine() == this;
+  }
+
+  public enum SPLRoutineState {
+    INIT,
+    RUNNING,
+    BLOCKED,
+    READY,
+    ERROR_OCCURRED,
+    WAITING,
+    TIME_WAITING,
+    LOCK_WAITING,
+    TERMINATED
   }
 }

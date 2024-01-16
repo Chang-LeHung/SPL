@@ -61,19 +61,11 @@ public class SPL {
     return resource.getPath();
   }
 
-  public SPLObject run() {
-    SPLConfiguration build = SPLConfigBuilder.build();
-    SPLInternalWorld world = new SPLInternalWorld(build);
-    SPLInternalWorld.splWorld = world;
-    world.boot(frame);
-    return null;
-  }
-
   public static void printStackTrace() {
     // make content below printed in red
     System.err.print("\033[31m");
     SPLRoutineObject routine = ThreadState.get().getCurrentRoutine();
-    System.err.println(String.format("Traceback (most recent call last, %s):", routine.getName()));
+    System.err.printf("Traceback (most recent call last, %s):%n", routine.getName());
     ThreadState ts = ThreadState.get();
     SPLTraceBackObject trace = ts.getTrace();
     assert trace != null;
@@ -83,6 +75,14 @@ public class SPL {
     }
     System.err.println(ts.getExecVal().getType().getName() + ":" + ts.getExecVal().getMsg());
     System.err.print("\033[0m");
+  }
+
+  public SPLObject run() {
+    SPLConfiguration build = SPLConfigBuilder.build();
+    SPLInternalWorld world = new SPLInternalWorld(build);
+    SPLInternalWorld.splWorld = world;
+    world.boot(frame);
+    return null;
   }
 
   public SPLCodeObject getCode() {

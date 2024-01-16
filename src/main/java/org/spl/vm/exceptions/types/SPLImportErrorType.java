@@ -8,11 +8,11 @@ public class SPLImportErrorType extends SPLCommonType {
     super(type, name, clazz);
   }
 
-  private static class SelfHolder {
-    static final SPLImportErrorType INSTANCE = new SPLImportErrorType(null, "ImportError", null);
-  }
-
   public static SPLImportErrorType getInstance() {
     return SelfHolder.INSTANCE;
+  }
+
+  private static class SelfHolder {
+    static final SPLImportErrorType INSTANCE = new SPLImportErrorType(null, "ImportError", null);
   }
 }

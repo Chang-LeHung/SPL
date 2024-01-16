@@ -8,11 +8,11 @@ public class SPLRoutineType extends SPLCommonType {
     super(type, name, clazz);
   }
 
-  private static class SelfHolder {
-    public static final SPLRoutineType INSTANCE = new SPLRoutineType(null, "Routine", SPLRoutineObject.class);
-  }
-
   public static SPLRoutineType getInstance() {
     return SelfHolder.INSTANCE;
+  }
+
+  private static class SelfHolder {
+    public static final SPLRoutineType INSTANCE = new SPLRoutineType(null, "Routine", SPLRoutineObject.class);
   }
 }

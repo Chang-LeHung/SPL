@@ -5,31 +5,19 @@ import org.spl.vm.objects.SPLObject;
 public class SPLRoutineMarker extends SPLObject {
 
 
-  private boolean needReCall;
-
-  private final SPLRoutineMarkerState state;
-
-  public enum SPLRoutineMarkerState {
-    BLOCKED,
-    RUNNING,
-    READY,
-    WAITING,
-    TIME_WAITING,
-    TERMINATED
-  }
-
-  private SPLRoutineMarker(SPLRoutineMarkerState state, boolean needReCall) {
-    super(SPLRoutineMarkerType.getInstance());
-    this.state = state;
-    this.needReCall = needReCall;
-  }
-
   public static SPLRoutineMarker PSEUDO_BLOCKED = new SPLRoutineMarker(SPLRoutineMarkerState.BLOCKED, true);
   public static SPLRoutineMarker RUNNING = new SPLRoutineMarker(SPLRoutineMarkerState.RUNNING, true);
   public static SPLRoutineMarker WAITING = new SPLRoutineMarker(SPLRoutineMarkerState.WAITING, true);
   public static SPLRoutineMarker TIME_WAITING = new SPLRoutineMarker(SPLRoutineMarkerState.TIME_WAITING, false);
   public static SPLRoutineMarker READY = new SPLRoutineMarker(SPLRoutineMarkerState.READY, true);
   public static SPLRoutineMarker TERMINATED = new SPLRoutineMarker(SPLRoutineMarkerState.TERMINATED, false);
+  private final SPLRoutineMarkerState state;
+  private boolean needReCall;
+  private SPLRoutineMarker(SPLRoutineMarkerState state, boolean needReCall) {
+    super(SPLRoutineMarkerType.getInstance());
+    this.state = state;
+    this.needReCall = needReCall;
+  }
 
   public SPLRoutineObject.SPLRoutineState getState() {
     switch (state) {
@@ -60,5 +48,14 @@ public class SPLRoutineMarker extends SPLObject {
 
   public void setNeedReCall(boolean needReCall) {
     this.needReCall = needReCall;
+  }
+
+  public enum SPLRoutineMarkerState {
+    BLOCKED,
+    RUNNING,
+    READY,
+    WAITING,
+    TIME_WAITING,
+    TERMINATED
   }
 }

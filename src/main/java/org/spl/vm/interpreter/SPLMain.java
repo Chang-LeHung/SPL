@@ -18,6 +18,11 @@ public class SPLMain {
     this.args = args;
   }
 
+  public static void main(String[] args) {
+    SPLMain spl = new SPLMain(args);
+    spl.start();
+  }
+
   private String matchAndFetchNext(String pattern) {
     for (int i = 0; i < args.length; i++) {
       if (args[i].matches(pattern) && i + 1 < args.length) {
@@ -109,10 +114,5 @@ public class SPLMain {
         }
       }
     }
-  }
-
-  public static void main(String[] args) {
-    SPLMain spl = new SPLMain(args);
-    spl.start();
   }
 }

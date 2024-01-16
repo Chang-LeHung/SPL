@@ -32,7 +32,7 @@ public class SPLMethodWrapper extends SPLObject implements SPLContinuable {
     this.self = self;
   }
 
-  public void buildEval(SPLObject ...args) throws SPLInternalException {
+  public void buildEval(SPLObject... args) throws SPLInternalException {
     SPLObject[] newArgs = new SPLObject[args.length + 1];
     newArgs[0] = self;
     System.arraycopy(args, 0, newArgs, 1, args.length);

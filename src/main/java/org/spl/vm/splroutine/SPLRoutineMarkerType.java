@@ -8,11 +8,11 @@ public class SPLRoutineMarkerType extends SPLCommonType {
     super(type, name, clazz);
   }
 
-  public static class SelfHolder {
-    public static SPLRoutineMarkerType self = new SPLRoutineMarkerType(null, "RoutineMarker", SPLRoutineMarker.class);
-  }
-
   public static SPLRoutineMarkerType getInstance() {
     return SelfHolder.self;
+  }
+
+  public static class SelfHolder {
+    public static SPLRoutineMarkerType self = new SPLRoutineMarkerType(null, "RoutineMarker", SPLRoutineMarker.class);
   }
 }

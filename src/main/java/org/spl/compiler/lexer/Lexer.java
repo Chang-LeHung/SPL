@@ -848,6 +848,7 @@ public class Lexer {
     public boolean isImport() {
       return token == TOKEN_TYPE.IMPORT;
     }
+
     public boolean isType() {
       return token == TOKEN_TYPE.TYPE;
     }
@@ -962,11 +963,12 @@ public class Lexer {
 
     public boolean isELSE() {
       return token == TOKEN_TYPE.ELSE;
-    };
+    }
 
     public boolean isYield() {
-      return token ==  TOKEN_TYPE.YIELD;
+      return token == TOKEN_TYPE.YIELD;
     }
+
     public boolean isDO() {
       return token == TOKEN_TYPE.DO;
     }

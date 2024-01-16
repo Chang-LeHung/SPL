@@ -100,7 +100,7 @@ public class InteractiveShell {
   public static SPLCodeObject compile(String content) throws SPLSyntaxError, IOException {
     SPLParser parser = new SPLParser(filename, content);
     IRNode<Instruction> ir = parser.buildAST();
-    if (ir instanceof Program pb ) {
+    if (ir instanceof Program pb) {
       List<IRNode<Instruction>> children = pb.getChildren();
       if (pb.getLast() instanceof Pop) {
         children.remove(children.size() - 1);

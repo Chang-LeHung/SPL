@@ -18,9 +18,9 @@ public class FuncDef extends AbstractIR<Instruction> {
   private final int idxInVarNames;
   private final List<IRNode<Instruction>> defaults;
   private final List<IRNode<Instruction>> closures;
-  private List<IRNode<Instruction>> children;
   private final IRNode<Instruction> body;
   private final List<String> args;
+  private List<IRNode<Instruction>> children;
 
   public FuncDef(List<IRNode<Instruction>> closures,
                  IRNode<Instruction> body,

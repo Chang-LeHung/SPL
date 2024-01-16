@@ -14,16 +14,19 @@ import java.util.List;
 
 public class SPLLoader {
 
+  public static final String main = "ModuleMain";
   private final List<String> paths;
   private final String STLIB_NAME = "org/spl/vm/stlib";
-
   private final ClassLoader loader;
-
-  public static final String main = "ModuleMain";
 
   public SPLLoader() {
     this.paths = new ArrayList<>();
     loader = new SPLClassFileLoader();
+  }
+
+  public static void main(String[] args) throws SPLInternalException, ClassNotFoundException {
+    SPLLoader loader = new SPLLoader();
+    System.out.println(loader.searchSTLib("vm"));
   }
 
   public void addNewPath(String path) {
@@ -48,10 +51,5 @@ public class SPLLoader {
     if (res != null) return res;
     SPLErrorUtils.splErrorFormat(new SPLImportError("Cannot find module \"" + moduleName + "\""));
     return null;
-  }
-
-  public static void main(String[] args) throws SPLInternalException, ClassNotFoundException {
-    SPLLoader loader = new SPLLoader();
-    System.out.println(loader.searchSTLib("vm"));
   }
 }

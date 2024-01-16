@@ -38,6 +38,204 @@ public class ASTVisualizer {
     this.name = name;
   }
 
+  public static String getLabel(IRNode<?> node) {
+    if (node instanceof Add) {
+      return "+";
+    } else if (node instanceof Sub) {
+      return "-";
+    } else if (node instanceof Mul) {
+      return "*";
+    } else if (node instanceof Div) {
+      return "/";
+    } else if (node instanceof And) {
+      return "&";
+    } else if (node instanceof ConditionalAnd) {
+      return "&&";
+    } else if (node instanceof Or) {
+      return "|";
+    } else if (node instanceof ConditionalOr) {
+      return "||";
+    } else if (node instanceof Equal) {
+      return "==";
+    } else if (node instanceof NotEqual) {
+      return "!=";
+    } else if (node instanceof GreaterThan) {
+      return ">";
+    } else if (node instanceof GreaterOrEqual) {
+      return ">=";
+    } else if (node instanceof LessThan) {
+      return "<";
+    } else if (node instanceof LessOrEqual) {
+      return "<=";
+    } else if (node instanceof LShift) {
+      return "<<";
+    } else if (node instanceof RShift) {
+      return ">>";
+    } else if (node instanceof Mod) {
+      return "%";
+    } else if (node instanceof Power) {
+      return "**";
+    } else if (node instanceof TrueDiv) {
+      return "//";
+    } else if (node instanceof URShift) {
+      return ">>>";
+    } else if (node instanceof Xor) {
+      return "^";
+    } else if (node instanceof AndAssignStmt) {
+      return "&=";
+    } else if (node instanceof Variable var) {
+      return var.getName();
+    } else if (node instanceof BoolLiteral) {
+      return "bool";
+    } else if (node instanceof FloatLiteral f) {
+      return Float.toString(f.getVal());
+    } else if (node instanceof IntLiteral integer) {
+      return Integer.toString(integer.getVal());
+    } else if (node instanceof Program) {
+      return "Program";
+    } else if (node instanceof ProgramBlock) {
+      return "ProgramBlock";
+    } else if (node instanceof Invert) {
+      return "~";
+    } else if (node instanceof Not) {
+      return "!";
+    } else if (node instanceof AddAssignStmt) {
+      return "+=";
+    } else if (node instanceof AssignStmt) {
+      return "=";
+    } else if (node instanceof DivAssignStmt) {
+      return "/=";
+    } else if (node instanceof LshiftAssignStmt) {
+      return "<<=";
+    } else if (node instanceof MulAssignStmt) {
+      return "*=";
+    } else if (node instanceof RshiftAssignStmt) {
+      return ">>=";
+    } else if (node instanceof ModAssignStmt) {
+      return "%=";
+    } else if (node instanceof OrAssignStmt) {
+      return "|=";
+    } else if (node instanceof SubAssignStmt) {
+      return "-=";
+    } else if (node instanceof PowerAssignStmt) {
+      return "**=";
+    } else if (node instanceof TrueDivAssignStmt) {
+      return "//=";
+    } else if (node instanceof ULshiftAssignStmt) {
+      return ">>>=";
+    } else if (node instanceof XorAssignStmt) {
+      return "^=";
+    } else if (node instanceof Break) {
+      return "break";
+    } else if (node instanceof Continue) {
+      return "continue";
+    } else if (node instanceof DoWhile) {
+      return "Do-While";
+    } else if (node instanceof WhileStmt) {
+      return "While";
+    } else if (node instanceof ExceptBlock) {
+      return "ExceptBlock";
+    } else if (node instanceof ForStmt) {
+      return "For";
+    } else if (node instanceof IfStmt) {
+      return "If";
+    } else if (node instanceof TryStmt) {
+      return "Try";
+    } else if (node instanceof FuncDef f) {
+      return "def " + f.getFuncName();
+    } else if (node instanceof Return) {
+      return "Return";
+    } else if (node instanceof ReturnNone) {
+      return "Return None";
+    } else if (node instanceof Decorator) {
+      return "@";
+    } else if (node instanceof FuncCallExp) {
+      return "()";
+    } else if (node instanceof StringLiteral s) {
+      return "\\\"" + s.getVal() + "\\\"";
+    } else if (node instanceof ClassDefinition) {
+      return "class";
+    } else if (node instanceof BuildSet) {
+      return "{}(Set)";
+    } else if (node instanceof BuildList) {
+      return "[]List";
+    } else if (node instanceof BuildMap) {
+      return "{}(Dict)";
+    } else if (node instanceof LoadMethod || node instanceof LoadAttr) {
+      return "";
+    }
+    return "Empty";
+  }
+
+  public static String getOperator(Lexer.TOKEN_TYPE opCode) {
+    switch (opCode) {
+      case ASSIGN_ADD -> {
+        return "+=";
+      }
+      case ASSIGN_SUB -> {
+        return "-=";
+      }
+      case ASSIGN_MUL -> {
+        return "*=";
+      }
+      case ASSIGN_DIV -> {
+        return "/=";
+      }
+      case ASSIGN_MOD -> {
+        return "%=";
+      }
+      case ASSIGN_LSHIFT -> {
+        return "<<=";
+      }
+      case ASSIGN_RSHIFT -> {
+        return ">>=";
+      }
+      case ASSIGN_AND -> {
+        return "&=";
+      }
+      case ASSIGN_XOR -> {
+        return "^=";
+      }
+      case ASSIGN_OR -> {
+        return "|=";
+      }
+      case ASSIGN_POWER -> {
+        return "**=";
+      }
+      case ASSIGN -> {
+        return "=";
+      }
+      case ASSIGN_U_RSHIFT -> {
+        return ">>>=";
+      }
+      case ASSIGN_TRUE_DIV -> {
+        return "//=";
+      }
+      case ASSIGN_INVERT -> {
+        return "~=";
+      }
+      case MUL -> {
+        return "*";
+      }
+      case DIV -> {
+        return "/";
+      }
+      case MOD -> {
+        return "%";
+      }
+      case LSHIFT -> {
+        return "<<";
+      }
+      case RSHIFT -> {
+        return ">>";
+      }
+      case AND -> {
+        return "&";
+      }
+    }
+    return "Unknow";
+  }
+
   public String getDotFileContent() {
     if (!done) {
       visualize();
@@ -101,7 +299,7 @@ public class ASTVisualizer {
       o = new Object();
       builder.append(String.format("\t%d [label=\"%s\"]\n", o.hashCode(), storeName));
       builder.append(String.format("\t%d -> %d\n", exceptBlock.hashCode(), o.hashCode()));
-      if (exceptBlock.getBlock()!= null) {
+      if (exceptBlock.getBlock() != null) {
         builder.append(String.format("\t%d -> %d\n", exceptBlock.hashCode(), exceptBlock.getBlock().hashCode()));
         visit(exceptBlock.getBlock());
       }
@@ -125,7 +323,7 @@ public class ASTVisualizer {
           visit(catchBlock);
         }
       IRNode<Instruction> finallyBlock = tryStmt.getFinallyBlock();
-      if (finallyBlock!= null) {
+      if (finallyBlock != null) {
         builder.append(String.format("\t%d -> %d[label=\"%s\"]\n", tryStmt.hashCode(), finallyBlock.hashCode(), "Finally"));
         visit(finallyBlock);
       }
@@ -334,7 +532,7 @@ public class ASTVisualizer {
       if (tmp.length() > 2) {
         tmp.delete(tmp.length() - 2, tmp.length());
       }
-      builder.append(String.format("\t%d [label=\"def %s (%s)\", fillcolor=\"#65db79\", style=\"filled\"]\n", node.hashCode(), funcDef.getFuncName(), tmp.toString()));
+      builder.append(String.format("\t%d [label=\"def %s (%s)\", fillcolor=\"#65db79\", style=\"filled\"]\n", node.hashCode(), funcDef.getFuncName(), tmp));
       for (IRNode<Instruction> closure : funcDef.getClosures()) {
         builder.append(String.format("\t%d -> %d [label=\"Closure\"]\n", node.hashCode(), closure.hashCode()));
         visit(closure);
@@ -433,203 +631,5 @@ public class ASTVisualizer {
       return true;
     }
     return false;
-  }
-
-  public static String getLabel(IRNode<?> node) {
-    if (node instanceof Add) {
-      return "+";
-    } else if (node instanceof Sub) {
-      return "-";
-    } else if (node instanceof Mul) {
-      return "*";
-    } else if (node instanceof Div) {
-      return "/";
-    } else if (node instanceof And) {
-      return "&";
-    } else if (node instanceof ConditionalAnd) {
-      return "&&";
-    } else if (node instanceof Or) {
-      return "|";
-    } else if (node instanceof ConditionalOr) {
-      return "||";
-    } else if (node instanceof Equal) {
-      return "==";
-    } else if (node instanceof NotEqual) {
-      return "!=";
-    } else if (node instanceof GreaterThan) {
-      return ">";
-    } else if (node instanceof GreaterOrEqual) {
-      return ">=";
-    } else if (node instanceof LessThan) {
-      return "<";
-    } else if (node instanceof LessOrEqual) {
-      return "<=";
-    } else if (node instanceof LShift) {
-      return "<<";
-    } else if (node instanceof RShift) {
-      return ">>";
-    } else if (node instanceof Mod) {
-      return "%";
-    } else if (node instanceof Power) {
-      return "**";
-    } else if (node instanceof TrueDiv) {
-      return "//";
-    } else if (node instanceof URShift) {
-      return ">>>";
-    } else if (node instanceof Xor) {
-      return "^";
-    } else if (node instanceof AndAssignStmt) {
-      return "&=";
-    } else if (node instanceof Variable var) {
-      return var.getName();
-    } else if (node instanceof BoolLiteral) {
-      return "bool";
-    } else if (node instanceof FloatLiteral f) {
-      return Float.toString(f.getVal());
-    } else if (node instanceof IntLiteral integer) {
-      return Integer.toString(integer.getVal());
-    } else if (node instanceof Program) {
-      return "Program";
-    } else if (node instanceof ProgramBlock) {
-      return "ProgramBlock";
-    } else if (node instanceof Invert) {
-      return "~";
-    } else if (node instanceof Not) {
-      return "!";
-    } else if (node instanceof AddAssignStmt) {
-      return "+=";
-    } else if (node instanceof AssignStmt) {
-      return "=";
-    } else if (node instanceof DivAssignStmt) {
-      return "/=";
-    } else if (node instanceof LshiftAssignStmt) {
-      return "<<=";
-    } else if (node instanceof MulAssignStmt) {
-      return "*=";
-    } else if (node instanceof RshiftAssignStmt) {
-      return ">>=";
-    } else if (node instanceof ModAssignStmt) {
-      return "%=";
-    } else if (node instanceof OrAssignStmt) {
-      return "|=";
-    } else if (node instanceof SubAssignStmt) {
-      return "-=";
-    } else if (node instanceof PowerAssignStmt) {
-      return "**=";
-    } else if (node instanceof TrueDivAssignStmt) {
-      return "//=";
-    } else if (node instanceof ULshiftAssignStmt) {
-      return ">>>=";
-    } else if (node instanceof XorAssignStmt) {
-      return "^=";
-    } else if (node instanceof Break) {
-      return "break";
-    } else if (node instanceof Continue) {
-      return "continue";
-    } else if (node instanceof DoWhile) {
-      return "Do-While";
-    } else if (node instanceof WhileStmt) {
-      return "While";
-    } else if (node instanceof ExceptBlock) {
-      return "ExceptBlock";
-    } else if (node instanceof ForStmt) {
-      return "For";
-    } else if (node instanceof IfStmt) {
-      return "If";
-    } else if (node instanceof TryStmt) {
-      return "Try";
-    } else if (node instanceof FuncDef f) {
-      return "def " + f.getFuncName();
-    } else if (node instanceof Return) {
-      return "Return";
-    } else if (node instanceof ReturnNone) {
-      return "Return None";
-    } else if (node instanceof Decorator) {
-      return "@";
-    } else if (node instanceof FuncCallExp) {
-      return "()";
-    } else if (node instanceof StringLiteral s) {
-      return "\\\"" + s.getVal() + "\\\"";
-    } else if (node instanceof ClassDefinition) {
-      return "class";
-    } else if (node instanceof BuildSet) {
-      return "{}(Set)";
-    } else if (node instanceof BuildList) {
-      return "[]List";
-    } else if (node instanceof BuildMap) {
-      return "{}(Dict)";
-    } else if (node instanceof LoadMethod || node instanceof LoadAttr) {
-      return "";
-    }
-    return "Empty";
-  }
-
-  public static String getOperator(Lexer.TOKEN_TYPE opCode) {
-    switch (opCode) {
-      case ASSIGN_ADD -> {
-        return "+=";
-      }
-      case ASSIGN_SUB -> {
-        return "-=";
-      }
-      case ASSIGN_MUL -> {
-        return "*=";
-      }
-      case ASSIGN_DIV -> {
-        return "/=";
-      }
-      case ASSIGN_MOD -> {
-        return "%=";
-      }
-      case ASSIGN_LSHIFT -> {
-        return "<<=";
-      }
-      case ASSIGN_RSHIFT -> {
-        return ">>=";
-      }
-      case ASSIGN_AND -> {
-        return "&=";
-      }
-      case ASSIGN_XOR -> {
-        return "^=";
-      }
-      case ASSIGN_OR -> {
-        return "|=";
-      }
-      case ASSIGN_POWER -> {
-        return "**=";
-      }
-      case ASSIGN -> {
-        return "=";
-      }
-      case ASSIGN_U_RSHIFT -> {
-        return ">>>=";
-      }
-      case ASSIGN_TRUE_DIV -> {
-        return "//=";
-      }
-      case ASSIGN_INVERT -> {
-        return "~=";
-      }
-      case MUL -> {
-        return "*";
-      }
-      case DIV -> {
-        return "/";
-      }
-      case MOD -> {
-        return "%";
-      }
-      case LSHIFT -> {
-        return "<<";
-      }
-      case RSHIFT -> {
-        return ">>";
-      }
-      case AND -> {
-        return "&";
-      }
-    }
-    return "Unknow";
   }
 }

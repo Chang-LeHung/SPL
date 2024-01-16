@@ -8,11 +8,11 @@ public class SPLModuleType extends SPLCommonType {
     super(type, name, clazz);
   }
 
-  private static class SelfHolder {
-    public static final SPLModuleType INSTANCE = new SPLModuleType(null, "SPLModule", SPLModuleObject.class);
-  }
-
   public static SPLModuleType getInstance() {
     return SelfHolder.INSTANCE;
+  }
+
+  private static class SelfHolder {
+    public static final SPLModuleType INSTANCE = new SPLModuleType(null, "SPLModule", SPLModuleObject.class);
   }
 }
